@@ -1,5 +1,7 @@
 package myshelfie_model;
 
+import myshelfie_model.goal.CommonGoal;
+
 import java.util.List;
 
 public class Game {
@@ -27,7 +29,9 @@ public class Game {
     }
 
     public int getPoints(int playerNumber) {
+        int points = 0;
 
+        return points;
     }
 
     public void refillBoard() {
