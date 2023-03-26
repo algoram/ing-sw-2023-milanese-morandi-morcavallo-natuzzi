@@ -1,6 +1,6 @@
 package myshelfie_model;
 
-import myshelfie_model.goal.CommonGoal;
+import myshelfie_model.goal.common_goal.CommonGoal;
 
 import java.util.List;
 
