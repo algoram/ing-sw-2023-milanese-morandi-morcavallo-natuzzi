@@ -10,7 +10,7 @@ public abstract class CommonGoal extends Goal {
     private Stack<Integer> scoringTokens;
 
 
-    //retrun an integer from -1 to 4(-1 means CommonGaol not satisfied)
+    //return an integer from -1 to 4(-1 means CommonGaol not satisfied)
     public abstract int check(Bookshelf b);
 
     public CommonGoal(int numberOfPlayers) {
