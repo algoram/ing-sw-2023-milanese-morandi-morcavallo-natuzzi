@@ -14,12 +14,12 @@ public abstract class CommonGoal extends Goal {
     public abstract int check(Bookshelf b);
 
     public CommonGoal(int numberOfPlayers) {
-        // TODO: creare lo stack con i punti giusti (2, 4, 6, 8) ed in base al numero di giocatori
         this.scoringTokens = new Stack<>();
+
+        this.scoringTokens.push(8);
+        if (numberOfPlayers >= 3) {this.scoringTokens.push(6);}
         this.scoringTokens.push(4);
-        this.scoringTokens.push(3);
-        this.scoringTokens.push(2);
-        this.scoringTokens.push(1);
+        if (numberOfPlayers == 4) {this.scoringTokens.push(2);}
     }
 
     protected int popTokens(){
