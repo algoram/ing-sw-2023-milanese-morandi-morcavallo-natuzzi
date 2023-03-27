@@ -27,6 +27,6 @@ public interface Board {
 
     public boolean refillNeeded();
 
-    public List remove(List<Tile> chosen);
+    public List remove(List<Tile> chosen) throws NotPossibleMove;
 
 }
