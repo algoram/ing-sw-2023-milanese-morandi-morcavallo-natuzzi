@@ -62,6 +62,7 @@ public interface Board {
 
     };
 
+    // TODO: Trasformare chosen in una lista di coordinate
     public default List remove(List<Tile> chosen)  {
         int flagDir = 0; //flagDir indica la direzione scelta (utile per ottimizzare la rimozione) 1:up , 2:down, 3:right, 4:left
         int flagStraightline = 0; //flagStraightline viene posto a 1, 2 o 3 in base a quante tessere allineate vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
