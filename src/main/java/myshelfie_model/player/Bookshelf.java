@@ -11,8 +11,20 @@ public class Bookshelf {
     }
 
     public int getPoints() {
-        // TODO: implement method
+
         return 0;
+    }
+    public boolean isFull(){
+        for (int i = 0;i< tiles.length;i++){
+            for(int j=0;j< tiles.length;j++){
+                if(tiles[i][j]==null){
+                    return false;
+                }
+            }
+        }
+        return true;
+
+
     }
 
 }
