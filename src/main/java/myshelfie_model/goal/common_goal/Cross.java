@@ -1,5 +1,19 @@
+package myshelfie_model.goal.common_goal;
+
+import myshelfie_model.Tile;
+import myshelfie_model.Type;
+import myshelfie_model.player.Bookshelf;
+
 public class Cross extends CommonGoal {
 
+
+    /**
+     * Checks whether the player has 5 tiles of the
+     * same type in the bookshelf forming a X
+     * @param b the player's bookshelf
+     * @return a int: -1 if the goal wasn't achieved
+     *                  otherwise the points of the Token in stack's first place
+     */
     @Override
     public int check(Bookshelf b){
         Tile[][] tiles = b.getTiles();
