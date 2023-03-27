@@ -23,15 +23,19 @@ public class ThreeColumnsMax3 extends CommonGoal {
         for (int j = 0; j < tiles[0].length; j++) {
             typesCounter.clear(); // clear the set from previous iterations
 
+            boolean columnComplete = true; // flag that indicates if a column is full
+
             // we add the types to the set
-            for (int i = 0; i < tiles.length; i++) {
+            for (int i = 0; i < tiles.length && columnComplete; i++) {
                 if (tiles[i][j] != null) {
                     typesCounter.add(tiles[i][j].getType());
+                } else {
+                    columnComplete = false;
                 }
             }
 
             // check if we have a maximum of three types in the column
-            if (typesCounter.size() <= 3) {
+            if (columnComplete && typesCounter.size() <= 3) {
                 numberOfCorrectColumns++;
             }
         }

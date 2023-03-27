@@ -1,11 +1,14 @@
 package myshelfie_model.goal.common_goal;
 
-
 import myshelfie_model.Tile;
 import myshelfie_model.Type;
 import myshelfie_model.player.Bookshelf;
 
 public class Diagonal5Tiles extends CommonGoal {
+    public Diagonal5Tiles(int numberOfPlayers) {
+        super(numberOfPlayers);
+    }
+
     public int check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         for (int i = 0; i < tiles.length; i++) {
@@ -18,10 +21,9 @@ public class Diagonal5Tiles extends CommonGoal {
                 }
             }
             if (sameColor) {
-                //return true;
+                return popTokens();
             }
         }
-
 
         for (int i = 1; i < tiles.length; i++) {
             Tile firstTile = tiles[0][i];
@@ -33,12 +35,11 @@ public class Diagonal5Tiles extends CommonGoal {
                 }
             }
             if (sameColor) {
-                //return true;
+                return popTokens();
             }
         }
 
-
-        //return false;
+        return -1;
     }
 
 

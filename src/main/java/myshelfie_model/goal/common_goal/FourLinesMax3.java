@@ -6,6 +6,10 @@ import myshelfie_model.Type;
 import myshelfie_model.player.Bookshelf;
 
 public class FourLinesMax3 extends CommonGoal{
+    public FourLinesMax3(int numberOfPlayers) {
+        super(numberOfPlayers);
+    }
+
     public int check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         int score = 0;
@@ -14,10 +18,10 @@ public class FourLinesMax3 extends CommonGoal{
         for (int i = 0; i < 4; i++) {
             boolean valid = true;
             for (int j = 0; j < 5; j++) {
-                TileTypes types = tiles[i][j].getType();
+                Type types = tiles[i][j].getType();
                 // Controlla che la tessera corrente abbia lo stesso colore di tutte le precedenti
                 for (int k = 0; k < j; k++) {
-                    //if (tiles[i][k].getType() != color) {
+                    if (tiles[i][k].getType() != types) {
                         valid = false;
                         break;
                     }

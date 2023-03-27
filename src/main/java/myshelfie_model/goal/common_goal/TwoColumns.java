@@ -10,6 +10,10 @@ import java.util.Set;
 
 
 public class TwoColumns extends CommonGoal{
+    public TwoColumns(int numberOfPlayers) {
+        super(numberOfPlayers);
+    }
+
     public int check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         int count = 0;
@@ -38,7 +42,7 @@ public class TwoColumns extends CommonGoal{
             }
         }
 
-        return count;
+        return popTokens();
     }
 
 
