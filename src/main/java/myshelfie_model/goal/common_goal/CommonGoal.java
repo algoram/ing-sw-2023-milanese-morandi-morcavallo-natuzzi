@@ -17,7 +17,7 @@ public abstract class CommonGoal extends Goal {
         this.scoringTokens.push(1);
     }
 
-    private int popTokens(int){
+    private int popTokens(){
         try {
             return this.scoringTokens.pop();
         } catch (EmptyStackException e) {
