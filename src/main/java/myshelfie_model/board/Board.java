@@ -6,11 +6,11 @@ import java.util.List;
 
 /* La board è descritta come una matrice 9x9 in cui le caselle vengono settate così:
  * non raggiungibili: null
- * vuote : -1
+ * vuote : EMPTY
  * coperte : getType()
  *
  *   inizializzo così (i numeri in romano verranno posti a -1 sse verrà richiesta l'implementazione con il numero player corrispondente, altrimenti null)
- *         0     1       2     3     4     5      6      7      8
+ *   i\j   0     1       2     3     4      5      6      7      8
  *    0  null | null | null | III  | IV  | null | null | null | null
  *    1  null | null | null | II   | II  | IV   | null | null | null
  *    2  null | null | III  | II   | II  | II   | III  | null | null
