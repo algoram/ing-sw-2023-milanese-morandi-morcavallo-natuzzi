@@ -15,14 +15,13 @@ public class PersonalGoal extends Goal{
     }
 
     public Map<Position, Type> getPositions() {
-        Map<Position, Type> positionsCopy = new HashMap<>(positions);
-        return positionsCopy;
+        return new HashMap<>(positions);
     }
 
 
     /**
      * @param b the player's bookshelf
-     * @return a integer: the points of the personal Goal
+     * @return an integer: the points of the personal Goal
      */
     public int getPersonalGoalPoints(Bookshelf b){
 
@@ -30,9 +29,8 @@ public class PersonalGoal extends Goal{
         Tile[][] tiles = b.getTiles();
         Position position;
         Type type;
-        Map.Entry<Position, Type> entry1;
 
-        for (Map.Entry<Position, Type> entry : entry1.entrySet()){
+        for (Map.Entry<Position, Type> entry : positions.entrySet()){
             position = entry.getKey();
             type = entry.getValue();
             if (tiles[position.getColumn()][position.getRow()].getType() == type){
