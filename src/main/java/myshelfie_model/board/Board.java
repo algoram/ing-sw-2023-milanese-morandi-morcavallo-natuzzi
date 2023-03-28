@@ -1,5 +1,7 @@
 package myshelfie_model.board;
 
+import myshelfie_model.BoardPosition;
+import myshelfie_model.Position;
 import myshelfie_model.Tile;
 import myshelfie_model.Type;
 
@@ -27,10 +29,23 @@ public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
     private Tile emptyTile= new Tile(Type.EMPTY);
-    final int board_lenght=9;
+    final int BOARD_LENGTH =9;
 
+    //TODO:inserire in UML attributo
+    //indicates the position coordinates for the tile refill
+    // 0: null, 2: two player, 3:three player, 4: four player
+    final int[][] BOARD_PRE_SET = {
+            {0,0,0,3,4,0,0,0,0},//row:0
+            {0,0,0,2,2,4,0,0,0},//row:1
+            {0,0,3,2,2,2,3,0,0},//row:2
+            {0,4,2,2,2,2,2,2,3},//row:3
+            {4,2,2,2,2,2,2,2,4},//row:4
+            {3,2,2,2,2,2,2,4,0},//row:5
+            {0,0,3,2,2,2,3,0,0},//row:6
+            {0,0,0,4,2,2,0,0,0},//row:7
+            {0,0,0,0,4,3,0,0,0} //row:8
+    };
 
-    //TODO: inserire i nuovi metodi private aggiunti adesso nell'UML
     private boolean isOccupied(int row, int col){
         if(this.board[row][col]!= null && !this.board[row][col].getType().equals(Type.EMPTY) ) return true;
         else return false;
@@ -41,20 +56,19 @@ public abstract class Board {
         else if(!isOccupied(row-1,col)) return true;//Down
         else if(!isOccupied(row,col+1)) return true;//Rx
         else if(!isOccupied(row,col-1)) return true;//Sx
-
         return false;
     };
 
     public abstract void refill(List<Tile> tiles);
 
     public boolean refillNeeded(){
-        for (int i = 0; i < board_lenght; i++) {
-            for (int j = 0; j < board_lenght; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_LENGTH; j++) {
                 if(isOccupied(i,j)){
                     if(     (i > 0 && isOccupied(i-1,j) ) ||              // Down
-                            (i < board_lenght-1 && isOccupied(i+1,j) ) || // Up
+                            (i < BOARD_LENGTH -1 && isOccupied(i+1,j) ) || // Up
                             (j > 0 && isOccupied(i,j-1) ) ||               // Sx
-                            (j < board_lenght-1 && isOccupied(i,j+1) ) ) { // Rx
+                            (j < BOARD_LENGTH -1 && isOccupied(i,j+1) ) ) { // Rx
                         // there is an adjacent tile, so they are not isolated
                         return false;
                     }
@@ -65,151 +79,45 @@ public abstract class Board {
         return true;
 
     };
-
-    // TODO: Trasformare chosen in una lista di coordinate
     public List remove(List<Tile> chosen)  {
-        int flagDir = 0; //flagDir indica la direzione scelta (utile per ottimizzare la rimozione) 1:up , 2:down, 3:right, 4:left
         int flagStraightline = 0; //flagStraightline viene posto a 1, 2 o 3 in base a quante tessere allineate vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
         int flagSideFree = 0; //flagSidefree viene posto a 1, 2 o 3 in base a quante tessere con lato libero vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
-        int firstRow=-1, firstCol=-1; //salvo la posizione del primo tile, poi con il flagDir e la size della list posso rimuovere i Tiles scelti dalla board.
 
-        //cerco il primo Tile sulla board
-        for (int row = 0; row < board_lenght ; row++) {
-            for (int col = 0; col < board_lenght; col++) {
-                if(this.board[row][col] == chosen.get(0)){
-                    firstRow=row;
-                    firstCol=col;
-                    flagStraightline=1;
+        //Check if all the chosen tile has at least one free side
+        for (int i = 0; i < 3; i++) {
+            if( sideFree(chosen.get(i).getPosition().getRow(),chosen.get(i).getPosition().getColumn()) ) flagSideFree=1;
+            else {
+                System.out.println("The" + i+ "° Tile has no free side!\n No tile has been moved...");
+                return null;
+            }
+        }
 
-                    //verifico che la prima abbia un lato libero
-                    if(sideFree(row,col)) flagSideFree=1;
-                    else {
-                        System.out.println("The first tile has no free side!");
-                        break;
-                    }
+        //Check if the chosen tile are on a straight line
+        if ( chosen.get(0).getPosition().getRow() == chosen.get(1).getPosition().getRow()  && chosen.get(1).getPosition().getRow() == chosen.get(2).getPosition().getRow() ) flagStraightline=1; //horizontal
+        else if (chosen.get(0).getPosition().getColumn() == chosen.get(1).getPosition().getColumn()  && chosen.get(1).getPosition().getColumn() == chosen.get(2).getPosition().getColumn()) flagStraightline=1; //vertical
+        else {
+            System.out.println("The Tiles do not form a straight line!\n No tile has been moved...");
+            return null;
+        }
+        //replace tile on the board
+        if(flagStraightline==1 && flagSideFree==1){
+                //first tile
+                board[chosen.get(0).getPosition().getRow()][chosen.get(0).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                chosen.get(0).setPosition(-1,-1); //set a board outside position
 
-                    //verifico siano in linea retta
-                    if (chosen.size()>1) {
-                        if(      this.board[row + 1][col] == chosen.get(1)){//Up
-                            flagDir=1;
-                            flagStraightline=2;
-
-                            //verifico che la seconda abbia un lato libero
-                            if(sideFree(row+1,col)) flagSideFree=2;
-                            else {
-                                System.out.println("The second tile has no free side!");
-                                break;
-                            }
-
-                            if(chosen.size()>2){
-                                if(this.board[row+2][col] == chosen.get(2) ) {
-                                    flagStraightline=3;
-                                    //verifico che la terza abbia un lato libero
-                                    if(sideFree(row+2,col)) flagSideFree=3;
-                                    else {
-                                        System.out.println("The third tile has no free side!");
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        else if (this.board[row - 1][col] == chosen.get(1)) { //Down
-                            flagDir=2;
-                            flagStraightline=2;
-
-                            //verifico che la seconda abbia un lato libero
-                            if(sideFree(row-1,col)) flagSideFree=2;
-                            else {
-                                System.out.println("The second tile has no free side!");
-                                break;
-                            }
-                            if(chosen.size()>2){
-                                if(this.board[row-2][col] == chosen.get(2) ) {
-                                    flagStraightline=3;
-                                    //verifico che la terza abbia un lato libero
-                                    if(sideFree(row-2,col)) flagSideFree=3;
-                                    else {
-                                        System.out.println("The third tile has no free side!");
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                        else if (this.board[row][col + 1] == chosen.get(1)) { //Rx
-                            flagDir=3;
-                            flagStraightline=2;
-
-                            //verifico che la seconda abbia un lato libero
-                            if(sideFree(row,col+1)) flagSideFree=2;
-                            else {
-                                System.out.println("The second tile has no free side!");
-                                break;
-                            }
-                            if(chosen.size()>2){
-                                if(this.board[row][col + 2] == chosen.get(2) ) {
-                                    flagStraightline=3;
-                                    //verifico che la terza abbia un lato libero
-                                    if(sideFree(row,col + 2)) flagSideFree=3;
-                                    else {
-                                        System.out.println("The third tile has no free side!");
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        else if (this.board[row][col - 1] == chosen.get(1)) { //Sx
-                            flagDir=4;
-                            flagStraightline=2;
-
-                            //verifico che la seconda abbia un lato libero
-                            if(sideFree(row,col-1)) flagSideFree=2;
-                            else {
-                                System.out.println("The second tile has no free side!");
-                                break;
-                            }
-                            if(chosen.size()>2){
-                                if(this.board[row][col - 2] == chosen.get(2) ) {
-                                    flagStraightline=3;
-                                    //verifico che la terza abbia un lato libero
-                                    if(sideFree(row,col-2)) flagSideFree=3;
-                                    else {
-                                        System.out.println("The third tile has no free side!");
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                if(chosen.size()>1 ) {
+                    //second tile
+                    board[chosen.get(1).getPosition().getRow()][chosen.get(1).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                    chosen.get(1).setPosition(-1,-1); //set a board outside position
                 }
-
+                if(chosen.size()>2 ) {
+                    //third tile
+                    board[chosen.get(2).getPosition().getRow()][chosen.get(2).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                    chosen.get(2).setPosition(-1,-1); //set a board outside position
+                }
+                System.out.println("Move accepted!");
+                return chosen;
             }
-        }
-
-
-        //TODO: verifico i flag e quindi rimuovo le tessere dalla board
-
-        //TODO: PER FRANCI leggi qui sotto, servirebbe costruire una tessera empty da inserire in questa fase del codice
-        if(flagStraightline==chosen.size()){
-            System.out.println("Move accepted!");
-            board[firstRow][firstCol]= emptyTile; //metti empty
-            if(flagDir==0){ //up
-                if(chosen.size()>1 ) board[firstRow+1][firstCol]= emptyTile ;//metti empty
-                if(chosen.size()>2 ) board[firstRow+2][firstCol]= emptyTile ;//metti empty
-            } else if (flagDir==1) { //down
-                if(chosen.size()>1 ) board[firstRow-1][firstCol]= emptyTile ;//metti empty
-                if(chosen.size()>2 ) board[firstRow-2][firstCol]= emptyTile ;//metti empty
-
-            } else if (flagDir==2) { //right
-                if(chosen.size()>1 ) board[firstRow][firstCol+1]= emptyTile ;//metti empty
-                if(chosen.size()>2 ) board[firstRow][firstCol+2]= emptyTile ;//metti empty
-            } else if (flagDir==3) {
-                if(chosen.size()>1 ) board[firstRow][firstCol-1]= emptyTile ;//metti empty
-                if(chosen.size()>2 ) board[firstRow][firstCol-2]= emptyTile ;//metti empty
-
-            }
-        }
-
         return null;
     }
 }
