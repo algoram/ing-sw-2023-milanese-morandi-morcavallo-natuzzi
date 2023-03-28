@@ -9,6 +9,10 @@ import java.util.HashSet;
 public class TwoLines extends CommonGoal {
 
 
+    public TwoLines(int numberOfPlayers) {
+        super(numberOfPlayers);
+    }
+
     /**
      * Checks whether the player has two lines with
      * all different types of tile

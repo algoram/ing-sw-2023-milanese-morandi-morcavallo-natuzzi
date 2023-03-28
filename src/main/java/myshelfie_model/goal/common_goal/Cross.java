@@ -7,6 +7,10 @@ import myshelfie_model.player.Bookshelf;
 public class Cross extends CommonGoal {
 
 
+    public Cross(int numberOfPlayers) {
+        super(numberOfPlayers);
+    }
+
     /**
      * Checks whether the player has 5 tiles of the
      * same type in the bookshelf forming a X

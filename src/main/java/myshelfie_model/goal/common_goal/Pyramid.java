@@ -7,6 +7,10 @@ import myshelfie_model.player.Bookshelf;
 public class Pyramid extends CommonGoal {
 
 
+    public Pyramid(int numberOfPlayers) {
+        super(numberOfPlayers);
+    }
+
     /**
      * Checks whether the player has 5 columns
      * with a decreasing or increasing length
