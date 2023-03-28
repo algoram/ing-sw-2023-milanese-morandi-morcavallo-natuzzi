@@ -69,5 +69,4 @@ public class FourGroups4Tiles extends CommonGoal {
         findGroup(matrix, visited, row, col + 1, tile, group);
     }
 
-
 }
