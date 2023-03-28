@@ -1,7 +1,6 @@
 package myshelfie_model.goal.common_goal;
 
 import myshelfie_model.Tile;
-import myshelfie_model.Type;
 import myshelfie_model.player.Bookshelf;
 
 public class Pyramid extends CommonGoal {
@@ -15,7 +14,7 @@ public class Pyramid extends CommonGoal {
      * Checks whether the player has 5 columns
      * with a decreasing or increasing length
      * @param b the player's bookshelf
-     * @return a int: -1 if the goal wasn't achieved
+     * @return an int: -1 if the goal wasn't achieved
      *                  otherwise the points of the Token in stack's first place
      */
     @Override
@@ -26,12 +25,12 @@ public class Pyramid extends CommonGoal {
         int temp;
 
         //Check if the columns are in descending order
-        for (int j = 1; j < 5 && dooableFlag == true; j++){
+        for (int j = 1; j < 5 && dooableFlag; j++){
             temp = numTilesInColumn(b,j);
             if (ColPrec != temp + 1) {dooableFlag = false;}
             ColPrec = temp;
         }
-        if(dooableFlag == true) {
+        if(dooableFlag) {
             return popTokens();
         }
 
@@ -40,12 +39,12 @@ public class Pyramid extends CommonGoal {
         ColPrec = numTilesInColumn(b,4);
 
         //Check if the columns are in ascending order
-        for (int j = 3 ; j >= 0 && dooableFlag == true; j--){
+        for (int j = 3; j >= 0 && dooableFlag; j--){
             temp = numTilesInColumn(b,j);
             if (ColPrec != temp + 1) {dooableFlag = false;}
             ColPrec = temp;
         }
-        if (dooableFlag == true) {
+        if (dooableFlag) {
             return popTokens();
         }
         else {
@@ -58,8 +57,8 @@ public class Pyramid extends CommonGoal {
         Tile[][] tiles = b.getTiles();
         int numTiles = 0;
 
-        for (i = 0; i < tiles.length(); i++){
-            if (tiles[i][j] != null ){
+        for (Tile[] tile : tiles) {
+            if (tile[c] != null) {
                 numTiles++;
             }
         }
