@@ -1,10 +1,7 @@
 package myshelfie_model.board;
-
-import myshelfie_model.BoardPosition;
-import myshelfie_model.Position;
 import myshelfie_model.Tile;
 import myshelfie_model.Type;
-
+import java.util.Arrays;
 import java.util.List;
 
 /* La board è descritta come una matrice 9x9 in cui le caselle vengono settate così:
@@ -28,7 +25,7 @@ import java.util.List;
 public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
-    private Tile emptyTile= new Tile(Type.EMPTY);
+    private final Tile emptyTile= new Tile(Type.EMPTY);
     final int BOARD_LENGTH =9;
 
     //TODO:inserire in UML attributo
@@ -46,20 +43,19 @@ public abstract class Board {
             {0,0,0,0,4,3,0,0,0} //row:8
     };
 
+    public abstract void refill(List<Tile> tiles);
+
     private boolean isOccupied(int row, int col){
-        if(this.board[row][col]!= null && !this.board[row][col].getType().equals(Type.EMPTY) ) return true;
-        else return false;
-    };
+        return this.board[row][col] != null && !this.board[row][col].getType().equals(Type.EMPTY);
+    }
 
     private boolean sideFree(int row,int col){
         if(!isOccupied(row+1,col)) return true;//Up
         else if(!isOccupied(row-1,col)) return true;//Down
         else if(!isOccupied(row,col+1)) return true;//Rx
-        else if(!isOccupied(row,col-1)) return true;//Sx
-        return false;
-    };
+        else return !isOccupied(row, col - 1);//Sx
+    }
 
-    public abstract void refill(List<Tile> tiles);
 
     public boolean refillNeeded(){
         for (int i = 0; i < BOARD_LENGTH; i++) {
@@ -78,13 +74,27 @@ public abstract class Board {
         // All the tiles are isolated
         return true;
 
-    };
+    }
+
+
+    //TODO: aggiungere uml
+    private boolean checkAdjacent(int a, int b, int c) {
+            int[] nums = {a, b, c};
+            Arrays.sort(nums);
+            if (c==-1) return (nums[1] == nums[0] + 1);
+        return (nums[1] == nums[0] + 1 && nums[2] == nums[1] + 1);
+    }
+
     public List remove(List<Tile> chosen)  {
         int flagStraightline = 0; //flagStraightline viene posto a 1, 2 o 3 in base a quante tessere allineate vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
         int flagSideFree = 0; //flagSidefree viene posto a 1, 2 o 3 in base a quante tessere con lato libero vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
+        int flagAdjacent = 0; //flagAdjacent siano tutte
 
-        //Check if all the chosen tile has at least one free side
-        for (int i = 0; i < 3; i++) {
+
+
+
+        //Check flagStraightLine
+        for (int i = 0; i < chosen.size(); i++) {
             if( sideFree(chosen.get(i).getPosition().getRow(),chosen.get(i).getPosition().getColumn()) ) flagSideFree=1;
             else {
                 System.out.println("The" + i+ "° Tile has no free side!\n No tile has been moved...");
@@ -92,15 +102,67 @@ public abstract class Board {
             }
         }
 
-        //Check if the chosen tile are on a straight line
-        if ( chosen.get(0).getPosition().getRow() == chosen.get(1).getPosition().getRow()  && chosen.get(1).getPosition().getRow() == chosen.get(2).getPosition().getRow() ) flagStraightline=1; //horizontal
-        else if (chosen.get(0).getPosition().getColumn() == chosen.get(1).getPosition().getColumn()  && chosen.get(1).getPosition().getColumn() == chosen.get(2).getPosition().getColumn()) flagStraightline=1; //vertical
-        else {
-            System.out.println("The Tiles do not form a straight line!\n No tile has been moved...");
-            return null;
+
+        //Check flagStraightline && flagAdjacent
+
+        if(chosen.size()==1){
+            flagAdjacent=1;
+            flagStraightline=1;
+
+        } else if( chosen.size()>1 ) {
+            //Check flagStraightline on row
+            if ( chosen.get(0).getPosition().getRow() == chosen.get(1).getPosition().getRow() ){
+
+                flagStraightline = 1; //horizontal
+                //Check flagAdjacent on column
+                if ( checkAdjacent( chosen.get(0).getPosition().getColumn(), chosen.get(1).getPosition().getColumn(), -1) )
+                    flagAdjacent = 1;
+                else {
+                    System.out.println("The Tiles do not are adjacent!\n No tile has been moved...");
+                }
+
+
+            }
+            //Check flagStraightline on column
+            else if (chosen.get(0).getPosition().getColumn() == chosen.get(1).getPosition().getColumn() && chosen.get(1).getPosition().getColumn() == chosen.get(2).getPosition().getColumn()){
+
+                flagStraightline = 1; //vertical
+                //Check flagAdjacent on row
+                if ( checkAdjacent( chosen.get(0).getPosition().getRow(), chosen.get(1).getPosition().getRow(), -1) )
+                    flagAdjacent = 1;
+                else {
+                    System.out.println("The Tiles do not are adjacent!\n No tile has been moved...");
+                }
+            }
+
+
+        } else if( chosen.size()>2 ) {
+            //Check flagStraightline on row
+            if (chosen.get(0).getPosition().getRow() == chosen.get(1).getPosition().getRow() && chosen.get(1).getPosition().getRow() == chosen.get(2).getPosition().getRow()) {
+
+                flagStraightline = 1; //horizontal
+                //Check flagAdjacent on column
+                if (checkAdjacent(chosen.get(0).getPosition().getColumn(), chosen.get(1).getPosition().getColumn(), chosen.get(2).getPosition().getColumn()))
+                    flagAdjacent = 1;
+                else {
+                    flagAdjacent = 0;
+                    System.out.println("The Tiles do not are adjacent!\n No tile has been moved...");
+                }
+
+
+            }
+            //Check flagStraightline on column
+            else if (chosen.get(0).getPosition().getColumn() == chosen.get(1).getPosition().getColumn() && chosen.get(1).getPosition().getColumn() == chosen.get(2).getPosition().getColumn())
+                flagStraightline = 1; //vertical
+            else {
+                System.out.println("The Tiles do not form a straight line!\n No tile has been moved...");
+                return null;
+            }
         }
+
+
         //replace tile on the board
-        if(flagStraightline==1 && flagSideFree==1){
+        if(flagStraightline==1 && flagSideFree==1 && flagAdjacent==1){
                 //first tile
                 board[chosen.get(0).getPosition().getRow()][chosen.get(0).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
                 chosen.get(0).setPosition(-1,-1); //set a board outside position
