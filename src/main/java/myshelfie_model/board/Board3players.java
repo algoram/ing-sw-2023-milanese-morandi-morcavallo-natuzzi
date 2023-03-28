@@ -6,8 +6,7 @@ import myshelfie_model.board.Board;
 
 import java.util.List;
 
-public class Board3players implements Board {
-    private Tile[][] board;
+public class Board3players extends Board {
 
     public Board3players() {
         this.board = new Tile[9][9];
