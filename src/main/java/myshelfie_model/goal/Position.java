@@ -1,21 +1,20 @@
 package myshelfie_model.goal;
 public class Position{
-    final int row;
-    final int column;
+
+    private final int row;
+    private final int col;
+
+
+    public Position(int row, int col){
+        this.row= row;
+        this.col= col;
+    }
 
     public int getRow() {
-        return row;
+        return this.row;
     }
 
     public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
+        return this.col;
     }
 }
