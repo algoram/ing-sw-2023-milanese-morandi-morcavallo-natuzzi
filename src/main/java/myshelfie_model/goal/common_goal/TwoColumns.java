@@ -16,35 +16,34 @@ public class TwoColumns extends CommonGoal{
 
     public int check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
-        int count = 0;
+        int numColsSameSixTiles = 0;
 
-        for (int i = 0; i < tiles[0].length; i++) { // ciclo sulle colonne
-            for (int j = i + 1; j < tiles[0].length; j++) { // ciclo sulle colonne successive
-                boolean sameTiles = true;
-                for (int k = 0; k < tiles.length && sameTiles; k++) { // ciclo sulle righe
-                    boolean foundInI = false;
-                    boolean foundInJ = false;
-                    for (int l = 0; l < tiles[0].length && !(foundInI && foundInJ); l++) { // ciclo sulle colonne per cercare la tessera corrente
-                        if (tiles[k][l].getType() == tiles[k][i].getType()) {
-                            foundInI = true;
-                        }
-                        if (tiles[k][l].getType() == tiles[k][j].getType()) {
-                            foundInJ = true;
-                        }
-                    }
-                    if (!foundInI || !foundInJ) {
-                        sameTiles = false;
-                    }
+        for (int j = 0; j < tiles[0].length; j++) {
+            HashSet<Type> types = new HashSet<Type>();
+
+            boolean valid = true;
+
+            for (int i = 0; i < tiles.length; i++) {
+                Type t = tiles[i][j].getType();
+                if (types.contains(t)) {
+                    valid = false;
+                    break;
                 }
-                if (sameTiles) {
-                    count++;
-                }
+
+                types.add(t);
+            }
+
+            if (valid) {
+                numColsSameSixTiles++;
             }
         }
 
-        return popTokens();
-    }
+        if (numColsSameSixTiles >= 2) {
+            return popTokens();
+        }
 
+        return -1;
+    }
 
 
 }

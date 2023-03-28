@@ -9,42 +9,47 @@ public class Diagonal5Tiles extends CommonGoal {
         super(numberOfPlayers);
     }
 
+    //Diagonals
     public int check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
-        for (int i = 0; i < tiles.length; i++) {
-            Tile firstTile = tiles[i][0];
-            boolean sameColor = true;
-            for (int j = 1; j < tiles.length - i; j++) {
-                if (tiles[i+j][j].getType() != firstTile.getType()) {
-                    sameColor = false;
-                    break;
+        int size = tiles.length;
+
+
+        for (int i = 0; i <= size - 5; i++) {
+            for (int j = 0; j <= size - 5; j++) {
+                boolean match = true;
+                Type type = tiles[i][j].getType();
+                for (int k = 1; k < 5; k++) {
+                    if (tiles[i + k][j + k].getType() != type) {
+                        match = false;
+                        break;
+                    }
                 }
-            }
-            if (sameColor) {
-                return popTokens();
+                if (match) {
+                    return popTokens();
+                }
             }
         }
 
-        for (int i = 1; i < tiles.length; i++) {
-            Tile firstTile = tiles[0][i];
-            boolean sameColor = true;
-            for (int j = 1; j < tiles.length - i; j++) {
-                if (tiles[j][i+j].getType()  != firstTile.getType()) {
-                    sameColor = false;
-                    break;
+
+        for (int i = 0; i <= size - 5; i++) {
+            for (int j = size - 1; j >= 4; j--) {
+                boolean match = true;
+                Type type = tiles[i][j].getType();
+                for (int k = 1; k < 5; k++) {
+                    if (tiles[i + k][j - k].getType() != type) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    return popTokens();
                 }
             }
-            if (sameColor) {
-                return popTokens();
-            }
         }
+
 
         return -1;
+
     }
-
-
-
-
-
-
 }

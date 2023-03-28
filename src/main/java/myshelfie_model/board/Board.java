@@ -22,9 +22,14 @@ import java.util.List;
  *    7  null | null | null | IV   | II  | II   | null | null | null
  *    8  null | null | null | null | IV  | III  | null | null | null
  * */
-
-public interface Board {
+//TODO: MODIFICARE UML CON ABSTRACT
+public abstract class Board {
+    //TODO: Modificare uml protected
+    protected Tile[][] board;
+    private Tile emptyTile;
     final int board_lenght=9;
+    //TODO: PER FRANCI inserire metodo costruttore con tipo
+    emptyTile = new Tile("EMPTY");
 
     //TODO: inserire i nuovi metodi private aggiunti adesso nell'UML
     private boolean isOccupied(int row, int col){
@@ -41,9 +46,9 @@ public interface Board {
         return false;
     };
 
-    public void refill(List<Tile> tiles);
+    public abstract void refill(List<Tile> tiles);
 
-    public default boolean refillNeeded(){
+    public boolean refillNeeded(){
         for (int i = 0; i < board_lenght; i++) {
             for (int j = 0; j < board_lenght; j++) {
                 if(isOccupied(i,j)){
@@ -63,7 +68,7 @@ public interface Board {
     };
 
     // TODO: Trasformare chosen in una lista di coordinate
-    public default List remove(List<Tile> chosen)  {
+    public List remove(List<Tile> chosen)  {
         int flagDir = 0; //flagDir indica la direzione scelta (utile per ottimizzare la rimozione) 1:up , 2:down, 3:right, 4:left
         int flagStraightline = 0; //flagStraightline viene posto a 1, 2 o 3 in base a quante tessere allineate vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
         int flagSideFree = 0; //flagSidefree viene posto a 1, 2 o 3 in base a quante tessere con lato libero vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
@@ -188,20 +193,20 @@ public interface Board {
         //TODO: PER FRANCI leggi qui sotto, servirebbe costruire una tessera empty da inserire in questa fase del codice
         if(flagStraightline==chosen.size()){
             System.out.println("Move accepted!");
-            board[firstRow][firstCol]. //metti empty
+            board[firstRow][firstCol]= emptyTile; //metti empty
             if(flagDir==0){ //up
-                if(chosen.size()>1 ) board[firstRow+1][firstCol]. ;//metti empty
-                if(chosen.size()>2 ) board[firstRow+2][firstCol]. ;//metti empty
+                if(chosen.size()>1 ) board[firstRow+1][firstCol]= emptyTile ;//metti empty
+                if(chosen.size()>2 ) board[firstRow+2][firstCol]= emptyTile ;//metti empty
             } else if (flagDir==1) { //down
-                if(chosen.size()>1 ) board[firstRow-1][firstCol]. ;//metti empty
-                if(chosen.size()>2 ) board[firstRow-2][firstCol]. ;//metti empty
+                if(chosen.size()>1 ) board[firstRow-1][firstCol]= emptyTile ;//metti empty
+                if(chosen.size()>2 ) board[firstRow-2][firstCol]= emptyTile ;//metti empty
 
             } else if (flagDir==2) { //right
-                if(chosen.size()>1 ) board[firstRow][firstCol+1]. ;//metti empty
-                if(chosen.size()>2 ) board[firstRow][firstCol+2]. ;//metti empty
+                if(chosen.size()>1 ) board[firstRow][firstCol+1]= emptyTile ;//metti empty
+                if(chosen.size()>2 ) board[firstRow][firstCol+2]= emptyTile ;//metti empty
             } else if (flagDir==3) {
-                if(chosen.size()>1 ) board[firstRow][firstCol-1]. ;//metti empty
-                if(chosen.size()>2 ) board[firstRow][firstCol-2]. ;//metti empty
+                if(chosen.size()>1 ) board[firstRow][firstCol-1]= emptyTile ;//metti empty
+                if(chosen.size()>2 ) board[firstRow][firstCol-2]= emptyTile ;//metti empty
 
             }
         }
