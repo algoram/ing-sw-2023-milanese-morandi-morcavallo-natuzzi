@@ -1,9 +1,7 @@
 package myshelfie_model.goal;
-
+import myshelfie_model.Tile;
 import myshelfie_model.Type;
-import myshelfie_model.Position;
-import myshelfie_model.Bookshelf;
-
+import myshelfie_model.player.Bookshelf;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -32,27 +30,28 @@ public class PersonalGoal extends Goal{
         Tile[][] tiles = b.getTiles();
         Position position;
         Type type;
+        Map.Entry<Position, Type> entry1;
 
-        for (Map.Entry<Position, Type> entry : map.entrySet()){
+        for (Map.Entry<Position, Type> entry : entry1.entrySet()){
             position = entry.getKey();
             type = entry.getValue();
-            if (tiles[position.getColumn()][position.getRow()].getType == type){
+            if (tiles[position.getColumn()][position.getRow()].getType() == type){
                 match++;
             }
         }
         if (match <= 2){
             return match;
         } else if (match == 3) {
-            return 4
+            return 4;
         }
         else if (match == 4) {
-            return 6
+            return 6;
         }
         else if (match == 5) {
-            return 9
+            return 9;
         }
-        else if (match == 6) {
-            return 12
+        else {
+            return 12;
         }
     }
 }

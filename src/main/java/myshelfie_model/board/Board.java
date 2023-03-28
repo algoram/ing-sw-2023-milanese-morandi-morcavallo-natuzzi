@@ -26,10 +26,9 @@ import java.util.List;
 public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
-    private Tile emptyTile;
+    private Tile emptyTile= new Tile("EMPTY");
     final int board_lenght=9;
-    //TODO: PER FRANCI inserire metodo costruttore con tipo
-    emptyTile = new Tile("EMPTY");
+
 
     //TODO: inserire i nuovi metodi private aggiunti adesso nell'UML
     private boolean isOccupied(int row, int col){
