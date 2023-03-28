@@ -1,4 +1,4 @@
-package myshelfie_model.goal;
+package myshelfie_model;
 public class Position{
 
     private final int row;

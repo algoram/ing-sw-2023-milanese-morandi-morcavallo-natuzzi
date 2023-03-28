@@ -18,7 +18,7 @@ public class Cross extends CommonGoal {
      *                  otherwise the points of the Token in stack's first place
      */
     @Override
-    public int check(Bookshelf b){
+    public boolean check(Bookshelf b){
         Tile[][] tiles = b.getTiles();
 
         //it iterates on tiles excluding the boundaries
@@ -30,11 +30,11 @@ public class Cross extends CommonGoal {
                         tiles[i+1][j-1].getType() == tiles[i][j].getType() &&
                         tiles[i-1][j+1].getType() == tiles[i][j].getType()) {
 
-                        return popTokens();
+                        return true;
                     }
                 }
             }
         }
-        return -1;
+        return false;
     }
 }

@@ -14,7 +14,7 @@ public class TwoColumns extends CommonGoal{
         super(numberOfPlayers);
     }
 
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         int numColsSameSixTiles = 0;
 
@@ -39,10 +39,10 @@ public class TwoColumns extends CommonGoal{
         }
 
         if (numColsSameSixTiles >= 2) {
-            return popTokens();
+            return true;
         }
 
-        return -1;
+        return false;
     }
 
 

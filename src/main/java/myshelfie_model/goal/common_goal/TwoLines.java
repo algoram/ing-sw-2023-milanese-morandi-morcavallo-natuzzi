@@ -21,7 +21,7 @@ public class TwoLines extends CommonGoal {
      *                  otherwise the points of the Token in stack's first place
      */
     @Override
-    public int check(Bookshelf b){
+    public boolean check(Bookshelf b){
         Tile[][] tiles = b.getTiles();
 
         HashSet<Type> typesCounter = new HashSet<>();
@@ -49,9 +49,9 @@ public class TwoLines extends CommonGoal {
         }
 
         if (numberOfCorrectLines >= 2) {
-            return popTokens();
+            return true;
         } else {
-            return -1;
+            return false;
         }
     }
 }

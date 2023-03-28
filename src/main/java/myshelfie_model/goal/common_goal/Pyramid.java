@@ -18,7 +18,7 @@ public class Pyramid extends CommonGoal {
      *                  otherwise the points of the Token in stack's first place
      */
     @Override
-    public int check(Bookshelf b){
+    public boolean check(Bookshelf b){
 
         boolean dooableFlag = true;
         int ColPrec = numTilesInColumn(b,0);
@@ -31,7 +31,7 @@ public class Pyramid extends CommonGoal {
             ColPrec = temp;
         }
         if(dooableFlag) {
-            return popTokens();
+            return true;
         }
 
 
@@ -44,12 +44,7 @@ public class Pyramid extends CommonGoal {
             if (ColPrec != temp + 1) {dooableFlag = false;}
             ColPrec = temp;
         }
-        if (dooableFlag) {
-            return popTokens();
-        }
-        else {
-            return -1;
-        }
+        return dooableFlag;
     }
 
     //returns the number of tiles in the column

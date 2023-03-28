@@ -9,7 +9,7 @@ public class TwoSquares extends CommonGoal {
     }
 
     @Override
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles(); // tiles we'll be checking
 
         // variables to store the first square found
@@ -27,13 +27,13 @@ public class TwoSquares extends CommonGoal {
                     }
                     // else check that the second square doesn't overlap with the first one
                     else if (Math.abs(i - lastRow) >= 2 || Math.abs(j - lastColumn) >= 2) {
-                        return popTokens();
+                        return true;
                     }
                 }
             }
         }
 
-        return -1;
+        return false;
     }
 
     private boolean checkSquare(Tile[][] tiles, int i, int j) {

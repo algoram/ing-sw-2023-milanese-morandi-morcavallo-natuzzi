@@ -10,7 +10,7 @@ public class Diagonal5Tiles extends CommonGoal {
     }
 
     //Diagonals
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         int size = tiles.length;
 
@@ -26,7 +26,7 @@ public class Diagonal5Tiles extends CommonGoal {
                     }
                 }
                 if (match) {
-                    return popTokens();
+                    return true;
                 }
             }
         }
@@ -43,13 +43,13 @@ public class Diagonal5Tiles extends CommonGoal {
                     }
                 }
                 if (match) {
-                    return popTokens();
+                    return true;
                 }
             }
         }
 
 
-        return -1;
+        return false;
 
     }
 }

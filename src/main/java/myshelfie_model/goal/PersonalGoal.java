@@ -1,4 +1,5 @@
 package myshelfie_model.goal;
+import myshelfie_model.Position;
 import myshelfie_model.Tile;
 import myshelfie_model.Type;
 import myshelfie_model.player.Bookshelf;

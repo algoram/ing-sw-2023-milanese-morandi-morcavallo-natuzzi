@@ -19,7 +19,7 @@ public class EightTiles extends CommonGoal {
      * @return a boolean indicating whether is goal is achieved
      */
     @Override
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
         HashMap<Type, Integer> counter = new HashMap<Type, Integer>();
 
         Tile[][] tiles = b.getTiles();
@@ -40,10 +40,10 @@ public class EightTiles extends CommonGoal {
 
         for (Type t : counter.keySet()) {
             if (counter.get(t) >= 8) {
-                return popTokens();
+                return true;
             }
         }
 
-        return -1;
+        return false;
     }
 }

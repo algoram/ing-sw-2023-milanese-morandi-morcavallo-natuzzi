@@ -13,8 +13,10 @@ public class FourLinesMax3 extends CommonGoal{
         super(numberOfPlayers);
     }
 
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
+        int score = 0;
+
         int validRows = 0;
 
         for (int i = 0; i < tiles.length; i++) {
@@ -29,13 +31,17 @@ public class FourLinesMax3 extends CommonGoal{
                     break;
                 }
             }
+
             if (valid) {
                 validRows++;
             }
+
         }
+
         if (validRows >= 4) {
-            return popTokens();
+            return true;
         }
-        return -1;
+        return false;
     }
+
 }

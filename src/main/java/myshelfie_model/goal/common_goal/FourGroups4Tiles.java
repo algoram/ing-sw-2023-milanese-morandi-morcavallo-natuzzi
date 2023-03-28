@@ -21,9 +21,9 @@ public class FourGroups4Tiles extends CommonGoal {
      * @return a int indicating whether is goal is achieved
      */
     @Override
-    public int check(Bookshelf b) {
-        if (findGroups(b.getTiles())) return popTokens();
-        return -1;
+    public boolean check(Bookshelf b) {
+        if (findGroups(b.getTiles())) return true;
+        return false;
     }
 
 

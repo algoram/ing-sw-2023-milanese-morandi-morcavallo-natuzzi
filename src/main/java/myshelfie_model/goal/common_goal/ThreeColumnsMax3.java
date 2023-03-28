@@ -12,7 +12,7 @@ public class ThreeColumnsMax3 extends CommonGoal {
     }
 
     @Override
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles(); // tiles we'll be checking
 
         HashSet<Type> typesCounter = new HashSet<Type>(); // set used to count unique types
@@ -41,9 +41,9 @@ public class ThreeColumnsMax3 extends CommonGoal {
         }
 
         if (numberOfCorrectColumns >= 3) {
-            return popTokens();
+            return true;
         } else {
-            return -1;
+            return false;
         }
     }
 }

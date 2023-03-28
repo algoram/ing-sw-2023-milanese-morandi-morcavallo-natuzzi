@@ -19,14 +19,14 @@ public class FourCorners extends CommonGoal {
      *                  otherwise the points of the Token in stack's first place
      */
     @Override
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
 
         Tile[][] tiles = b.getTiles();
         HashSet<Type> typesCounter = new HashSet<>();
 
         if( tiles[0][0]== null || tiles[0][tiles[0].length-1] == null ||
                 tiles[tiles.length-1][0] == null || tiles[tiles.length-1][tiles[0].length-1] == null){
-            return -1;
+            return false;
         }
 
         typesCounter.add(tiles[0][0].getType());
@@ -35,10 +35,10 @@ public class FourCorners extends CommonGoal {
         typesCounter.add(tiles[tiles.length-1][tiles[0].length-1].getType());
 
         if( typesCounter.size() == 1 ){
-            return popTokens();
+            return true;
         }
         else {
-            return -1;
+            return false;
         }
 
     }

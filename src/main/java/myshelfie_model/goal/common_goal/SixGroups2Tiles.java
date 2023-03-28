@@ -19,7 +19,7 @@ public class SixGroups2Tiles extends CommonGoal {
      * otherwise the points of the Token in stack's first place
      */
     @Override
-    public int check(Bookshelf b) {
+    public boolean check(Bookshelf b) {
 
         Tile[][] tiles = b.getTiles();
         int[][] visited = new int[tiles.length][tiles[0].length];
@@ -41,9 +41,9 @@ public class SixGroups2Tiles extends CommonGoal {
             }
         }
         if(count>=6){
-            return popTokens();
+            return true;
         }
-        else return -1;
+        else return false;
     }
 
     private int[][] visit (Tile[][] tiles, int[][] visited, int x, int y){
