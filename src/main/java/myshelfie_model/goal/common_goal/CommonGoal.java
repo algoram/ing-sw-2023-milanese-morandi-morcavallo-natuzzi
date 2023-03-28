@@ -29,7 +29,7 @@ public abstract class CommonGoal extends Goal {
         if (numberOfPlayers == 4) {new Token(2);}
     }
 
-    protected Token popTokens(){
+    public Token popTokens(){
         try {
             return this.scoringTokens.pop();
         } catch (EmptyStackException e) {
