@@ -126,6 +126,8 @@ public class Game {
         // TODO: check if the move is legal
 
         // TODO: wait for the board method to accept a List<Position>
+
+        return false;
     }
 
     /**
@@ -139,12 +141,12 @@ public class Game {
         for (int i = 0; i < commonGoals.length; i++) {
             for (Player p : players) {
                 // if the player still hasn't achieved the common goal
-                if (p.commonGoalsPoints[i] == 0) {
+                if (p.getCommonGoalPoints(i) == 0) {
                     int points = commonGoals[i].check(p.getBookshelf());
 
                     // the player has achieved the goal
                     if (points != -1) {
-                        p.commonGoalsPoints[i] = points;
+                        p.setCommonGoalPoints(i, points);
                     }
                 }
             }
@@ -165,8 +167,10 @@ public class Game {
         int personalGoalPoints = players[playerNumber].getPersonalGoalPoints();
 
         // points awarded for achieving the common goals
-        List<Integer> commonGoalsPointsList = players[playerNumber].getCommonGoalsPoints();
-        int commonGoalsPoints = commonGoalsPointsList.stream().mapToInt(Integer::intValue).sum();
+        int commonGoalsPoints = 0;
+        for (int i = 0; i < COMMON_GOALS; i++) {
+            commonGoalsPoints += players[playerNumber].getCommonGoalPoints(i);
+        }
 
         // points awarded for adjacent tiles on the bookshelf
         int bookshelfPoints = players[playerNumber].getBookshelf().getPoints();
