@@ -11,9 +11,15 @@ public abstract class CommonGoal extends Goal {
     private final Stack<Token> scoringTokens;
 
 
-    //return an integer from -1 to 4(-1 means CommonGaol not satisfied)
+
     public abstract boolean check(Bookshelf b);
 
+
+    /**
+     * The function creates the Token's Stack
+     * depending on the number of players
+     * @param numberOfPlayers
+     */
     public CommonGoal(int numberOfPlayers) {
         this.scoringTokens = new Stack<>();
 
@@ -23,7 +29,7 @@ public abstract class CommonGoal extends Goal {
         if (numberOfPlayers == 4) {new Token(2);}
     }
 
-    protected Token popTokens(){
+    public Token popTokens(){
         try {
             return this.scoringTokens.pop();
         } catch (EmptyStackException e) {

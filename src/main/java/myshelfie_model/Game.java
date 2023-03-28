@@ -141,12 +141,10 @@ public class Game {
         for (int i = 0; i < commonGoals.length; i++) {
             for (Player p : players) {
                 // if the player still hasn't achieved the common goal
-                if (p.getCommonGoalPoints(i) == 0) {
-                    int points = commonGoals[i].check(p.getBookshelf());
-
-                    // the player has achieved the goal
-                    if (points != -1) {
-                        p.setCommonGoalPoints(i, points);
+                if (p.getCommonGoalPoints(i) == null) {
+                    // if the player has now achieved the common goal
+                    if (commonGoals[i].check(p.getBookshelf())) {
+                        p.setCommonGoalToken(i,commonGoals[i].popTokens());
                     }
                 }
             }
@@ -169,7 +167,7 @@ public class Game {
         // points awarded for achieving the common goals
         int commonGoalsPoints = 0;
         for (int i = 0; i < COMMON_GOALS; i++) {
-            commonGoalsPoints += players[playerNumber].getCommonGoalPoints(i);
+            commonGoalsPoints += players[playerNumber].getCommonGoalPoints(i).getPoints();
         }
 
         // points awarded for adjacent tiles on the bookshelf

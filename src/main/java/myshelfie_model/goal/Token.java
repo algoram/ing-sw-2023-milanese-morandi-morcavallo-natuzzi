@@ -6,4 +6,8 @@ public class Token {
     public Token(int points){
         this.points = points;
     }
+
+    public int getPoints(){
+        return points;
+    }
 }

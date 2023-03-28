@@ -1,10 +1,11 @@
 package myshelfie_model.player;
 
 import myshelfie_model.goal.PersonalGoal;
+import myshelfie_model.goal.Token;
 
 public class Player {
 
-    private int[] commonGoalsPoints;
+    private Token[] commonGoalsToken;
     private Bookshelf bookshelf;
     private PersonalGoal personalGoal;
 
@@ -14,16 +15,16 @@ public class Player {
         return 0;
     }
 
-    public int getCommonGoalPoints(int commonGoalIndex) {
-        return commonGoalsPoints[commonGoalIndex];
+    public Token getCommonGoalPoints(int commonGoalIndex) {
+        return commonGoalsToken[commonGoalIndex];
     }
 
-    public void setCommonGoalPoints(int commonGoalIndex, int points) {
-        if (commonGoalsPoints[commonGoalIndex] == -1) {
+    public void setCommonGoalToken(int commonGoalIndex,Token token) {
+
+        if (commonGoalsToken[commonGoalIndex] == null) {
             return;
         }
-
-        commonGoalsPoints[commonGoalIndex] = points;
+        commonGoalsToken[commonGoalIndex] = token;
     }
 
     public Bookshelf getBookshelf() {
