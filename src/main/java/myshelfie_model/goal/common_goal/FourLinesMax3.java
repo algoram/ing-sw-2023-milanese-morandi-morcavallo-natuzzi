@@ -5,6 +5,9 @@ import myshelfie_model.Tile;
 import myshelfie_model.Type;
 import myshelfie_model.player.Bookshelf;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class FourLinesMax3 extends CommonGoal{
     public FourLinesMax3(int numberOfPlayers) {
         super(numberOfPlayers);
@@ -14,34 +17,31 @@ public class FourLinesMax3 extends CommonGoal{
         Tile[][] tiles = b.getTiles();
         int score = 0;
 
-        // Controlla le quattro righe di cinque tessere ciascuna
-        for (int i = 0; i < 4; i++) {
+        int validRows = 0;
+
+        for (int i = 0; i < tiles.length; i++) {
+            Set<Type> type = new HashSet<Type>();
             boolean valid = true;
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < tiles[i].length; j++) {
                 Type types = tiles[i][j].getType();
-                // Controlla che la tessera corrente abbia lo stesso colore di tutte le precedenti
-                for (int k = 0; k < j; k++) {
-                    if (tiles[i][k].getType() != types) {
-                        valid = false;
-                        break;
-                    }
-                }
-                if (!valid) {
+                if (!type.contains(types)) {
+                    type.add(types);
+                } else {
+                    valid = false;
                     break;
                 }
             }
+
             if (valid) {
-                score += 4;
+                validRows++;
             }
+
         }
 
-        return score;
-    }
-
-
-
-
-
+        if (validRows >= 4) {
+            return popTokens();
+        }
+        return -1;
 
 
 }
