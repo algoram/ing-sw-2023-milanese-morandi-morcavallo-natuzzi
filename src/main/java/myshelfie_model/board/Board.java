@@ -26,7 +26,7 @@ import java.util.List;
 public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
-    private Tile emptyTile= new Tile("EMPTY");
+    private Tile emptyTile= new Tile(Type.EMPTY);
     final int board_lenght=9;
 
 
