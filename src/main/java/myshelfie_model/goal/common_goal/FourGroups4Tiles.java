@@ -27,7 +27,7 @@ public class FourGroups4Tiles extends CommonGoal {
     }
 
 
-    public static boolean findGroups(Tile[][] matrix) {
+    private boolean findGroups(Tile[][] matrix) {
         List<List<Tile>> groups = new ArrayList<>();
         int counter=0;
         int rows = matrix.length;
@@ -50,7 +50,7 @@ public class FourGroups4Tiles extends CommonGoal {
         return false;
     }
 
-    private static void findGroup(Tile[][] matrix, boolean[][] visited, int row, int col, Tile tile, List<Tile> group) {
+    private void findGroup(Tile[][] matrix, boolean[][] visited, int row, int col, Tile tile, List<Tile> group) {
         if (row < 0 || row >= matrix.length || col < 0 || col >= matrix[0].length) {
             return;
         }
