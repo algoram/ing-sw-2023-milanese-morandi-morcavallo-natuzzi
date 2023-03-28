@@ -121,7 +121,6 @@ public abstract class Board {
                     System.out.println("The Tiles do not are adjacent!\n No tile has been moved...");
                 }
 
-
             }
             //Check flagStraightline on column
             else if (chosen.get(0).getPosition().getColumn() == chosen.get(1).getPosition().getColumn() && chosen.get(1).getPosition().getColumn() == chosen.get(2).getPosition().getColumn()){
@@ -159,7 +158,6 @@ public abstract class Board {
                 return null;
             }
         }
-
 
         //replace tile on the board
         if(flagStraightline==1 && flagSideFree==1 && flagAdjacent==1){
