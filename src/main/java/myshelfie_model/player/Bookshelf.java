@@ -10,6 +10,10 @@ public class Bookshelf {
         return tiles;
     }
 
+    public void setTiles(Tile[][] tiles) {
+        this.tiles = tiles;
+    }
+
     public int visit(boolean[][] visited, int r, int c){
         if (visited[r][c]) return 0;
 
@@ -60,7 +64,7 @@ public class Bookshelf {
     }
     public boolean isFull(){
         for (int i = 0;i< tiles.length;i++){
-            for(int j=0;j< tiles.length;j++){
+            for(int j=0;j< tiles[0].length;j++){
                 if(tiles[i][j]==null){
                     return false;
                 }
