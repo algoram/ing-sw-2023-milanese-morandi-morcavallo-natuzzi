@@ -1,11 +1,9 @@
 package myshelfie_model.goal.common_goal;
 
 import myshelfie_model.Tile;
-import myshelfie_model.Type;
 import myshelfie_model.player.Bookshelf;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FourGroups4Tiles extends CommonGoal {
@@ -22,12 +20,7 @@ public class FourGroups4Tiles extends CommonGoal {
      */
     @Override
     public boolean check(Bookshelf b) {
-        if (findGroups(b.getTiles())) return true;
-        return false;
-    }
-
-
-    private boolean findGroups(Tile[][] matrix) {
+        Tile[][] matrix= b.getTiles();
         List<List<Tile>> groups = new ArrayList<>();
         int counter=0;
         int rows = matrix.length;
@@ -46,8 +39,7 @@ public class FourGroups4Tiles extends CommonGoal {
                 }
             }
         }
-        if(counter>=4) return true;
-        return false;
+        return counter >= 4;
     }
 
     private void findGroup(Tile[][] matrix, boolean[][] visited, int row, int col, Tile tile, List<Tile> group) {
@@ -68,5 +60,4 @@ public class FourGroups4Tiles extends CommonGoal {
         findGroup(matrix, visited, row, col - 1, tile, group);
         findGroup(matrix, visited, row, col + 1, tile, group);
     }
-
 }
