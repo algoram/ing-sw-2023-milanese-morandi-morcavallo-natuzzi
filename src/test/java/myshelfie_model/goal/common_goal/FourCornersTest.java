@@ -10,6 +10,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+// LIST OF TESTS
+// 1. check_equalTilesAt4CornersEqColumns_shouldReturnTrue
+// 2. check_notEqualTilesAt4CornersDiffColumns_shouldReturnFalse
+// 3. check_notEqualTilesAt4CornersDiffColumns_shouldReturnFalse
+// 4. check_EqualTilesAt4CornersMixedColumns_shouldReturnTrue
+// 5. check_eqTilesAt4CornersFullBoard_shouldReturnTrue
+// 6. check_emptyBookshelf_shouldReturnFalse
+
 
 public class FourCornersTest {
 
@@ -168,4 +176,15 @@ public class FourCornersTest {
         assertFalse(fourCorners.check(bookshelf));
     }
 
+    @Test
+    public void check_emptyBookshelf_shouldReturnFalse() {
+
+        // we create the tiles (6 rows, 5 columns) with random types
+        Tile[][] tiles = new Tile[6][5];
+
+        // we fill the bookshelf with the new created tiles
+        bookshelf.setTiles(tiles);
+
+        assertFalse(fourCorners.check(bookshelf));
+    }
 }

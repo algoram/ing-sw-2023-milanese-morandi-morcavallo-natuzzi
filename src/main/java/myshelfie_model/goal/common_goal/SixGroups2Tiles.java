@@ -27,38 +27,36 @@ public class SixGroups2Tiles extends CommonGoal {
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
-                if (visited[i][j] == 0) {
-                    if (tiles[i][j] == tiles[i][j+1] ||
-                        tiles[i][j] == tiles[i][j-1] ||
-                        tiles[i][j] == tiles[i+1][j] ||
-                        tiles[i][j] == tiles[i-1][j]){
+                if (tiles[i][j] != null && visited[i][j] == 0) {
+                    if (( j < tiles[0].length-1 && tiles[i][j+1] != null && tiles[i][j].getType() == tiles[i][j+1].getType() )||
+                        (j > 0 && tiles[i][j-1] != null && tiles[i][j].getType() == tiles[i][j-1].getType() )||
+                        ( i < tiles.length -1 && tiles[i+1][j] != null && tiles[i][j].getType() == tiles[i+1][j].getType() )||
+                        ( i > 0 && tiles[i-1][j] != null && tiles[i][j].getType() == tiles[i-1][j].getType())){
 
                         count++;
-                        visit(tiles,visited,i,j);
+                        visited = visit(tiles,visited,i,j);
+
                     }
 
                 }
             }
         }
-        if(count>=6){
-            return true;
-        }
-        else return false;
+        return count >= 6;
     }
 
-    private int[][] visit (Tile[][] tiles, int[][] visited, int x, int y){
-        visited[x][y]=1;
-        if(tiles[x][y].getType() == tiles[x][y+1].getType()){
-            visited = visit(tiles,visited, x, y+1);
+    private int[][] visit(Tile[][] tiles, int[][] visited, int i, int j){
+        visited[i][j]=1;
+        if(tiles[i][j] != null && j < tiles[0].length-1 && tiles[i][j+1] != null && tiles[i][j].getType() == tiles[i][j+1].getType()){
+            if ( visited[i][j+1] == 0 ) {visited = visit(tiles,visited, i, j+1);}
         }
-        if(tiles[x][y].getType() == tiles[x][y-1].getType()){
-            visited = visit(tiles,visited, x, y-1);
+        if(tiles[i][j] != null && j > 0 && tiles[i][j-1] != null &&tiles[i][j].getType() == tiles[i][j-1].getType()){
+            if (visited[i][j-1] == 0){ visited = visit(tiles,visited, i, j-1);}
         }
-        if(tiles[x][y].getType() == tiles[x+1][y].getType()){
-            visited = visit(tiles,visited, x+1, y);
+        if(tiles[i][j] != null && i < tiles.length-1 &&  tiles[i+1][j] != null && tiles[i][j].getType() == tiles[i+1][j].getType()){
+            if (visited[i+1][j] == 0) {visited = visit(tiles,visited, i+1, j);}
         }
-        if(tiles[x][y].getType() == tiles[x-1][y].getType()){
-            visited = visit(tiles,visited, x-1, y);
+        if(tiles[i][j] != null && i > 0 && tiles[i-1][j] != null && tiles[i][j].getType() == tiles[i-1][j].getType()){
+            if (visited[i-1][j] == 0) {visited = visit(tiles,visited, i-1, j) ;}
         }
         return visited;
     }

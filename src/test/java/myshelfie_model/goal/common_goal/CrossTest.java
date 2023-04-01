@@ -10,6 +10,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+// LIST OF TESTS
+// 1. The entire bookshelf is full of tiles of the same type -> should return true
+// 2. The entire bookshelf is full of tiles of different types WITH A CROSS IN THE MIDDLE -> should return true
+// 3. check_emptyBookshelf_shouldReturnFalse
+// 4. check_allRowFullExceptTheLastNoCross_shouldReturnFalse
+
 public class CrossTest {
 
     Bookshelf bookshelf = null;
@@ -58,11 +64,11 @@ public class CrossTest {
 
     /**
      * Test of check method, of class Cross.
-     * The entire bookshelf is full of tiles of the same type -> should return true
-     *
+     * The entire bookshelf is full of tiles of random tiles except
+     * for a cross in the middle should return true
      */
     @Test
-    public void check_FullShelfAllSameTypeWithCrossInTheMiddle_shouldReturnTrue(){
+    public void check_FullShelfRandomTypeWithCrossInTheMiddle_shouldReturnTrue(){
 
         //create a bookshelf with 6 rows and 5 columns
         Tile[][] tiles = new Tile[6][5];
@@ -70,12 +76,12 @@ public class CrossTest {
         Type typeCross = Type.getRandomType();
         Type type = Type.getRandomType();
 
-        while (typeCross == type) {
-            type = Type.getRandomType();
-        }
 
         for(int i = 0; i < 6; i++){
             for(int j = 0; j < 5; j++){
+                while (typeCross == type) {
+                    type = Type.getRandomType();
+                }
                 tiles[i][j] = new Tile(type);
             }
         }
@@ -92,5 +98,40 @@ public class CrossTest {
         assertTrue(cross.check(bookshelf));
 
     }
-}
 
+    /**
+     * Test of check method, of class Cross.
+     * The entire bookshelf is empty -> should return false
+     */
+    @Test
+    public void check_emptyBookshelf_shouldReturnFalse(){
+
+        Tile[][] tiles = new Tile[6][5];
+
+        bookshelf.setTiles(tiles);
+
+        assertFalse(cross.check(bookshelf));
+    }
+
+    @Test
+    public void check_allRowFullExceptTheLastNoCross_shouldReturnFalse(){
+        Tile[][] tiles = new Tile[6][5];
+
+        Type type;
+
+        for(int i = 0; i < 5; i++){
+            for(int j = 0; j < 5; j++){
+                type = Type.getRandomType();
+                // AVOID TYPES TO BE EQUAL IN DIAGONAL -> NO CROSS
+                while(i > 0 && j > 0 && type == tiles[i-1][j-1].getType()) {
+                    type = Type.getRandomType();
+                }
+                tiles[i][j] = new Tile(type);
+            }
+        }
+
+        bookshelf.setTiles(tiles);
+
+        assertFalse(cross.check(bookshelf));
+    }
+}
