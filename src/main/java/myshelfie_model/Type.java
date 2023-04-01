@@ -7,5 +7,9 @@ public enum Type {
     GAMES,
     FRAMES,
     TROPHIES,
-    PLANTS
+    PLANTS;
+
+    public static Type getRandomType() {
+        return values()[(int) (Math.random() * values().length)];
+    }
 }

@@ -22,7 +22,9 @@ public class FourCornersTest {
         bookshelf = new Bookshelf();
 
         // random number of players no need of setting it up so far
-        fourCorners = new FourCorners(2);
+        int numberOfPlayers = (int) (Math.random() * 3) + 2;
+        //System.out.println("Number of players: " + numberOfPlayers);
+        fourCorners = new FourCorners(numberOfPlayers);
     }
 
     @After
@@ -107,35 +109,63 @@ public class FourCornersTest {
     }
 
 
+
     /**
      * FULL BOARD EQUAL CORNERS
      */
     @Test
-    public void check_diffTilesAt4CornersFullBoard_shouldReturnTrue() {
+    public void check_eqTilesAt4CornersFullBoard_shouldReturnTrue() {
 
+        // we create the tiles (6 rows, 5 columns) with random types
         Tile[][] tiles = new Tile[6][5];
-//      First Column
-        for (int i = 0; i < 3; i++) {
-            tiles[i][0] = new Tile(Type.BOOKS);
-        }
-        for (int i = 3; i < 5; i++) {
-            tiles[i][0] = new Tile(Type.FRAMES);
-        }
-        tiles[5][0] = new Tile(Type.BOOKS);
 
-        // Second Column
-        for (int i = 0; i < 2; i++) {
-            tiles[i][4] = new Tile(Type.BOOKS);
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                // we create a new tile with a random type,
+                // and we add it to the tiles array
+                tiles[i][j] = new Tile(Type.getRandomType());
+            }
+
         }
-        for (int i = 2; i < 5; i++) {
-            tiles[i][4] = new Tile(Type.CATS);
-        }
-        tiles[5][4] = new Tile(Type.BOOKS);
+        // set the corners
+        tiles[0][0] = new Tile(Type.PLANTS);
+        tiles[0][4] = new Tile(Type.PLANTS);
+        tiles[5][0] = new Tile(Type.PLANTS);
+        tiles[5][4] = new Tile(Type.PLANTS);
 
         // we fill the bookshelf with the new created tiles
         bookshelf.setTiles(tiles);
 
         assertTrue(fourCorners.check(bookshelf));
+    }
+
+    /**
+     * FULL BOARD DIFFERENT CORNERS
+     */
+    @Test
+    public void check_diffTilesAt4CornersFullBoard_shouldReturnFalse() {
+
+        // we create the tiles (6 rows, 5 columns) with random types
+        Tile[][] tiles = new Tile[6][5];
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                // we create a new tile with a random type,
+                // and we add it to the tiles array
+                tiles[i][j] = new Tile(Type.getRandomType());
+            }
+
+        }
+        // set the corners
+        tiles[0][0] = new Tile(Type.PLANTS);
+        tiles[0][4] = new Tile(Type.GAMES);
+        tiles[5][0] = new Tile(Type.PLANTS);
+        tiles[5][4] = new Tile(Type.PLANTS);
+
+        // we fill the bookshelf with the new created tiles
+        bookshelf.setTiles(tiles);
+
+        assertFalse(fourCorners.check(bookshelf));
     }
 
 }
