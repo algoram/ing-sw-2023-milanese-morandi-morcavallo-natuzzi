@@ -1,7 +1,7 @@
 package myshelfie_model;
 
 public enum Type {
-    EMPTY,
+    //EMPTY,
     CATS,
     BOOKS,
     GAMES,

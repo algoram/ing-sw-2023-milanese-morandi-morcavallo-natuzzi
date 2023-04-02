@@ -1,6 +1,5 @@
 package myshelfie_model.board;
 import myshelfie_model.Tile;
-import myshelfie_model.Type;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +24,7 @@ import java.util.List;
 public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
-    private final Tile emptyTile= new Tile(Type.EMPTY);
+    //private final Tile emptyTile= new Tile(Type.EMPTY);
     final int BOARD_LENGTH =9;
 
     //TODO:inserire in UML attributo
@@ -46,7 +45,10 @@ public abstract class Board {
     public abstract void refill(List<Tile> tiles);
 
     private boolean isOccupied(int row, int col){
-        return this.board[row][col] != null && !this.board[row][col].getType().equals(Type.EMPTY);
+        return this.board[row][col] != null;
+
+        // DEPRECATED
+                //&& !this.board[row][col].getType().equals(Type.EMPTY);
     }
 
     private boolean sideFree(int row,int col){
@@ -162,22 +164,39 @@ public abstract class Board {
         //replace tile on the board
         if(flagStraightline==1 && flagSideFree==1 && flagAdjacent==1){
                 //first tile
-                board[chosen.get(0).getPosition().getRow()][chosen.get(0).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                // EMPTY DEPRECATED
+                //board[chosen.get(0).getPosition().getRow()][chosen.get(0).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                board[chosen.get(0).getPosition().getRow()][chosen.get(0).getPosition().getColumn()]= null;
                 chosen.get(0).setPosition(-1,-1); //set a board outside position
 
                 if(chosen.size()>1 ) {
                     //second tile
-                    board[chosen.get(1).getPosition().getRow()][chosen.get(1).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                    // EMPTY DEPRECATED
+                    //board[chosen.get(1).getPosition().getRow()][chosen.get(1).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                    board[chosen.get(1).getPosition().getRow()][chosen.get(1).getPosition().getColumn()]= null;
                     chosen.get(1).setPosition(-1,-1); //set a board outside position
                 }
                 if(chosen.size()>2 ) {
                     //third tile
-                    board[chosen.get(2).getPosition().getRow()][chosen.get(2).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                    // EMPTY DEPRECATED
+                    //board[chosen.get(2).getPosition().getRow()][chosen.get(2).getPosition().getColumn()]= emptyTile; // substitute the previous Tile with the emptyTile
+                    board[chosen.get(2).getPosition().getRow()][chosen.get(2).getPosition().getColumn()]= null;
                     chosen.get(2).setPosition(-1,-1); //set a board outside position
                 }
                 System.out.println("Move accepted!");
                 return chosen;
             }
         return null;
+    }
+
+
+    /**
+     * This method is used to insert Tiles in a specific position of the board
+     * @param i     the row of the board
+     * @param j    the column of the board
+     * @param tile the Tile to be inserted
+     */
+    public void setTileTest(int i, int j, Tile tile){
+        this.board[i][j] = tile;
     }
 }
