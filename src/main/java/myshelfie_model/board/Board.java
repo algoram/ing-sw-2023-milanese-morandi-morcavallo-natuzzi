@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+
 /* La board è descritta come una matrice 9x9 in cui le caselle vengono settate così:
  * non raggiungibili: null
  * vuote : EMPTY
@@ -99,7 +101,7 @@ public abstract class Board {
     private boolean checkAdjacent(int a, int b, int c){
             int[] nums = {a, b, c};
             Arrays.sort(nums);
-            if (c==-1) return (nums[1] == nums[0] + 1);
+            if (c==-1) return (nums[2] == nums[1] + 1);
         return (nums[1] == nums[0] + 1 && nums[2] == nums[1] + 1);
     }
 
@@ -131,7 +133,16 @@ public abstract class Board {
 
         //Check ValidBoardPosition
         for (int i = 0; i < chosen.size(); i++){
-            CheckBoardPosition(chosen.get(i)); //TODO: HAVE TO FINISH THIS METHOD
+            if(!CheckBoardPosition(chosen.get(i))){
+                throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
+                //TODO solve problem import System.out.println("The " + i+ "° Position is not valid!\n No tile has been moved...");
+
+
+            }
+            if(this.board[chosen.get(i).getRow()][chosen.get(i).getColumn()]==null){
+                throw new IllegalArgumentException("A Position is empty!\n No tile has been moved...");
+                //TODO solve problem import System.out.println("The " + i+ "° Position is empty!\n No tile has been moved...");
+            }
         }
 
 
@@ -200,13 +211,13 @@ public abstract class Board {
 
                 if(chosen.size()>1 ) {
                     //second tile
-                    removed.add(board[chosen.get(0).getRow()][chosen.get(0).getColumn()]);
+                    removed.add(board[chosen.get(1).getRow()][chosen.get(1).getColumn()]);
                     board[chosen.get(1).getRow()][chosen.get(1).getColumn()]= null;
                     chosen.get(1).setPosition(-1,-1); //set a board outside position
                 }
                 if(chosen.size()>2 ) {
                     //third tile
-                    removed.add(board[chosen.get(0).getRow()][chosen.get(0).getColumn()]);
+                    removed.add(board[chosen.get(2).getRow()][chosen.get(2).getColumn()]);
                     board[chosen.get(2).getRow()][chosen.get(2).getColumn()]= null;
                     chosen.get(2).setPosition(-1,-1); //set a board outside position
                 }
