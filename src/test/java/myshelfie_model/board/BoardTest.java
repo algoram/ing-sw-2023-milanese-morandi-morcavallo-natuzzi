@@ -7,10 +7,31 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
+
+
+//HOW TO manage TEST EXCEPTIONS
+// WE WRITE THROWS WHEN WE DON'T EXPECT AN EXCEPTION TO BE THROWN
+// WE WRITE CATCH WHEN WE EXPECT AN EXCEPTION TO BE THROWN
+
+
+
+// list<Positions> == NULL -> NULL POINTER EXCEPTION
+// mossa non valida -> illegal argument exception
+// (size lista non compresa tra 1 e 3) -> ""
+// (non side free) -> ""
+// (sono in linea ma non adiacenti) -> ""
+// (non sono in linea) -> "INDEX OUT OF BOUND"
+
+
+//________________
+// (out of bound) -> ""
 
 public class BoardTest {
 
@@ -42,7 +63,8 @@ public class BoardTest {
 
     @After
     public void tearDown(){
-
+        randomboard = null;
+        board4 = null;
     }
 
 
@@ -99,6 +121,7 @@ public class BoardTest {
 
     //__________________________________________________
     // TEST REMOVE (refillNeeded should be false)
+    //REMOVE IS NOT A PURE METHOD WE NEED TO CHECK THE BOARD AFTERWARDS
 
     // CHECKING THE ADJACENCY OF THE TILES
     // 1. Board with 2 tiles adjacent and list of 2 positions with each of them being the position of the tile to remove -> should return the List of Tiles removed
@@ -121,6 +144,7 @@ public class BoardTest {
     @Test
     public void remove_2AdjacentTiles_shouldReturnList(){
         List<Position> positions = new ArrayList<>();
+        List<Tile> removed;
 
         Tile tile1 = new Tile(Type.BOOKS);
         Tile tile2 = new Tile(Type.CATS);
@@ -132,10 +156,16 @@ public class BoardTest {
         positions.add(new Position(4,4));
         positions.add(new Position(4,5));
 
+
+        removed = randomboard.remove(positions);
         //the assertion calls the remove function  and checks if the list returned contains tile1 and tile2 and that the list is of size 2
-        assertTrue(randomboard.remove(positions).contains(tile1));
-        assertTrue(randomboard.remove(positions).contains(tile2));
-        assertTrue(randomboard.remove(positions).size() == 2);
+        assertTrue(removed.contains(tile1));
+        assertTrue(removed.contains(tile2));
+        assertTrue(removed.size() == 2);
+
+        //this assertion check that the board is empty
+        assertTrue(Arrays.stream(randomboard.getBoard()).allMatch(row -> Arrays.stream(row).allMatch(tile -> tile == null)));
+
 
     }
 
@@ -163,6 +193,7 @@ public class BoardTest {
     @Test
     public void remove_3AdjacentTiles_shouldReturnList(){
         List<Position> positions = new ArrayList<>();
+        List<Tile> removed;
 
         Tile tile1 = new Tile(Type.BOOKS);
         Tile tile2 = new Tile(Type.FRAMES);
@@ -176,11 +207,16 @@ public class BoardTest {
         positions.add(new Position(4,5));
         positions.add(new Position(4,6));
 
+        removed = randomboard.remove(positions);
         //the assertion calls the remove function  and checks if the list returned contains tile1, tile2 and tile3 and that the list is of size 3
-        assertTrue(randomboard.remove(positions).contains(tile1));
-        assertTrue(randomboard.remove(positions).contains(tile2));
-        assertTrue(randomboard.remove(positions).contains(tile3));
-        assertTrue(randomboard.remove(positions).size() == 3);
+        assertTrue(removed.contains(tile1));
+        assertTrue(removed.contains(tile2));
+        assertTrue(removed.contains(tile3));
+        assertTrue(removed.size() == 3);
+
+        //this assertion check that the board is empty
+        assertTrue(Arrays.stream(randomboard.getBoard()).allMatch(row -> Arrays.stream(row).allMatch(tile -> tile == null)));
+
     }
 
     // 4. Board with 3 tiles adjacent but not aligned (they make an L) and a list of 3 positions with each of them being the position of the tile to remove -> should return NULL
@@ -229,6 +265,8 @@ public class BoardTest {
     @Test
     public void remove_2AdjacentTilesAtBorder_shouldReturnList(){
         List<Position> positions = new ArrayList<>();
+        List<Tile> removed;
+        Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.PLANTS);
         Tile tile2 = new Tile(Type.CATS);
@@ -260,10 +298,24 @@ public class BoardTest {
         positions.add(new Position(2,3));
         positions.add(new Position(2,4));
 
+        //save the state of the board before the remove function is called
+        oldBoard = randomboard.getBoard();
+
+        removed = randomboard.remove(positions);
+
+        //modified board should be equal to the old board except for the tiles removed so let's put those positions to null in the old board
+        oldBoard[2][3] = null;
+        oldBoard[2][4] = null;
+
         //the assertion calls the remove function  and checks if the list returned contains tile1 and tile2 and that the list is of size 2
-        assertTrue(randomboard.remove(positions).contains(tile1));
-        assertTrue(randomboard.remove(positions).contains(tile2));
-        assertTrue(randomboard.remove(positions).size() == 2);
+
+        assertTrue(removed.contains(tile1));
+        assertTrue(removed.contains(tile2));
+        assertTrue(removed.size() == 2);
+
+        //this assertion checks that the Tile[][] old is in each position equal to the return of the randomBoard.getBoard() function
+        assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+
     }
 
     // 7. Board with a block 4x4 of tiles and a list of positions pointing to 2 adjacent TILES 1 at the border and 1 in the middle -> should return NULL
@@ -391,7 +443,10 @@ public class BoardTest {
     @Test
     public void remove_2AdjacentTilesAtBorder_RefilledBoard_shouldReturnList(){
         List<Position> positions = new ArrayList<>();
+        List<Tile> removed;
         List<Tile> tiles = new ArrayList<>();
+        Tile[][] oldBoard;
+
 
         //create the tiles
         for (int i=0; i < 47; i++) {
@@ -403,8 +458,19 @@ public class BoardTest {
         positions.add(new Position(2,4));
         positions.add(new Position(5,4));
 
-        //the assertion calls the remove function  and checks if the list returned is null
-        assertNotNull(randomboard.remove(positions));
-    }
+        //save the content of the board before the remove
+        oldBoard = board4.getBoard();
+        removed = board4.remove(positions);
 
+
+        //the assertion calls the remove function  and checks if the list returned is null
+        assertTrue(removed.contains(oldBoard[2][4]));
+        assertTrue(removed.contains(oldBoard[5][4]));
+        assertTrue(removed.size() == 2);
+
+        //set the tiles to null in the old board
+        oldBoard[2][4] = null;
+        oldBoard[5][4] = null;
+        assertTrue(Arrays.deepEquals(oldBoard, board4.getBoard()));
+    }
 }
