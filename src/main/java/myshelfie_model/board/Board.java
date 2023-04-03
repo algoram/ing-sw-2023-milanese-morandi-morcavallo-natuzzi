@@ -1,4 +1,5 @@
 package myshelfie_model.board;
+import myshelfie_model.Position;
 import myshelfie_model.Tile;
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,9 @@ public abstract class Board {
         else return !isOccupied(row, col - 1);//Sx
     }
 
-
+    /*
+    * @return: true if the board contains only isolated tiles, false otherwise
+    * */
     public boolean refillNeeded(){
         for (int i = 0; i < BOARD_LENGTH; i++) {
             for (int j = 0; j < BOARD_LENGTH; j++) {
@@ -80,7 +83,12 @@ public abstract class Board {
 
 
     //TODO: aggiungere uml
-    private boolean checkAdjacent(int a, int b, int c) {
+
+    /*
+    * @arg chosen: list of positions(row or column) of the tiles to be removed
+    * @return: true if the 3 number are adjacent and aligned, false otherwise
+    * */
+    private boolean checkAdjacentAlligned(List<Position> positions) {
             int[] nums = {a, b, c};
             Arrays.sort(nums);
             if (c==-1) return (nums[1] == nums[0] + 1);
@@ -92,15 +100,24 @@ public abstract class Board {
 
     //NEW VERSION
     //  TODO public List<Tile> remove(List<Position> chosen)
+    /*
+     * @arg chosen: list of positions of the tiles to be removed
+     * @return: list of tiles removed, if no tiles are removed, the list is empty
+     * @throws: IllegalArgumentException if the list is empty or if the tiles are not adjacent and aligned
+     *
+     * */
     public List remove(List<Tile> chosen)  {
-        int flagStraightline = 0; //flagStraightline viene posto a 1, 2 o 3 in base a quante tessere allineate vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
-        int flagSideFree = 0; //flagSidefree viene posto a 1, 2 o 3 in base a quante tessere con lato libero vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
-        int flagAdjacent = 0; //flagAdjacent siano tutte
+        int flagStraightline = 0; //flagStraightline is set to 1, 2 or 3 based on how many aligned tiles are found, the method reaches the correct termination if flagStraightline== chosen.size()
+        int flagSideFree = 0; //flagSidefree is set to 1, 2 or 3 based on how many tiles with free side are found, the method reaches the correct termination if flagStraightline== chosen.size()
+        int flagAdjacent = 0; //flagAdjacent is set to 1 if the tiles are adjacent, 0 otherwise
 
+        //Check chosen.size()
+        if(chosen.size()>3 || chosen.size()<1) {
 
-
-
-        //Check flagStraightLine
+            System.out.println("The number of tiles to be removed is not valid!\n No tile has been moved...");
+            return null;
+        }
+        //Check flagSideFree
         for (int i = 0; i < chosen.size(); i++) {
             if( sideFree(chosen.get(i).getPosition().getRow(),chosen.get(i).getPosition().getColumn()) ) flagSideFree=1;
             else {
@@ -140,8 +157,6 @@ public abstract class Board {
                     System.out.println("The Tiles do not are adjacent!\n No tile has been moved...");
                 }
             }
-
-
         } else if( chosen.size()>2 ) {
             //Check flagStraightline on row
             if (chosen.get(0).getPosition().getRow() == chosen.get(1).getPosition().getRow() && chosen.get(1).getPosition().getRow() == chosen.get(2).getPosition().getRow()) {
