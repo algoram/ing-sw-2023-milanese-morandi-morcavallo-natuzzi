@@ -25,7 +25,7 @@ public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
     //private final Tile emptyTile= new Tile(Type.EMPTY);
-    final int BOARD_LENGTH =9;
+    final int BOARD_LENGTH = 9;
 
     //TODO:inserire in UML attributo
     //indicates the position coordinates for the tile refill
@@ -87,6 +87,11 @@ public abstract class Board {
         return (nums[1] == nums[0] + 1 && nums[2] == nums[1] + 1);
     }
 
+
+    // TODO: Establish requirements for the position of the tiles to be removed: what about positions outside the board?
+
+    //NEW VERSION
+    //  TODO public List<Tile> remove(List<Position> chosen)
     public List remove(List<Tile> chosen)  {
         int flagStraightline = 0; //flagStraightline viene posto a 1, 2 o 3 in base a quante tessere allineate vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
         int flagSideFree = 0; //flagSidefree viene posto a 1, 2 o 3 in base a quante tessere con lato libero vengono trovate, il metodo giunge a corretta terminazione sse flagStraightline== chosen.size()
@@ -199,4 +204,6 @@ public abstract class Board {
     public void setTileTest(int i, int j, Tile tile){
         this.board[i][j] = tile;
     }
+
+
 }
