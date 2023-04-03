@@ -1,7 +1,6 @@
 package myshelfie_model.board;
 
 import myshelfie_model.Tile;
-import myshelfie_model.Type;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class Board4players extends Board {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
                 if (BOARD_PRE_SET[row][col]>0 && BOARD_PRE_SET[row][col]<=4){
-                    if( board[row][col].getType().equals(Type.EMPTY) ) {
+                    if( board[row][col]==null  ) {
                         this.board[row][col] = tiles.remove(0);
                         this.board[row][col].setPosition(row, col);
                     }
