@@ -63,10 +63,6 @@ public class SixGroups2TilesTest {
 
         Type type = Type.getRandomType();
 
-        while(type == Type.EMPTY){
-            type = Type.getRandomType();
-        }
-
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 5; j++) {
                 tiles[i][j] = new Tile(type);
@@ -80,7 +76,7 @@ public class SixGroups2TilesTest {
 
     /**
      * Test of check method, of class SixGroups2Tiles.
-     * The are just 2 columns full off tiles, in each row yhe tiles are of the same type
+     * There are just 2 columns full off tiles, in each row yhe tiles are of the same type
      * but two nearby row have different types -> should return true
      */
     @Test
@@ -89,11 +85,11 @@ public class SixGroups2TilesTest {
         bookshelf = new Bookshelf();
         Tile[][] tiles = new Tile[6][5];
 
-        Type oldType = Type.EMPTY;
+        Type oldType = Type.CATS;
         Type typematch = Type.getRandomType();
 
         for (int i = 0; i < 6; i++) {
-            while (typematch == Type.EMPTY || typematch == oldType) {
+            while ( typematch == oldType) {
                 typematch = Type.getRandomType();
             }
             tiles[i][0] = new Tile(typematch);
