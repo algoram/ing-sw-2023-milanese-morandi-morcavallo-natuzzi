@@ -229,4 +229,18 @@ public abstract class Board {
         this.board = tiles;
     }
 
+    /**
+     * this method is used to check the state of the board after a remove in Tests
+     * @return a copy of the board
+     */
+    public Tile[][] getBoard(){
+        Tile[][] boardCopy = new Tile[9][9];
+        for(int i=0; i<9; i++){
+            for(int j=0; j<9; j++){
+                boardCopy[i][j] = this.board[i][j];
+            }
+        }
+        return boardCopy;
+    }
+
 }
