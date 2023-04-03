@@ -1,11 +1,11 @@
 package myshelfie_model.board;
 
+import myshelfie_model.BoardPosition;
 import myshelfie_model.Tile;
 
 import java.util.List;
 
 public class Board4players extends Board {
-
 
     public Board4players() {
         this.board = new Tile[BOARD_LENGTH][BOARD_LENGTH];
@@ -31,6 +31,13 @@ public class Board4players extends Board {
                 }
             }
         }
+    }
+
+    protected boolean CheckBoardPosition(BoardPosition pos){
+        if(BOARD_PRE_SET[pos.getRow()][pos.getColumn()]==0){
+            return false;
+        }
+        return true;
     }
 
 

@@ -103,6 +103,11 @@ public abstract class Board {
         return (nums[1] == nums[0] + 1 && nums[2] == nums[1] + 1);
     }
 
+
+    /**
+     * @param pos: the position to check
+     * @return: true if the position is valid, false otherwise
+     * */
     protected abstract boolean CheckBoardPosition(BoardPosition pos);
 
     // TODO: Establish requirements for the position of the tiles to be removed: what about positions outside the board?
