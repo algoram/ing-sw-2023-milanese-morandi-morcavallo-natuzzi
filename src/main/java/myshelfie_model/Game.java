@@ -51,7 +51,8 @@ public class Game {
 
         // create all the tiles in a random order
         for (int i = 0; i < TILES; i++) {
-            bag.add(new Tile(Type.EMPTY));
+            // TODO: we removed the empty Type
+            //bag.add(new Tile(Type.EMPTY));
 
             // TODO: add types to the tiles
         }
