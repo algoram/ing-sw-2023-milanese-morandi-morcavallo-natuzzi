@@ -194,7 +194,8 @@ public abstract class Board {
         return null;
     }
 
-
+// _____________________________________________________________
+//   TEST METHODS
     /**
      * This method is used to insert Tiles in a specific position of the board
      * @param i     the row of the board
@@ -205,5 +206,12 @@ public abstract class Board {
         this.board[i][j] = tile;
     }
 
+    /**
+     * This method is used set the entire board
+     * @param tiles the matrix of Tiles to be inserted
+     */
+    public void setBoardTest(Tile[][] tiles) {
+        this.board = tiles;
+    }
 
 }
