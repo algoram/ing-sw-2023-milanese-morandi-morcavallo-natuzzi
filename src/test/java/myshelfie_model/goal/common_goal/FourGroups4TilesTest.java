@@ -31,6 +31,13 @@ public class FourGroups4TilesTest extends CommonGoalTest {
     public void tearDown() {
     }
 
+
+    //1. check empty bookshelf
+    //2. check full bookshelf with no match among tiles
+    //3. check full bookshelf with 3 groups of 4 tiles
+    //4. check full bookshelf with 4 groups of 4 tiles
+    //5. check full bookshelf with 5 groups of 4 tiles
+
     @Test
     public void check_emptyBookShelf_ShouldReturnFalse() {
 
