@@ -13,7 +13,21 @@ public class PyramidTest {
 
     Bookshelf bookshelf = null;
     CommonGoal Pyramid = null;
-
+    private void buildBookshelf(Tile[][] tiles, final int[][] BOOKSHELF_SETUP) {
+            for (int i = 0; i < tiles.length; i++) {
+                for (int j = 0; j < tiles[0].length; j++) {
+                    switch (BOOKSHELF_SETUP[i][j]) {
+                        case 1 -> tiles[i][j] = new Tile(Type.CATS);
+                        case 2 -> tiles[i][j] = new Tile(Type.BOOKS);
+                        case 3 -> tiles[i][j] = new Tile(Type.GAMES);
+                        case 4 -> tiles[i][j] = new Tile(Type.FRAMES);
+                        case 5 -> tiles[i][j] = new Tile(Type.TROPHIES);
+                        case 6 -> tiles[i][j] = new Tile(Type.PLANTS);
+                        default -> tiles[i][j] = null;
+                    }
+                }
+            }
+    }
     @Before
     public void setup() {
         bookshelf = new Bookshelf();
@@ -59,19 +73,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                switch (BOOKSHELF_SETUP[i][j]) {
-                    case 1 -> tiles[i][j] = new Tile(Type.CATS);
-                    case 2 -> tiles[i][j] = new Tile(Type.BOOKS);
-                    case 3 -> tiles[i][j] = new Tile(Type.GAMES);
-                    case 4 -> tiles[i][j] = new Tile(Type.FRAMES);
-                    case 5 -> tiles[i][j] = new Tile(Type.TROPHIES);
-                    case 6 -> tiles[i][j] = new Tile(Type.PLANTS);
-                    default -> tiles[i][j] = null;
-                }
-            }
-        }
+        buildBookshelf(tiles, BOOKSHELF_SETUP);
 
         bookshelf.setTiles(tiles);
         assertFalse(Pyramid.check(bookshelf));
@@ -115,19 +117,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                switch (BOOKSHELF_SETUP[i][j]) {
-                    case 1 -> tiles[i][j] = new Tile(Type.CATS);
-                    case 2 -> tiles[i][j] = new Tile(Type.BOOKS);
-                    case 3 -> tiles[i][j] = new Tile(Type.GAMES);
-                    case 4 -> tiles[i][j] = new Tile(Type.FRAMES);
-                    case 5 -> tiles[i][j] = new Tile(Type.TROPHIES);
-                    case 6 -> tiles[i][j] = new Tile(Type.PLANTS);
-                    default -> tiles[i][j] = null;
-                }
-            }
-        }
+        buildBookshelf(tiles, BOOKSHELF_SETUP);
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
@@ -169,19 +159,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                switch (BOOKSHELF_SETUP[i][j]) {
-                    case 1 -> tiles[i][j] = new Tile(Type.CATS);
-                    case 2 -> tiles[i][j] = new Tile(Type.BOOKS);
-                    case 3 -> tiles[i][j] = new Tile(Type.GAMES);
-                    case 4 -> tiles[i][j] = new Tile(Type.FRAMES);
-                    case 5 -> tiles[i][j] = new Tile(Type.TROPHIES);
-                    case 6 -> tiles[i][j] = new Tile(Type.PLANTS);
-                    default -> tiles[i][j] = null;
-                }
-            }
-        }
+        buildBookshelf(tiles, BOOKSHELF_SETUP);
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
@@ -224,19 +202,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                switch (BOOKSHELF_SETUP[i][j]) {
-                    case 1 -> tiles[i][j] = new Tile(Type.CATS);
-                    case 2 -> tiles[i][j] = new Tile(Type.BOOKS);
-                    case 3 -> tiles[i][j] = new Tile(Type.GAMES);
-                    case 4 -> tiles[i][j] = new Tile(Type.FRAMES);
-                    case 5 -> tiles[i][j] = new Tile(Type.TROPHIES);
-                    case 6 -> tiles[i][j] = new Tile(Type.PLANTS);
-                    default -> tiles[i][j] = null;
-                }
-            }
-        }
+        buildBookshelf(tiles, BOOKSHELF_SETUP);
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
@@ -279,19 +245,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
-                switch (BOOKSHELF_SETUP[i][j]) {
-                    case 1 -> tiles[i][j] = new Tile(Type.CATS);
-                    case 2 -> tiles[i][j] = new Tile(Type.BOOKS);
-                    case 3 -> tiles[i][j] = new Tile(Type.GAMES);
-                    case 4 -> tiles[i][j] = new Tile(Type.FRAMES);
-                    case 5 -> tiles[i][j] = new Tile(Type.TROPHIES);
-                    case 6 -> tiles[i][j] = new Tile(Type.PLANTS);
-                    default -> tiles[i][j] = null;
-                }
-            }
-        }
+        buildBookshelf(tiles, BOOKSHELF_SETUP);
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
