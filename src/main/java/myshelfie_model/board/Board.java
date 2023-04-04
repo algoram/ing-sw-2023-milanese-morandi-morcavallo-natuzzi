@@ -129,12 +129,13 @@ public abstract class Board {
         int flagAdjacent = 0; //flagAdjacent is set to 1 if the tiles are adjacent, 0 otherwise
 
         //Check chosen.size()
+        if(chosen == null) throw new NullPointerException("The list of tiles to be removed is null!\n No tile has been moved...");
         if(chosen.size()>3 || chosen.size()<1) throw new IllegalArgumentException("The number of tiles to be removed is not valid!\n No tile has been moved...");
 
         //Check ValidBoardPosition
         for (int i = 0; i < chosen.size(); i++){
             if(!CheckBoardPosition(chosen.get(i))){
-                throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
+                throw new IndexOutOfBoundsException("A Position is not a valid!\n No tile has been moved...");
                 //TODO solve problem import System.out.println("The " + i+ "° Position is not valid!\n No tile has been moved...");
 
 
@@ -150,7 +151,7 @@ public abstract class Board {
         for (int i = 0; i < chosen.size(); i++) {
             if( sideFree(chosen.get(i).getRow(),chosen.get(i).getColumn()) ) flagSideFree=1;
             else {
-                throw new IllegalArgumentException  ("The " + i+ "° Tile has no free side!\n No tile has been moved...");
+                throw new IllegalArgumentException  ("A Tile has no free side!\n No tile has been moved...");
             }
         }
 
@@ -168,15 +169,15 @@ public abstract class Board {
                 //Check flagAdjacent on column
                 if ( checkAdjacent( chosen.get(0).getColumn(), chosen.get(1).getColumn(), -1) )
                     flagAdjacent = 1;
-                else throw new IllegalArgumentException("The Tiles do not are adjacent!\n No tile has been moved...");
+                else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
             }
             //Check flagStraightline on column
-            else if ( chosen.get(0).getColumn() == chosen.get(1).getColumn() && chosen.get(1).getColumn() == chosen.get(2).getColumn() ){
+            else if ( chosen.get(0).getColumn() == chosen.get(1).getColumn()){
                 flagStraightline = 1; //vertical
 
                 //Check flagAdjacent on row
                 if ( checkAdjacent( chosen.get(0).getRow(), chosen.get(1).getRow(), -1) ) flagAdjacent = 1;
-                else throw new IllegalArgumentException("The Tiles do not are adjacent!\n No tile has been moved...");
+                else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
             }
         }
         else if(chosen.size()==3) {
@@ -189,7 +190,7 @@ public abstract class Board {
                     flagAdjacent = 1;
                 else {
                     flagAdjacent = 0;
-                    throw new IllegalArgumentException("The Tiles do not are adjacent!\n No tile has been moved...");
+                    throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
                 }
 
 
