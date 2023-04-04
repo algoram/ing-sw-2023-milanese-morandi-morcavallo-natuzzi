@@ -132,14 +132,14 @@ public abstract class Board {
         if(chosen.size()>3 || chosen.size()<1) throw new IllegalArgumentException("The number of tiles to be removed is not valid!\n No tile has been moved...");
 
         //Check ValidBoardPosition
-        for (int i = 0; i < chosen.size(); i++){
-            if(!CheckBoardPosition(chosen.get(i))){
+        for (BoardPosition boardPosition : chosen) {
+            if (!CheckBoardPosition(boardPosition)) {
                 throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
                 //TODO solve problem import System.out.println("The " + i+ "° Position is not valid!\n No tile has been moved...");
 
 
             }
-            if(this.board[chosen.get(i).getRow()][chosen.get(i).getColumn()]==null){
+            if (this.board[boardPosition.getRow()][boardPosition.getColumn()] == null) {
                 throw new IllegalArgumentException("A Position is empty!\n No tile has been moved...");
                 //TODO solve problem import System.out.println("The " + i+ "° Position is empty!\n No tile has been moved...");
             }
@@ -147,10 +147,10 @@ public abstract class Board {
 
 
         //Check flagSideFree
-        for (int i = 0; i < chosen.size(); i++) {
-            if( sideFree(chosen.get(i).getRow(),chosen.get(i).getColumn()) ) flagSideFree=1;
+        for (BoardPosition boardPosition : chosen) {
+            if (sideFree(boardPosition.getRow(), boardPosition.getColumn())) flagSideFree = 1;
             else {
-                throw new IllegalArgumentException  ("The " + i+ "° Tile has no free side!\n No tile has been moved...");
+                throw new IllegalArgumentException("A Tile has no free side!\n No tile has been moved...");
             }
         }
 
