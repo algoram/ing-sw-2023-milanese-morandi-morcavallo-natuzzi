@@ -30,11 +30,25 @@ public class Board2playersTest {
     @Test
     public void testRefill_() {
         List<Tile> tiles = new ArrayList<>();
+        Tile[][] stateboard;
+
         for (int i = 0; i < 29; i++) {
             tiles.add(new Tile(Type.getRandomType()));
         }
+
         board.refill(tiles);
-        assertEquals(10, tiles.size());
+        assertEquals(0, tiles.size());
+        stateboard = board.getBoard();
+        for (int i = 8; i >= 0; i--) {
+            for (int j = 0; j < 9; j++) {
+                if (stateboard[i][j] != null){
+                    System.out.print(" * ");
+                } else {
+                    System.out.print(" N ");
+                }
+            }
+            System.out.print("\n");
+        }
     }
 
 }

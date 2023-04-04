@@ -153,13 +153,12 @@ public abstract class Board {
         for (BoardPosition boardPosition : chosen) {
             if (!CheckBoardPosition(boardPosition)) {
                 throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
-                //TODO solve problem import System.out.println("The " + i+ "° Position is not valid!\n No tile has been moved...");
+
 
 
             }
             if (this.board[boardPosition.getRow()][boardPosition.getColumn()] == null) {
                 throw new IllegalArgumentException("A Position is empty!\n No tile has been moved...");
-                //TODO solve problem import System.out.println("The " + i+ "° Position is empty!\n No tile has been moved...");
             }
         }
 
@@ -206,7 +205,6 @@ public abstract class Board {
                 if (checkAdjacent(chosen.get(0).getColumn(), chosen.get(1).getColumn(), chosen.get(2).getColumn()))
                     flagAdjacent = 1;
                 else {
-                    flagAdjacent = 0;
                     throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
                 }
 
@@ -258,23 +256,13 @@ public abstract class Board {
     }
 
     /**
-     * This method is used set the entire board
-     * @param tiles the matrix of Tiles to be inserted
-     */
-    public void setBoardTest(Tile[][] tiles) {
-        this.board = tiles;
-    }
-
-    /**
      * this method is used to check the state of the board after a remove in Tests
      * @return a copy of the board
      */
     public Tile[][] getBoard(){
         Tile[][] boardCopy = new Tile[9][9];
         for(int i=0; i<9; i++){
-            for(int j=0; j<9; j++){
-                boardCopy[i][j] = this.board[i][j];
-            }
+            System.arraycopy(this.board[i], 0, boardCopy[i], 0, 9);
         }
         return boardCopy;
     }
