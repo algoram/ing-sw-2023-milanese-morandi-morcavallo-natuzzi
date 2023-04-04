@@ -141,9 +141,15 @@ public abstract class Board {
         int flagAdjacent = 0; //flagAdjacent is set to 1 if the tiles are adjacent, 0 otherwise
 
         //Check chosen.size()
+        if (chosen == null) throw new NullPointerException("The list of tiles to be removed is null!\n No tile has been moved...");
         if(chosen.size()>3 || chosen.size()<1) throw new IllegalArgumentException("The number of tiles to be removed is not valid!\n No tile has been moved...");
 
         //Check ValidBoardPosition
+        for (BoardPosition boardPosition : chosen){
+            if (boardPosition.getRow() < 0 || boardPosition.getRow() > 8 || boardPosition.getColumn() < 0 || boardPosition.getColumn() > 8) {
+                throw new IndexOutOfBoundsException("A Position is out of bounds!\n No tile has been moved...");
+            }
+        }
         for (BoardPosition boardPosition : chosen) {
             if (!CheckBoardPosition(boardPosition)) {
                 throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
@@ -180,7 +186,7 @@ public abstract class Board {
                 //Check flagAdjacent on column
                 if ( checkAdjacent( chosen.get(0).getColumn(), chosen.get(1).getColumn(), -1) )
                     flagAdjacent = 1;
-                else throw new IllegalArgumentException("The Tiles do not are adjacent!\n No tile has been moved...");
+                else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
             }
             //Check flagStraightline on column
             else if ( chosen.get(0).getColumn() == chosen.get(1).getColumn() && chosen.get(1).getColumn() == chosen.get(2).getColumn() ){
@@ -188,7 +194,7 @@ public abstract class Board {
 
                 //Check flagAdjacent on row
                 if ( checkAdjacent( chosen.get(0).getRow(), chosen.get(1).getRow(), -1) ) flagAdjacent = 1;
-                else throw new IllegalArgumentException("The Tiles do not are adjacent!\n No tile has been moved...");
+                else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
             }
         }
         else if(chosen.size()==3) {
@@ -201,7 +207,7 @@ public abstract class Board {
                     flagAdjacent = 1;
                 else {
                     flagAdjacent = 0;
-                    throw new IllegalArgumentException("The Tiles do not are adjacent!\n No tile has been moved...");
+                    throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
                 }
 
 

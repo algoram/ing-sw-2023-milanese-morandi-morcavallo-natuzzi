@@ -601,7 +601,7 @@ public class BoardTest {
             randomboard.remove(positions);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
-            assertEquals("A Position is not a valid!\n No tile has been moved...", e.getMessage());
+            assertEquals("A Position is out of bounds!\n No tile has been moved...", e.getMessage());
             assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
         }
     }
