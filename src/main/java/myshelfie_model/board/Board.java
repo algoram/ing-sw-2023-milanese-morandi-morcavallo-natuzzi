@@ -8,11 +8,11 @@ import java.util.List;
 
 
 
-/* La board è descritta come una matrice 9x9 in cui le caselle vengono settate così:
+/**
+ *  La board è descritta come una matrice 9x9 in cui le caselle vengono settate così:
  * non raggiungibili: null
  * vuote : EMPTY
  * coperte : getType()
- *
  *   inizializzo così (i numeri in romano verranno posti a -1 sse verrà richiesta l'implementazione con il numero player corrispondente, altrimenti null)
  *   i\j   0     1       2     3     4      5      6      7      8
  *    0  null | null | null | III  | IV  | null | null | null | null
@@ -45,27 +45,16 @@ public abstract class Board {
             {0,0,3,2,2,2,3,0,0},//row:6
             {0,0,0,2,2,4,0,0,0},//row:7
             {0,0,0,3,4,0,0,0,0} //row:8
-
-            /*
-            {0,0,0,0,4,3,0,0,0},//row:0
-            {0,0,0,2,2,4,0,0,0},//row:1
-            {0,0,3,2,2,2,3,0,0},//row:2
-            {0,4,2,2,2,2,2,2,3},//row:3
-            {4,2,2,2,2,2,2,2,4},//row:4
-            {3,2,2,2,2,2,2,4,0},//row:5
-            {0,0,3,2,2,2,3,0,0},//row:6
-            {0,0,0,4,2,2,0,0,0},//row:7
-            {0,0,0,0,4,3,0,0,0} //row:8
-             */
     };
 
-    /*
+    /**
      * refill all the empty tiles with the tiles in the list (bag)
      * @param tiles: the list of tiles to refill the board (bag)
      * */
     public abstract void refill(List<Tile> tiles);
-    /*
-     * @param pos: the position to check
+    /**
+     * @param row: row position to check
+     * @param col: col position to check
      * @return: true if the position is occupied, false otherwise
      * */
     private boolean isOccupied(int row,int col){
@@ -82,7 +71,7 @@ public abstract class Board {
         else return !isOccupied(row, col - 1);//Sx
     }
 
-    /*
+    /**
     * @return: true if the board contains only isolated tiles, false otherwise
     * */
     public boolean refillNeeded(){
@@ -101,13 +90,12 @@ public abstract class Board {
         }
         // All the tiles are isolated
         return true;
-
     }
 
 
     //TODO: aggiungere uml
 
-    /*
+    /**
     * @param a: first number corresponds to row/column of the first tile
     * @param b: second number corresponds to row/column of the second tile
     * @param c: third number corresponds to row/column of the third tile, -1 if the third tile is not present
@@ -131,10 +119,10 @@ public abstract class Board {
 
     //NEW VERSION
     //  TODO public List<Tile> remove(List<Position> chosen)
-    /*
+    /**
      * @param chosen: list of positions of the tiles to be removed
      * @return: list of tiles removed, if no tiles are removed, the list is empty
-     * @throws:  if the list is empty
+     * @throws:  if the list is empty, if the list contains more than 3 tiles, if the list contains tiles with no free side,  if the tiles are not adjacent or aligned or if the tiles are outside the board
      *
      * */
     public List<Tile> remove(List<BoardPosition> chosen) throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
