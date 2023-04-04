@@ -32,7 +32,7 @@ public class Board2players extends Board {
             }
         }
     }
-
+    
 
     protected boolean CheckBoardPosition(BoardPosition pos){
         if(BOARD_PRE_SET[pos.getRow()][pos.getColumn()]==0 || BOARD_PRE_SET[pos.getRow()][pos.getColumn()] > 2){
