@@ -69,6 +69,9 @@ public abstract class Board {
      * @return: true if the position is occupied, false otherwise
      * */
     private boolean isOccupied(int row,int col){
+        if (row < 0 || row >= BOARD_LENGTH || col < 0 || col >= BOARD_LENGTH){
+            return false;
+        }
         return this.board[row][col] != null;
     }
 
@@ -188,7 +191,7 @@ public abstract class Board {
                 else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
             }
             //Check flagStraightline on column
-            else if ( chosen.get(0).getColumn() == chosen.get(1).getColumn() && chosen.get(1).getColumn() == chosen.get(2).getColumn() ){
+            else if ( chosen.get(0).getColumn() == chosen.get(1).getColumn() ){
                 flagStraightline = 1; //vertical
 
                 //Check flagAdjacent on row

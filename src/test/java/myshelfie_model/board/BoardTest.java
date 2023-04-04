@@ -605,9 +605,4 @@ public class BoardTest {
             assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
         }
     }
-
-
-
-
-
 }
