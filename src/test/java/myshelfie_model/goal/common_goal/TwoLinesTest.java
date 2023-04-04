@@ -96,7 +96,7 @@ public class TwoLinesTest {
                 {1,5,4,1,3},    //row:2
                 {1,6,5,1,4},    //row:3
                 {3,4,2,5,5},    //row:4
-                {1,2,3,4,5},    //row:5
+                {1,2,3,4,5},    //row:5 <---  line
         };
 
         Tile[][] tiles = new Tile[6][5];
@@ -117,10 +117,10 @@ public class TwoLinesTest {
         //    PLANTS:   6
         final int[][] BOOKSHELF_SETUP = {
                 {2,3,4,2,1},    //row:0
-                {4,3,2,1,5},    //row:1
+                {4,3,2,1,5},    //row:1   <---  line
                 {1,5,4,1,3},    //row:2
                 {1,6,5,1,4},    //row:3
-                {3,4,2,1,5},    //row:4
+                {3,4,2,1,5},    //row:4   <---  line
                 {3,2,2,2,2},    //row:5
         };
 
@@ -141,12 +141,12 @@ public class TwoLinesTest {
         //    TROPHIES: 5
         //    PLANTS:   6
         final int[][] BOOKSHELF_SETUP = {
-                {2,3,4,6,1},    //row:0
-                {4,3,2,1,5},    //row:1
-                {1,5,4,2,3},    //row:2
-                {1,6,5,2,4},    //row:3
-                {6,2,4,3,5},    //row:4
-                {1,2,3,4,5},    //row:5
+                {2,3,4,6,1},    //row:0 <---  line
+                {4,3,2,1,5},    //row:1 <---  line
+                {1,5,4,2,3},    //row:2 <---  line
+                {1,6,5,2,4},    //row:3 <---  line
+                {6,2,4,3,5},    //row:4 <---  line
+                {1,2,3,4,5},    //row:5 <---  line
         };
 
         Tile[][] tiles = new Tile[6][5];
@@ -168,11 +168,11 @@ public class TwoLinesTest {
         //    PLANTS:   6
         final int[][] BOOKSHELF_SETUP = {
                 {0,0,2,0,0},    //row:0
-                {0,0,1,0,0},   //row:1
+                {0,0,1,0,0},    //row:1
                 {0,0,2,0,0},    //row:2
                 {0,6,5,2,4},    //row:3
-                {6,2,4,3,5},    //row:4
-                {1,2,3,4,5},    //row:5
+                {6,2,4,3,5},    //row:4 <---  line
+                {1,2,3,4,5},    //row:5 <---  line
         };
 
         Tile[][] tiles = new Tile[6][5];
@@ -194,11 +194,11 @@ public class TwoLinesTest {
         //    PLANTS:   6
         final int[][] BOOKSHELF_SETUP = {
                 {0,0,2,0,0},    //row:0
-                {0,0,1,0,0},   //row:1
+                {0,0,1,0,0},    //row:1
                 {0,0,2,2,0},    //row:2
                 {0,6,5,2,4},    //row:3
                 {5,2,4,3,5},    //row:4
-                {1,2,3,4,5},    //row:5
+                {1,2,2,4,5},    //row:5
         };
 
         Tile[][] tiles = new Tile[6][5];
