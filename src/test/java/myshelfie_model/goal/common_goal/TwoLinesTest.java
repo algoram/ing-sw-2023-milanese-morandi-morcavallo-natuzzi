@@ -38,7 +38,7 @@ public class TwoLinesTest {
         // create a random number of players from 2 to 4  -> 2, 3, 4
         int numberOfPlayers = (int) (Math.random() * 3) + 2;
         //System.out.println("Number of players: " + numberOfPlayers);
-        TwoLines = new Pyramid(numberOfPlayers);
+        TwoLines = new TwoLines(numberOfPlayers);
     }
 
 
