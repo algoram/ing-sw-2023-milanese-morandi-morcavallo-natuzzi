@@ -5,6 +5,11 @@ import myshelfie_model.Tile;
 public class Bookshelf {
 
     private Tile[][] tiles;
+    private final int rows = 6;
+    private final int cols = 5;
+    public Bookshelf() {
+        tiles = new Tile[rows][cols];
+    }
 
     public Tile[][] getTiles() {
         return tiles;
@@ -12,6 +17,45 @@ public class Bookshelf {
 
     public void setTiles(Tile[][] tiles) {
         this.tiles = tiles;
+    }
+
+    /**
+     * Fills the column with the given tile
+     *
+     * @param col: column to be filled
+     * @param tile: the tile to be added
+     * */
+    public void fill(int col, Tile[] tile) {
+        for (int i = 0; i < rows; i++) {
+            for (Tile value : tile) {
+                if (tiles[i][col] == null) {
+                    tiles[i][col] = value;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    /**
+     *
+     * @return an array with the number of free tiles in each column
+     * */
+    public int[] emptyCol() {
+        int[] empty = new int[cols];
+
+        for (int i = 0; i <cols ; i++) {
+            empty[i] = 0;
+        }
+
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[0].length; j++) {
+                if(tiles[i][j]==null){
+                    empty[j]++;
+                }
+            }
+        }
+        return empty;
     }
 
     public int visit(boolean[][] visited, int r, int c){
