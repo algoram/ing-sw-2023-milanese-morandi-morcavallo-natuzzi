@@ -13,6 +13,17 @@ public class PyramidTest {
 
     Bookshelf bookshelf = null;
     CommonGoal Pyramid = null;
+
+    private int[][] invertRows(int[][] matrix) {
+        int numRows = matrix.length;
+
+        for (int i = 0; i < numRows / 2; i++) {
+            int[] temp = matrix[i];
+            matrix[i] = matrix[numRows - i - 1];
+            matrix[numRows - i - 1] = temp;
+        }
+        return matrix;
+    }
     private void buildBookshelf(Tile[][] tiles, final int[][] BOOKSHELF_SETUP) {
             for (int i = 0; i < tiles.length; i++) {
                 for (int j = 0; j < tiles[0].length; j++) {
@@ -117,7 +128,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        buildBookshelf(tiles, BOOKSHELF_SETUP);
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP));
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
@@ -159,7 +170,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        buildBookshelf(tiles, BOOKSHELF_SETUP);
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP));
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
@@ -202,7 +213,7 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        buildBookshelf(tiles, BOOKSHELF_SETUP);
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP));
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
@@ -245,11 +256,58 @@ public class PyramidTest {
         };
 
         Tile[][] tiles = new Tile[6][5];
-        buildBookshelf(tiles, BOOKSHELF_SETUP);
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP));
 
         bookshelf.setTiles(tiles);
         assertTrue(Pyramid.check(bookshelf));
 
     }
+
+    /**
+     *     0   1   2   3   4
+
+     * 0                   X
+
+     * 1               X   X
+
+     * 2           X   X   X
+
+     * 3           X   X   X
+
+     * 4   X   X   X   X   X
+
+     * 5   X   X   X   X   X
+
+     * X: any type of tiles
+     * */
+    @Test
+    public void check_Case5_NoMatch_ShouldReturnFalse() {
+        //    null:     0
+        //    CATS:     1
+        //    BOOKS:    2
+        //    GAMES:    3
+        //    FRAMES:   4
+        //    TROPHIES: 5
+        //    PLANTS:   6
+        final int[][] BOOKSHELF_SETUP = {
+                {0,0,0,0,1},    //row:0
+                {0,0,0,2,2},    //row:1
+                {0,0,3,1,3},    //row:2
+                {0,0,5,1,4},    //row:3
+                {2,4,2,6,5},    //row:4
+                {3,2,2,2,2},    //row:5
+        };
+
+        Tile[][] tiles = new Tile[6][5];
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP));
+
+        bookshelf.setTiles(tiles);
+        assertFalse(Pyramid.check(bookshelf));
+
+    }
+
+
+
+
 
 }

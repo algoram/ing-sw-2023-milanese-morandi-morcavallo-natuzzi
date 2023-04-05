@@ -7,8 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class PersonalGoalTest {
 
@@ -31,6 +30,18 @@ public class PersonalGoalTest {
             }
         }
     }
+
+    private int[][] invertRows(int[][] matrix) {
+        int numRows = matrix.length;
+
+        for (int i = 0; i < numRows / 2; i++) {
+            int[] temp = matrix[i];
+            matrix[i] = matrix[numRows - i - 1];
+            matrix[numRows - i - 1] = temp;
+        }
+        return matrix;
+    }
+
     @Before
     public void setup() {
         bookshelf = new Bookshelf();
@@ -48,13 +59,14 @@ public class PersonalGoalTest {
     }
 
     @Test
-    public void check_emptyBookShelf_ShouldReturnFalse() {
+    public void check_emptyBookShelf_ShouldReturn0() {
         Tile[][] tiles = new Tile[6][5];
         bookshelf.setTiles(tiles);
 
         for (int i = 1; i <= 12; i++) {
             Card= new PersonalGoal(i);
-            assertTrue(Card.getPersonalGoalPoints(bookshelf) == 0);
+            int points = Card.getPersonalGoalPoints(bookshelf);
+            assertEquals(0, points);
         }
     }
 
@@ -75,7 +87,8 @@ public class PersonalGoalTest {
         *     PLANTS:   6 rosa
         *     random:   8
         */
-        final int[][] BOOKSHELF_SETUP_6 = {
+        //6 tiles
+        int[][] BOOKSHELF_SETUP_6 = {
                 {6,8,4,8,8},    //row:0
                 {8,8,8,8,1},    //row:1
                 {8,8,8,2,8},    //row:2
@@ -83,17 +96,14 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,5,8,8},    //row:5
         };
-
-
-        //6 tiles
-        buildBookshelf(tiles, BOOKSHELF_SETUP_6);
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_6));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 12);
+        assertEquals(12, Card.getPersonalGoalPoints(bookshelf));
 
 
         //5 tiles
         //substituted tiles[0][0] with another different type
-        final int[][] BOOKSHELF_SETUP_5 = {
+        int[][] BOOKSHELF_SETUP_5 = {
                 {3,8,4,8,8},    //row:0
                 {8,8,8,8,1},    //row:1
                 {8,8,8,2,8},    //row:2
@@ -101,9 +111,9 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,5,8,8},    //row:5
         };
-
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_5));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 9);
+        assertEquals(9, Card.getPersonalGoalPoints(bookshelf));
 
         //4 tiles
         //substituted tiles[0][2] with another different type
@@ -115,9 +125,9 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,5,8,8},    //row:5
         };
-
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_4));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 6);
+        assertEquals(6, Card.getPersonalGoalPoints(bookshelf));
 
         //3 tiles
         //substituted tiles[1][4] with another different type
@@ -129,9 +139,9 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,5,8,8},    //row:5
         };
-
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_3));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 4);
+        assertEquals(4, Card.getPersonalGoalPoints(bookshelf));
 
         //2 tiles
         //substituted tiles[2][3] with another different type
@@ -143,9 +153,9 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,5,8,8},    //row:5
         };
-
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_2));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 2);
+        assertEquals(2, Card.getPersonalGoalPoints(bookshelf));
 
         //1 tiles
         //substituted tiles[3][1] with another different type
@@ -157,9 +167,9 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,5,8,8},    //row:5
         };
-
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_1));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 1);
+        assertEquals(1, Card.getPersonalGoalPoints(bookshelf));
 
         //0 tiles
         //substituted tiles[5][2] with another different type
@@ -171,9 +181,9 @@ public class PersonalGoalTest {
                 {8,8,8,8,8},    //row:4
                 {8,8,6,8,8},    //row:5
         };
-
+        buildBookshelf(tiles, invertRows(BOOKSHELF_SETUP_0));
         bookshelf.setTiles(tiles);
-        assertTrue(Card.getPersonalGoalPoints(bookshelf) == 0);
+        assertEquals(0, Card.getPersonalGoalPoints(bookshelf));
 
 
 
