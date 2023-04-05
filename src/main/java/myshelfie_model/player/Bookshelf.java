@@ -27,10 +27,11 @@ public class Bookshelf {
      * */
     public void fill(int col, Tile[] tile) {
         for (int i = 0; i < rows; i++) {
-            for (Tile value : tile) {
-                if (tiles[i][col] == null) {
+            if (tiles[i][col] == null) {
+                //if the tile is null, fill it with the tile and move to the next row
+                for (Tile value : tile) {
                     tiles[i][col] = value;
-                    break;
+                    i++;
                 }
             }
         }
