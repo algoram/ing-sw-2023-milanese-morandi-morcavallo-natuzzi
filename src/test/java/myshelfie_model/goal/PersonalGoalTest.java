@@ -14,6 +14,13 @@ public class PersonalGoalTest {
 
     Bookshelf bookshelf = null;
     PersonalGoal Card = null;
+
+    /**
+     * This method builds a bookshelf with the given configuration.
+     * @param tiles: the bookshelf to be built
+     * @param BOOKSHELF_SETUP: the configuration of the bookshelf
+     */
+
     private void buildBookshelf(Tile[][] tiles, final int[][] BOOKSHELF_SETUP) {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
@@ -31,6 +38,12 @@ public class PersonalGoalTest {
         }
     }
 
+    /**
+     * This method inverts the rows of a matrix.
+     * It is used to create the conventional configuration of the bookshelf .
+     * @param matrix the matrix to be inverted
+     * @return the inverted matrix
+     * */
     private int[][] invertRows(int[][] matrix) {
         int numRows = matrix.length;
 
