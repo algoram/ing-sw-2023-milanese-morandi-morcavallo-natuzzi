@@ -1,5 +1,5 @@
 package myshelfie_model.board;
-import myshelfie_model.BoardPosition;
+import myshelfie_model.Position;
 import myshelfie_model.Tile;
 
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public abstract class Board {
      * @param pos: the position to check
      * @return: true if the position is valid, false otherwise
      * */
-    protected abstract boolean CheckBoardPosition(BoardPosition pos);
+    protected abstract boolean CheckBoardPosition(Position pos);
 
     // TODO: Establish requirements for the position of the tiles to be removed: what about positions outside the board?
 
@@ -125,7 +125,7 @@ public abstract class Board {
      * @throws:  if the list is empty, if the list contains more than 3 tiles, if the list contains tiles with no free side,  if the tiles are not adjacent or aligned or if the tiles are outside the board
      *
      * */
-    public List<Tile> remove(List<BoardPosition> chosen) throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
+    public List<Tile> remove(List<Position> chosen) throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
         List<Tile> removed = new ArrayList<>();
         int flagSideFree = 0; //flagSidefree is set to 1, 2 or 3 based on how many tiles with free side are found, the method reaches the correct termination if flagStraightline== chosen.size()
         int flagStraightline = 0; //flagStraightline is set to 1, 2 or 3 based on how many aligned tiles are found, the method reaches the correct termination if flagStraightline== chosen.size()
@@ -136,12 +136,12 @@ public abstract class Board {
         if(chosen.size()>3 || chosen.size()<1) throw new IllegalArgumentException("The number of tiles to be removed is not valid!\n No tile has been moved...");
 
         //Check ValidBoardPosition
-        for (BoardPosition boardPosition : chosen){
+        for (Position boardPosition : chosen){
             if (boardPosition.getRow() < 0 || boardPosition.getRow() > 8 || boardPosition.getColumn() < 0 || boardPosition.getColumn() > 8) {
                 throw new IndexOutOfBoundsException("A Position is out of bounds!\n No tile has been moved...");
             }
         }
-        for (BoardPosition boardPosition : chosen) {
+        for (Position boardPosition : chosen) {
             if (!CheckBoardPosition(boardPosition)) {
                 throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
 
@@ -155,7 +155,7 @@ public abstract class Board {
 
 
         //Check flagSideFree
-        for (BoardPosition boardPosition : chosen) {
+        for (Position boardPosition : chosen) {
             if (sideFree(boardPosition.getRow(), boardPosition.getColumn())) flagSideFree = 1;
             else {
                 throw new IllegalArgumentException("A Tile has no free side!\n No tile has been moved...");
@@ -214,19 +214,16 @@ public abstract class Board {
                 //first tile
                 removed.add(board[chosen.get(0).getRow()][chosen.get(0).getColumn()]);
                 board[chosen.get(0).getRow()][chosen.get(0).getColumn()]= null;
-                chosen.get(0).setPosition(-1,-1); //set a board outside position
 
                 if(chosen.size()>1 ) {
                     //second tile
                     removed.add(board[chosen.get(1).getRow()][chosen.get(1).getColumn()]);
                     board[chosen.get(1).getRow()][chosen.get(1).getColumn()]= null;
-                    chosen.get(1).setPosition(-1,-1); //set a board outside position
                 }
                 if(chosen.size()>2 ) {
                     //third tile
                     removed.add(board[chosen.get(2).getRow()][chosen.get(2).getColumn()]);
                     board[chosen.get(2).getRow()][chosen.get(2).getColumn()]= null;
-                    chosen.get(2).setPosition(-1,-1); //set a board outside position
                 }
                 System.out.println("Move accepted!");
                 return removed;
