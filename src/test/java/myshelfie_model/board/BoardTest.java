@@ -1,6 +1,6 @@
 package myshelfie_model.board;
 
-import myshelfie_model.BoardPosition;
+import myshelfie_model.Position;
 import myshelfie_model.Tile;
 import myshelfie_model.Type;
 import org.junit.After;
@@ -148,7 +148,7 @@ public class BoardTest {
     // 1. Board with 2 tiles adjacent and list of 2 positions with each of them being the position of the tile to remove -> should return the List of Tiles removed
     @Test
     public void remove_2AdjacentTiles_shouldReturnList() throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         List<Tile> removed;
 
         Tile tile1 = new Tile(Type.BOOKS);
@@ -158,8 +158,8 @@ public class BoardTest {
         randomboard.setTileTest(4,4, tile1);
         randomboard.setTileTest(4,5, tile2);
 
-        positions.add(new BoardPosition(4,4));
-        positions.add(new BoardPosition(4,5));
+        positions.add(new Position(4,4));
+        positions.add(new Position(4,5));
 
 
         removed = randomboard.remove(positions);
@@ -178,7 +178,7 @@ public class BoardTest {
     // ILLEGAL ARGUMENT EXCEPTION TEST
     @Test
     public void remove_2AdjacentTiles_1NotAdjacent_shouldThrowIllegalArgumentException() throws NullPointerException,IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.BOOKS);
@@ -187,9 +187,9 @@ public class BoardTest {
         randomboard.setTileTest(4, 4, tile1);
         randomboard.setTileTest(4, 5, tile2);
 
-        positions.add(new BoardPosition(4, 4));
-        positions.add(new BoardPosition(4, 5));
-        positions.add(new BoardPosition(4, 6));
+        positions.add(new Position(4, 4));
+        positions.add(new Position(4, 5));
+        positions.add(new Position(4, 6));
 
         //the assertion calls the remove function  and checks if the list returned is null
         oldBoard = randomboard.getBoard();
@@ -209,7 +209,7 @@ public class BoardTest {
     // 3. Board with 3 tiles adjacent and a list of 3 positions with each of them being the position of the tile to remove -> should return the List of Tiles removed
     @Test
     public void remove_3AdjacentTiles_shouldReturnList() throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         List<Tile> removed;
 
         Tile tile1 = new Tile(Type.BOOKS);
@@ -220,9 +220,9 @@ public class BoardTest {
         randomboard.setTileTest(4,5, tile2);
         randomboard.setTileTest(4,6, tile3);
 
-        positions.add(new BoardPosition(4,4));
-        positions.add(new BoardPosition(4,5));
-        positions.add(new BoardPosition(4,6));
+        positions.add(new Position(4,4));
+        positions.add(new Position(4,5));
+        positions.add(new Position(4,6));
 
         removed = randomboard.remove(positions);
         //the assertion calls the remove function  and checks if the list returned contains tile1, tile2 and tile3 and that the list is of size 3
@@ -239,7 +239,7 @@ public class BoardTest {
     // 4. Board with 3 tiles not aligned (they make an L) and a list of 3 positions with each of them being the position of the tile to remove -> should return NULL
     @Test
     public void remove_3TilesAdjacent_NotAligned_MakingL_shouldThrowIllegalArgumentException() throws NullPointerException,IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.BOOKS);
@@ -250,9 +250,9 @@ public class BoardTest {
         randomboard.setTileTest(4,5, tile2);
         randomboard.setTileTest(5,5, tile3);
 
-        positions.add(new BoardPosition(4,4));
-        positions.add(new BoardPosition(4,5));
-        positions.add(new BoardPosition(5,5));
+        positions.add(new Position(4,4));
+        positions.add(new Position(4,5));
+        positions.add(new Position(5,5));
 
         oldBoard = randomboard.getBoard();
         try {
@@ -269,7 +269,7 @@ public class BoardTest {
     // 5. Board with 3 tiles in line but spaced out and a list of 3 positions with each of them being the position of the tile to remove -> should return NULL
     @Test
     public void remove_3TilesInLine_SpacedOut_shouldThrowIllegalArgumentException() throws NullPointerException,IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.BOOKS);
@@ -280,9 +280,9 @@ public class BoardTest {
         randomboard.setTileTest(4,5, tile2);
         randomboard.setTileTest(4,7, tile3);
 
-        positions.add(new BoardPosition(4,4));
-        positions.add(new BoardPosition(4,5));
-        positions.add(new BoardPosition(4,7));
+        positions.add(new Position(4,4));
+        positions.add(new Position(4,5));
+        positions.add(new Position(4,7));
 
         oldBoard = randomboard.getBoard();
         try {
@@ -298,7 +298,7 @@ public class BoardTest {
     // 6. Board with a block 4x4 of tiles and a list of positions pointing to 2 adjacent TILES AT THE BORDER -> should return the tiles removed
     @Test
     public void remove_2AdjacentTilesAtBorder_shouldReturnList(){
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         List<Tile> removed;
         Tile[][] oldBoard;
 
@@ -329,8 +329,8 @@ public class BoardTest {
         randomboard.setTileTest(5,6, new Tile(Type.getRandomType()));
 
 
-        positions.add(new BoardPosition(2,3));
-        positions.add(new BoardPosition(2,4));
+        positions.add(new Position(2,3));
+        positions.add(new Position(2,4));
 
         //save the state of the board before the remove function is called
         oldBoard = randomboard.getBoard();
@@ -355,7 +355,7 @@ public class BoardTest {
     // 7. Board with a block 4x4 of tiles and a list of positions pointing to 2 adjacent TILES 1 at the border and 1 in the middle -> should return NULL
     @Test
     public void remove_2AdjacentTiles1AtBorder1InMiddle_shouldThrowIllegalArgumentException() throws NullPointerException,IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.getRandomType());
@@ -385,8 +385,8 @@ public class BoardTest {
         randomboard.setTileTest(5,6, new Tile(Type.getRandomType()));
 
 
-        positions.add(new BoardPosition(2,4));
-        positions.add(new BoardPosition(3,4));
+        positions.add(new Position(2,4));
+        positions.add(new Position(3,4));
 
         //save the state of the board before the remove function is called
         oldBoard = randomboard.getBoard();
@@ -403,7 +403,7 @@ public class BoardTest {
     // should throw IllegalArgumentException and the board should be the same as before the remove function was called
     @Test
     public void remove_2AdjacentTilesInMiddle_shouldReturnNull()throws NullPointerException,IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.getRandomType());
@@ -433,8 +433,8 @@ public class BoardTest {
         randomboard.setTileTest(5,6, new Tile(Type.getRandomType()));
 
 
-        positions.add(new BoardPosition(3,4));
-        positions.add(new BoardPosition(3,5));
+        positions.add(new Position(3,4));
+        positions.add(new Position(3,5));
 
         //save the state of the board before the remove function is called
         oldBoard = randomboard.getBoard();
@@ -450,7 +450,7 @@ public class BoardTest {
     // 9. Board with a block 4x4 of tiles and a list of positions pointing to 2 not adjacent TILES AT THE BORDER -> should return NULL
     @Test
     public void remove_2NotAdjacentTilesAtBorder_shouldThrowIllegalArgumentException() throws NullPointerException,IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         Tile tile1 = new Tile(Type.getRandomType());
@@ -480,8 +480,8 @@ public class BoardTest {
         board4.setTileTest(5,6, new Tile(Type.getRandomType()));
 
 
-        positions.add(new BoardPosition(2,4));
-        positions.add(new BoardPosition(5,4));
+        positions.add(new Position(2,4));
+        positions.add(new Position(5,4));
 
         //save the state of the board before the remove function is called
         oldBoard = board4.getBoard();
@@ -498,7 +498,7 @@ public class BoardTest {
     // 10. Board4 full of tiles and a list of positions pointing to 2 adjacent TILES at the boarder of the matrix -> should return the list of tiles removed
     @Test
     public void remove_2AdjacentTilesAtBorder_RefilledBoard_shouldReturnList(){
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         List<Tile> removed;
         List<Tile> tiles = new ArrayList<>();
         Tile[][] oldBoard;
@@ -511,8 +511,8 @@ public class BoardTest {
 
         board4.refill(tiles);
 
-        positions.add(new BoardPosition(0,4));
-        positions.add(new BoardPosition(0,5));
+        positions.add(new Position(0,4));
+        positions.add(new Position(0,5));
 
         //save the content of the board before the remove
         oldBoard = board4.getBoard();
@@ -539,7 +539,6 @@ public class BoardTest {
     // 13. chosen is null -> should throw NullPointerException
     @Test
     public void remove_chosenIsNull_shouldThrowNullPointerException() throws IllegalArgumentException, IndexOutOfBoundsException {
-        List<BoardPosition> positions = null;
         Tile[][] oldBoard;
 
         //random filling of the board
@@ -562,7 +561,7 @@ public class BoardTest {
    // 14 CHOSEN SIZE ZERO
     @Test
     public void remove_chosenSizeZero_shouldThrowIllegalArgumentException() throws NullPointerException , IndexOutOfBoundsException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         //random filling of the board
@@ -584,7 +583,7 @@ public class BoardTest {
     // TODO TO FIX
     @Test
     public void remove_indexOutOfBound_shouldThrowIndexOutOfBoundsException() throws NullPointerException, IllegalArgumentException {
-        List<BoardPosition> positions = new ArrayList<>();
+        List<Position> positions = new ArrayList<>();
         Tile[][] oldBoard;
 
         //random filling of the board
@@ -592,9 +591,9 @@ public class BoardTest {
         randomboard.setTileTest(5,6, new Tile(Type.getRandomType()));
         randomboard.setTileTest(5,7, new Tile(Type.getRandomType()));
 
-        positions.add(new BoardPosition(-1,5));
-        positions.add(new BoardPosition(5,6));
-        positions.add(new BoardPosition(5,7));
+        positions.add(new Position(-1,5));
+        positions.add(new Position(5,6));
+        positions.add(new Position(5,7));
 
         oldBoard = randomboard.getBoard();
         try {
