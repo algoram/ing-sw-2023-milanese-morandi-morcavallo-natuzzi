@@ -23,13 +23,13 @@ public class Bookshelf {
      * Fills the column with the given tile
      *
      * @param col: column to be filled
-     * @param tile: the tile to be added
+     * @param chosen: the tile to be added
      * */
-    public void fill(int col, Tile[] tile) {
+    public void fill(int col, Tile[] chosen) {
         int i=0;
 
         while (tiles[i][col]!=null){ i++;}
-        for (Tile value : tile) {
+        for (Tile value : chosen) {
             tiles[i][col] = value;
             i++;
         }
