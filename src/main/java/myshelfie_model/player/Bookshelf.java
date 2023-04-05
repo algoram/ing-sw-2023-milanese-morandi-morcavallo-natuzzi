@@ -26,15 +26,14 @@ public class Bookshelf {
      * @param tile: the tile to be added
      * */
     public void fill(int col, Tile[] tile) {
-        for (int i = 0; i < rows; i++) {
-            if (tiles[i][col] == null) {
-                //if the tile is null, fill it with the tile and move to the next row
-                for (Tile value : tile) {
-                    tiles[i][col] = value;
-                    i++;
-                }
-            }
+        int i=0;
+
+        while (tiles[i][col]!=null){ i++;}
+        for (Tile value : tile) {
+            tiles[i][col] = value;
+            i++;
         }
+
     }
 
 
