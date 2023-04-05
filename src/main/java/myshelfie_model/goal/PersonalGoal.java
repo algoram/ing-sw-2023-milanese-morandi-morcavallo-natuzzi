@@ -226,7 +226,8 @@ public class PersonalGoal extends Goal{
         for (Map.Entry<Position, Type> entry : positions.entrySet()){
             position = entry.getKey();
             type = entry.getValue();
-            if (tiles[position.getColumn()][position.getRow()].getType() == type){
+            // if (tiles[position.getColumn()][position.getRow()].getType() == type){
+            if (tiles[position.getRow()][position.getColumn()]!=null && tiles[position.getRow()][position.getColumn()].getType() == type ){
                 match++;
             }
         }
