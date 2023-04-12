@@ -15,33 +15,30 @@ public class FourLinesMax3 extends CommonGoal{
 
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
-        int score = 0;
+
 
         int validRows = 0;
 
         for (int i = 0; i < tiles.length; i++) {
-            Set<Type> type = new HashSet<Type>();
+            HashSet<Type> type = new HashSet<Type>();
             boolean valid = true;
-            for (int j = 0; j < tiles[i].length; j++) {
-                Type types = tiles[i][j].getType();
-                if (!type.contains(types)) {
-                    type.add(types);
+            for (int j = 0; j < tiles[i].length && valid; j++) {
+                if (tiles[i][j] != null) {
+                    type.add(tiles[i][j].getType());
                 } else {
                     valid = false;
-                    break;
+
                 }
             }
-
-            if (valid) {
+            if (valid && type.size() <= 3) {
                 validRows++;
             }
-
         }
 
-        if (validRows >= 4) {
+        if (validRows >= 3) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
-
 }

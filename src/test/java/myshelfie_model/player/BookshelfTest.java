@@ -6,8 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BookshelfTest {
 
@@ -68,4 +67,131 @@ public class BookshelfTest {
         assertFalse(bookshelf.isFull());
     }
 
+    @Test
+    public void getPoints_shouldreturn2() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.PLANTS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(2,bookshelf.getPoints());
+
+
+
+    }
+    @Test
+    public void getPoints_shouldreturn0() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.PLANTS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(0,bookshelf.getPoints());
+
+
+
+    }
+
+    @Test
+    public void getPoints_shouldreturn3() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.PLANTS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(3,bookshelf.getPoints());
+
+
+
+    }
+    @Test
+    public void getPoints_shouldreturn5() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.PLANTS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(5,bookshelf.getPoints());
+
+
+
+    }
+
+
+    @Test
+    public void getPoints_shouldreturn6() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.FRAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(6,bookshelf.getPoints());
+
+
+
+    }
+
+    @Test
+    public void getPoints_second_try_shouldreturn6() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.BOOKS), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(6,bookshelf.getPoints());
+
+
+
+    }
+    @Test
+    public void getPoints_more_than_group_shouldreturn6() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.BOOKS), new Tile(Type.FRAMES), new Tile(Type.CATS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.BOOKS), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.BOOKS), new Tile(Type.GAMES), new Tile(Type.GAMES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.GAMES), new Tile(Type.GAMES), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
+
+        bookshelf.setTiles(tiles);
+        assertEquals(6,bookshelf.getPoints());
+
+
+
+    }
+
+
+
 }
+

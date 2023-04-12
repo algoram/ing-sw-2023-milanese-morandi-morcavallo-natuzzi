@@ -12,17 +12,23 @@ public class Diagonal5Tiles extends CommonGoal {
     //Diagonals
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
-        int size = tiles.length;
+        int rows = tiles.length;
+        int cols = tiles[0].length;
+        int diagonalSize = 5;
 
-
-        for (int i = 0; i <= size - 5; i++) {
-            for (int j = 0; j <= size - 5; j++) {
+        // Check diagonals from top-left corner
+        for (int i = 0; i <= rows - diagonalSize; i++) {
+            for (int j = 0; j <= cols - diagonalSize; j++) {
                 boolean match = true;
-                Type type = tiles[i][j].getType();
-                for (int k = 1; k < 5; k++) {
-                    if (tiles[i + k][j + k].getType() != type) {
-                        match = false;
-                        break;
+                Type type = tiles[i][j] != null ? tiles[i][j].getType() : null;
+                if (type == null) {
+                    match = false;
+                } else {
+                    for (int k = 1; k < diagonalSize; k++) {
+                        if (tiles[i + k][j + k] == null || tiles[i + k][j + k].getType() != type) {
+                            match = false;
+                            break;
+                        }
                     }
                 }
                 if (match) {
@@ -31,15 +37,19 @@ public class Diagonal5Tiles extends CommonGoal {
             }
         }
 
-
-        for (int i = 0; i <= size - 5; i++) {
-            for (int j = size - 1; j >= 4; j--) {
+        // Check diagonals from bottom-left corner
+        for (int i = diagonalSize - 1; i < rows; i++) {
+            for (int j = 0; j <= cols - diagonalSize; j++) {
                 boolean match = true;
-                Type type = tiles[i][j].getType();
-                for (int k = 1; k < 5; k++) {
-                    if (tiles[i + k][j - k].getType() != type) {
-                        match = false;
-                        break;
+                Type type = tiles[i][j] != null ? tiles[i][j].getType() : null;
+                if (type == null) {
+                    match = false;
+                } else {
+                    for (int k = 1; k < diagonalSize; k++) {
+                        if (tiles[i - k][j + k] == null || tiles[i - k][j + k].getType() != type) {
+                            match = false;
+                            break;
+                        }
                     }
                 }
                 if (match) {
@@ -47,9 +57,9 @@ public class Diagonal5Tiles extends CommonGoal {
                 }
             }
         }
-
 
         return false;
-
     }
+
+
 }

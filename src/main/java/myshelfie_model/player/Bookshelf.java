@@ -58,54 +58,58 @@ public class Bookshelf {
         return empty;
     }
 
-    public int visit(boolean[][] visited, int r, int c){
-        if (visited[r][c]) return 0;
-
-
-        int points = 0;
-
-
-        if (!visited[r+1][c] && tiles[r+1][c].getType()==tiles[r][c].getType()) {
-            points += visit(visited, r+1, c);
+    public void visit(boolean[][] visited, int r, int c, int[] count) {
+        if (r < 0 || r >= tiles.length || c < 0 || c >= tiles[0].length || visited[r][c] || tiles[r][c] == null) {
+            return;
         }
-        if (!visited[r-1][c] && tiles[r-1][c].getType()==tiles[r][c].getType()){
-            points += visit(visited, r-1,c);
+
+        visited[r][c] = true;
+        count[0]++;
+
+        if (r + 1 < tiles.length && tiles[r + 1][c] != null && tiles[r + 1][c].getType() == tiles[r][c].getType()) {
+            visit(visited, r + 1, c, count);
         }
-        if (!visited[r][c+1] && tiles[r][c+1].getType()==tiles[r][c].getType()){
-            points += visit(visited, r,c+1);
+
+        if (r - 1 >= 0 && tiles[r - 1][c] != null && tiles[r - 1][c].getType() == tiles[r][c].getType()) {
+            visit(visited, r - 1, c, count);
         }
-        if(!visited[r][c-1] && tiles[r][c-1].getType()==tiles[r][c].getType() ){
-            points += visit(visited,r,c-1);
+
+        if (c + 1 < tiles[0].length && tiles[r][c + 1] != null && tiles[r][c + 1].getType() == tiles[r][c].getType()) {
+            visit(visited, r, c + 1, count);
         }
-        return 1+points;
+
+        if (c - 1 >= 0 && tiles[r][c - 1] != null && tiles[r][c - 1].getType() == tiles[r][c].getType()) {
+            visit(visited, r, c - 1, count);
+        }
     }
 
     public int getPoints() {
         boolean[][] visited = new boolean[tiles.length][tiles[0].length];
-        int count = 0;
-        int point = 0;
-        for(int i = 0;i< tiles.length;i++){
-            for(int j=0;j< tiles.length;j++){
-                if (!visited[i][j]){
-                    count = visit(visited,i,j);
-                }
+        int[] count = new int[1];
 
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[0].length; j++) {
+                if (!visited[i][j] && tiles[i][j] != null) {
+                    count[0] = 0;
+                    visit(visited, i, j, count);
+
+                    if (count[0] == 3) {
+                        return 2;
+                    } else if (count[0] == 4) {
+                        return 3;
+                    } else if (count[0] == 5) {
+                        return 5;
+                    } else if (count[0] >= 6) {
+                        return 6;
+                    }
+                }
             }
         }
-        if (count==3) {
-            point = 2;
-        }
-        if (count==4) {
-            point = 3;
-        }
-        if (count==5) {
-            point = 5;
-        }
-        if (count>6) {
-            point = 6;
-        }
-        return point;
+
+        return 0;
     }
+
+
     public boolean isFull(){
         for (int i = 0;i< tiles.length;i++){
             for(int j=0;j< tiles[0].length;j++){

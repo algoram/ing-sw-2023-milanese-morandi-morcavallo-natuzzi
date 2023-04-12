@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class TwoColumns extends CommonGoal{
+public class TwoColumns extends CommonGoal {
     public TwoColumns(int numberOfPlayers) {
         super(numberOfPlayers);
     }
@@ -24,26 +24,23 @@ public class TwoColumns extends CommonGoal{
             boolean valid = true;
 
             for (int i = 0; i < tiles.length; i++) {
-                Type t = tiles[i][j].getType();
-                if (types.contains(t)) {
+                if (tiles[i][j] != null) {
+                    types.add(tiles[i][j].getType());
+                } else {
                     valid = false;
                     break;
                 }
-
-                types.add(t);
             }
 
-            if (valid) {
+            if (valid && types.size() == 6) {
                 numColsSameSixTiles++;
             }
         }
 
-        if (numColsSameSixTiles >= 2) {
+        if (numColsSameSixTiles >= 2){
             return true;
         }
-
         return false;
     }
-
 
 }
