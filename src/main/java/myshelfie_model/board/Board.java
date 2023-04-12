@@ -64,6 +64,48 @@ public abstract class Board {
         return this.board[row][col] != null;
     }
 
+    /**
+     * Checks if the position indicated by (row, col) can be occupied by a tile
+     * in a game with numberOfPlayers players
+     * @param numberOfPlayers the number of players playing the game
+     * @param row position to check
+     * @param col position to check
+     * @return whether the cell can be occupied by a tile
+     */
+    public boolean isLegalPosition(int numberOfPlayers, int row, int col) {
+        if (row < 0 || row >= BOARD_PRE_SET.length || col < 0 || col >= BOARD_PRE_SET[0].length) {
+            return false; // invalid position
+        }
+
+        if (BOARD_PRE_SET[row][col] == 0) {
+            return false; // this cell can never be occupied
+        }
+
+        if (numberOfPlayers < BOARD_PRE_SET[row][col]) {
+            return false; // not enough players to use this cell
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns all the tiles that could be picked by a player
+     * @return all the tiles that could be picked by a player
+     */
+    public ArrayList<Position> getAvailableTiles(int numberOfPlayers) {
+        ArrayList<Position> positions = new ArrayList<>();
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (isLegalPosition(numberOfPlayers, i, j) && sideFree(i, j)) {
+                    positions.add(new Position(i, j));
+                }
+            }
+        }
+
+        return positions;
+    }
+
     private boolean sideFree(int row,int col){
         if(!isOccupied(row+1,col)) return true;//Up
         else if(!isOccupied(row-1,col)) return true;//Down

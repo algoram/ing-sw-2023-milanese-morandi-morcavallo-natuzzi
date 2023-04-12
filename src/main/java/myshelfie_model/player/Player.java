@@ -9,10 +9,15 @@ public class Player {
     private Bookshelf bookshelf;
     private PersonalGoal personalGoal;
 
-    public int getPersonalGoalPoints(){
-        // TODO: implement method
+    public Player(PersonalGoal personalGoal) {
+        commonGoalsToken = new Token[2];
+        bookshelf = new Bookshelf();
 
-        return 0;
+        this.personalGoal = personalGoal;
+    }
+
+    public int getPersonalGoalPoints(){
+        return personalGoal.getPersonalGoalPoints(bookshelf);
     }
 
     public Token getCommonGoalPoints(int commonGoalIndex) {

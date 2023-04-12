@@ -2,6 +2,8 @@ package myshelfie_model.player;
 
 import myshelfie_model.Tile;
 
+import java.util.List;
+
 public class Bookshelf {
 
     private Tile[][] tiles;
@@ -25,7 +27,7 @@ public class Bookshelf {
      * @param col: column to be filled
      * @param chosen: the tile to be added
      * */
-    public void fill(int col, Tile[] chosen) {
+    public void fill(int col, List<Tile> chosen) {
         int i=0;
 
         while (tiles[i][col]!=null){ i++;}

@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 public class PersonalGoal extends Goal{
 
+    public static final int MAX_CARDS = 12;
+
     private final Map<Position,Type> positions;
 
     /**

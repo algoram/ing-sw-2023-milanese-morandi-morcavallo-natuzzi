@@ -4,13 +4,11 @@ import myshelfie_model.board.Board;
 import myshelfie_model.board.Board2players;
 import myshelfie_model.board.Board3players;
 import myshelfie_model.board.Board4players;
+import myshelfie_model.goal.PersonalGoal;
 import myshelfie_model.goal.common_goal.*;
 import myshelfie_model.player.Player;
 
-import javax.swing.text.Position;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 
 public class Game {
     public final int MAX_PLAYERS = 4;
@@ -24,7 +22,7 @@ public class Game {
 
     private List<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
-    private final int TILES = 132;
+    private final int TILES_PER_TYPE = 22;
 
     private CommonGoal[] commonGoals;
     private final int COMMON_GOALS = 2;
@@ -42,19 +40,43 @@ public class Game {
         if (numPlayers < 2) numPlayers = 2;
         if (numPlayers > MAX_PLAYERS) numPlayers = MAX_PLAYERS;
 
-        // create the players
-        for (int i = 0; i < numPlayers; i++) {
-            players[i] = new Player();
+        players = new Player[numPlayers];
 
-            // TODO: give the players a personal goal from a fixed list (maybe read from a file ???)
+        // create the different personal goals
+        ArrayList<Integer> possiblePersonalGoals = new ArrayList<>();
+
+        for (int i = 0; i < PersonalGoal.MAX_CARDS; i++) {
+            possiblePersonalGoals.add(i + 1);
+        }
+
+        for (int i = 0; i < numPlayers; i++) {
+            // generate a random personal goal from the above list
+            int personalGoalIndex = random.nextInt(possiblePersonalGoals.size());
+
+            // create the player and give them a unique personal goal
+            players[i] = new Player(new PersonalGoal(possiblePersonalGoals.get(personalGoalIndex)));
+
+            // remove the goal from the list to avoid giving the same to another player
+            possiblePersonalGoals.remove(personalGoalIndex);
         }
 
         // create all the tiles in a random order
-        for (int i = 0; i < TILES; i++) {
-            // TODO: we removed the empty Type
-            //bag.add(new Tile(Type.EMPTY));
+        int[] types = new int[Type.values().length];
 
-            // TODO: add types to the tiles
+        for (int i = 0; i < Type.values().length; i++) {
+            types[i] = TILES_PER_TYPE;
+        }
+
+        bag = new ArrayList<>();
+
+        for (int i = 0; i < types.length * TILES_PER_TYPE; i++) {
+            int typeIndex = random.nextInt(types.length);
+
+            while (types[typeIndex] == 0) {
+                typeIndex = random.nextInt(types.length);
+            }
+
+            bag.add(new Tile(Type.values()[typeIndex]));
         }
 
         // create the board
@@ -68,13 +90,15 @@ public class Game {
         board.refill(bag);
 
         // list of all the common goals that can be used for the game
-        // TODO: complete the list with all 12 common goals
         CommonGoal[] possibleCommonGoals = {
                 new Cross(numPlayers),
                 new Diagonal5Tiles(numPlayers),
                 new EightTiles(numPlayers),
+                new FourCorners(numPlayers),
+                new FourGroups4Tiles(numPlayers),
                 new FourLinesMax3(numPlayers),
                 new Pyramid(numPlayers),
+                new SixGroups2Tiles(numPlayers),
                 new ThreeColumnsMax3(numPlayers),
                 new TwoColumns(numPlayers),
                 new TwoLines(numPlayers),
@@ -115,38 +139,88 @@ public class Game {
     }
 
     /**
+     * Returns all the tiles that could be picked by a player
+     * @return all the tiles that could be picked by a player
+     */
+    public ArrayList<Position> getAvailableTiles() {
+        return board.getAvailableTiles(players.length);
+    }
+
+    /**
      * Takes one to three tiles and gives them to the active player,
      * putting them in the column specified, checks whether the move is legal
      * (the chosen tiles all have at least one free side) and the column can take
      * all the tiles chosen, if the move is successful, returns true
+     * @param playerNumber the player index to avoid making a move when it's not your turn
      * @param chosenTiles a list of positions that represent the tiles to take from the board
      * @param column the column in which the player wants to store the taken tiles
      * @return a boolean that indicates whether the move was successful or not
      */
-    public boolean takeTiles(List<Position> chosenTiles, int column) {
-        // TODO: check if the move is legal
+    public boolean takeTiles(int playerNumber, List<Position> chosenTiles, int column) {
+        // check if the game has finished
+        if (hasFinished()) {
+            return false;
+        }
 
-        // TODO: wait for the board method to accept a List<Position>
+        // check if it's the playerNumber's turn
+        if (playerNumber != turn) {
+            return false;
+        }
 
-        return false;
+        // check that the player has enough space in the bookshelf
+        if (players[playerNumber].getBookshelf().emptyCol()[column] < chosenTiles.size()) {
+            return false;
+        }
+
+        // take the tiles from the board
+        List<Tile> tiles;
+
+        try {
+            tiles = board.remove(chosenTiles);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+
+        // insert the tiles inside the bookshelf column
+        players[playerNumber].getBookshelf().fill(column, tiles);
+
+        // check if the player has filled the bookshelf first
+        if (players[playerNumber].getBookshelf().isFull() && finishedFirst == -1) {
+            finishedFirst = playerNumber;
+        }
+
+        checkGoals(playerNumber);
+
+        // go to the next player
+        turn = (turn + 1) % players.length;
+
+        return true;
     }
 
     /**
-     * Checks if personal or common goals are achieved by a player and
-     * gives them the points according to the game rules
+     * Returns whether the game has finished yet or not
+     * @return whether tha game has finished yet or not
      */
-    public void checkGoals() {
-        // TODO: check personal goals
+    public boolean hasFinished() {
+        return finishedFirst != -1 &&   // someone has completed the bookshelf
+                turn == playerSeat;     // the player to the left of the first player has completed his last move
+    }
 
-        // check both common goals
+    /**
+     * Checks if personal or common goals are achieved by the indicated player and
+     * gives them the points according to the game rules
+     * @param playerNumber player to award the points to
+     */
+    public void checkGoals(int playerNumber) {
+        // check common goals, personal ones are automatically checked
         for (int i = 0; i < commonGoals.length; i++) {
-            for (Player p : players) {
-                // if the player still hasn't achieved the common goal
-                if (p.getCommonGoalPoints(i) == null) {
-                    // if the player has now achieved the common goal
-                    if (commonGoals[i].check(p.getBookshelf())) {
-                        p.setCommonGoalToken(i,commonGoals[i].popTokens());
-                    }
+            // if the player has not achieved the goal before
+            if (players[playerNumber].getCommonGoalPoints(i) == null) {
+                // if the player has achieved the goal now
+                if (commonGoals[i].check(players[playerNumber].getBookshelf())) {
+                    // give the player the token at the top of the corresponding common goal token stack
+                    players[playerNumber].setCommonGoalToken(i, commonGoals[i].popTokens());
                 }
             }
         }
@@ -180,8 +254,27 @@ public class Game {
                 + (playerNumber == finishedFirst ? 1 : 0); // point awarded for finishing first
     }
 
-    // TODO: check if method is still needed (i don't think so, it can be handled inside takeTiles)
-    public void refillBoard() {
+    public void debugBoard() {
+        Tile[][] tiles = board.getBoard();
 
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                if (board.isLegalPosition(players.length, i, j)) {
+                    if (tiles[i][j] == null) {
+                        System.out.print("X");
+                    } else {
+                        for (int t = 0; t < Type.values().length; t++) {
+                            if (tiles[i][j].getType() == Type.values()[t]) {
+                                System.out.print(t);
+                            }
+                        }
+                    }
+                } else {
+                    System.out.print(" ");
+                }
+            }
+
+            System.out.println();
+        }
     }
 }
