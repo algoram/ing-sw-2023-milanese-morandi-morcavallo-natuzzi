@@ -42,6 +42,7 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getPlayersUsernames();
     }
 
+
     /**
      * This function is calls from event handler when a player connects to a game.
      * if the game doesn't exist it will be created.
@@ -50,6 +51,34 @@ public class GameManager {
      * @return true if the player was added, false if the addPlayer failed
      */
     public Boolean addPlayer(String newPlayer, int players) {
+
+        if (playerToGame.containsKey(newPlayer)) { // if the player is already in a game
+
+                //todo this function could return a string so that the client knows why the player was not added
+
+                int numGame = playerToGame.get(newPlayer);
+                int numPlayerInGame = games.get(numGame).findPlayer(newPlayer);
+
+                int state = games.get(numGame).getPlayerStates().get(numPlayerInGame);
+
+                switch (state) {
+                    case 1: //the player is already connected
+                        return false;
+
+                    case 0: //the player lost connection
+
+                        return games.get(numGame).addPlayer(newPlayer);
+
+                    case -1: //the player disconnected voluntarily
+                        return false;
+
+                    default:
+                        return false;
+                }
+        }
+
+
+        //check if there is a game missing some players otherwise create a new one
         for (int i = 0; i < games.size(); i++) {
 
             if (games.get(i).getPlayers().size() < games.get(i).getNumberOfPlayers()) { // if the game is not full

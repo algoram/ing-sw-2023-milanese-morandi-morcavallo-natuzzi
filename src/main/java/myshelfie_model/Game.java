@@ -157,14 +157,14 @@ public class Game {
         }
 
         // check that there's not someone with the same username
-        // Todo what if the player disconnects and then reconnects with different username?
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
                 if (playerStates.get(findPlayer(username)) == 0) { //if the player has lost connection
                     playerStates.add(findPlayer(username), 1);
                     return true;
                 }
-                return false;
+                System.out.println("There's already someone with the same username that did not lose connection -> error");
+                return false; //should not be possible to enter this if
             }
         }
 
@@ -405,16 +405,18 @@ public class Game {
         return true;
     }
 
-    private int findPlayer(String player) {
+    public int findPlayer(String player) {
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getUsername().equals(player)) {
                 return i;
             }
         }
-
         return -1;
     }
 
+    public ArrayList<Integer> getPlayerStates() {
+        return playerStates;
+    }
 
 
 
