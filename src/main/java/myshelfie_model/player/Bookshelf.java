@@ -88,6 +88,7 @@ public class Bookshelf {
     public int getPoints() {
         boolean[][] visited = new boolean[tiles.length][tiles[0].length];
         int[] count = new int[1];
+        int punteggio = 0;
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
@@ -96,19 +97,20 @@ public class Bookshelf {
                     visit(visited, i, j, count);
 
                     if (count[0] == 3) {
-                        return 2;
+                        punteggio += 2;
                     } else if (count[0] == 4) {
-                        return 3;
+                        punteggio += 3;
                     } else if (count[0] == 5) {
-                        return 5;
+                        punteggio +=5;
                     } else if (count[0] >= 6) {
-                        return 6;
+                        punteggio += 8;
+
                     }
                 }
             }
         }
 
-        return 0;
+        return punteggio;
     }
 
 

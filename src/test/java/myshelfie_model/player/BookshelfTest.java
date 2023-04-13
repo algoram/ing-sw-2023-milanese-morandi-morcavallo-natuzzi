@@ -185,12 +185,28 @@ public class BookshelfTest {
         };
 
         bookshelf.setTiles(tiles);
-        assertEquals(6,bookshelf.getPoints());
+        assertEquals(16,bookshelf.getPoints());
 
 
 
     }
+    @Test
+    public void getPoints_shouldreturn10() {
+        Tile[][] tiles = {
+                {new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.BOOKS), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.GAMES), new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.GAMES)},
+                {new Tile(Type.PLANTS), new Tile(Type.PLANTS), new Tile(Type.PLANTS), new Tile(Type.GAMES), new Tile(Type.BOOKS)},
+                {new Tile(Type.FRAMES), new Tile(Type.FRAMES), new Tile(Type.FRAMES), new Tile(Type.BOOKS), new Tile(Type.CATS)},
+                {new Tile(Type.TROPHIES), new Tile(Type.TROPHIES), new Tile(Type.TROPHIES), new Tile(Type.CATS), new Tile(Type.FRAMES)},
+                {new Tile(Type.GAMES), new Tile(Type.PLANTS), new Tile(Type.CATS), new Tile(Type.FRAMES), new Tile(Type.BOOKS)}
+        };
 
+        bookshelf.setTiles(tiles);
+        assertEquals(10,bookshelf.getPoints());
+
+
+
+    }
 
 
 }
