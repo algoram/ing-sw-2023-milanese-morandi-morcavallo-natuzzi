@@ -23,10 +23,11 @@ public abstract class CommonGoal extends Goal {
     public CommonGoal(int numberOfPlayers) {
         this.scoringTokens = new Stack<>();
 
-        this.scoringTokens.push(new Token(8));
-        if (numberOfPlayers >= 3) {new Token(6);}
+        if (numberOfPlayers == 4) {this.scoringTokens.push (new Token(2));}
         this.scoringTokens.push(new Token(4));
-        if (numberOfPlayers == 4) {new Token(2);}
+        if (numberOfPlayers >= 3) {this.scoringTokens.push (new Token(6));}
+        this.scoringTokens.push(new Token(8));
+
     }
 
     public Token popTokens(){
