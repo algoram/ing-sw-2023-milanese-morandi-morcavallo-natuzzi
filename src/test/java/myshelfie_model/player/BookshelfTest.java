@@ -150,7 +150,7 @@ public class BookshelfTest {
         };
 
         bookshelf.setTiles(tiles);
-        assertEquals(6,bookshelf.getPoints());
+        assertEquals(8,bookshelf.getPoints());
 
 
 
@@ -168,7 +168,7 @@ public class BookshelfTest {
         };
 
         bookshelf.setTiles(tiles);
-        assertEquals(6,bookshelf.getPoints());
+        assertEquals(8,bookshelf.getPoints());
 
 
 
