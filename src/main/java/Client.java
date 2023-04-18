@@ -1,3 +1,4 @@
+import myshelfie_controller.network.rmi.RMIClient;
 import myshelfie_controller.network.rmi.RMINetworkInterface;
 import myshelfie_controller.network.rmi.RMINetworkInterfaceImpl;
 import myshelfie_model.Position;
@@ -11,29 +12,16 @@ import java.util.ArrayList;
 public class Client {
 
     public static void main(String[] args) {
-        String host = "localhost";
-
         try {
-            Registry registry = LocateRegistry.getRegistry(host);
+            RMIClient client = new RMIClient("localhost", "gamename", "username");
 
-            RMINetworkInterface server = (RMINetworkInterface) registry.lookup("MyShelfieRMI");
+            client.chat(null, "Hello World!");
 
-            server.connect("gamename", "username");
-
-            ArrayList<Position> positions = new ArrayList<>();
-
-            positions.add(new Position(1, 3));
-            positions.add(new Position(2, 4));
-
-            server.take("gamename", "username", 1, positions);
-
-            server.chat("gamename", "username", null, "Hello World!");
-
-            server.disconnect("gamename", "username");
+            client.close();
         } catch (RemoteException e) {
-            System.err.println("Couldn't retrieve remote registry.");
+            throw new RuntimeException(e);
         } catch (NotBoundException e) {
-            System.err.println("No instance of MyShelfieRMI found.");
+            throw new RuntimeException(e);
         }
     }
 
