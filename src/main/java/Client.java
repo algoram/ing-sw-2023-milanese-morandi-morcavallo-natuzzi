@@ -1,3 +1,4 @@
+import myshelfie_controller.ClientController;
 import myshelfie_controller.network.rmi.RMIClient;
 import myshelfie_controller.network.rmi.RMINetworkInterface;
 import myshelfie_controller.network.rmi.RMINetworkInterfaceImpl;
@@ -12,8 +13,14 @@ import java.util.ArrayList;
 public class Client {
 
     public static void main(String[] args) {
+        ClientController clientController = new ClientController();
+
         try {
-            RMIClient client = new RMIClient("localhost", "gamename", "username");
+            RMIClient client = new RMIClient(clientController);
+
+            client.connect("localhost");
+
+            client.join("gamename", "username");
 
             client.chat(null, "Hello World!");
 

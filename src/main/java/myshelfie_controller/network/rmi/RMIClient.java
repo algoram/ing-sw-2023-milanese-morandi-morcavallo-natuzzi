@@ -1,5 +1,7 @@
 package myshelfie_controller.network.rmi;
 
+import myshelfie_controller.ClientController;
+import myshelfie_controller.network.NetworkClient;
 import myshelfie_model.Position;
 
 import java.rmi.NotBoundException;
@@ -8,17 +10,25 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
-public class RMIClient {
+public class RMIClient extends NetworkClient {
 
-    private final RMINetworkInterface server;
-    private final String gameName;
-    private final String username;
+    private RMINetworkInterface server = null;
+    private String gameName;
+    private String username;
 
-    public RMIClient(String host, String gameName, String username) throws RemoteException, NotBoundException {
+    public RMIClient(ClientController controller) {
+        super(controller);
+    }
+
+    public void connect(String host) throws RemoteException, NotBoundException {
+        if (server != null) {
+            server.disconnect(gameName, username);
+        }
         Registry registry = LocateRegistry.getRegistry(host);
-
         server = (RMINetworkInterface) registry.lookup("MyShelfieRMI");
+    }
 
+    public void join(String gameName, String username) throws RemoteException {
         server.connect(gameName, username);
 
         this.gameName = gameName;

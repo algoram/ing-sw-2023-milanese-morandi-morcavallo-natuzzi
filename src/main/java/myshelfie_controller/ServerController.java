@@ -6,7 +6,7 @@ import myshelfie_model.Position;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Controller {
+public class ServerController {
 
     private class GameContainer {
         public Game game;
@@ -20,7 +20,7 @@ public class Controller {
 
     private final HashMap<String, GameContainer> games;
 
-    public Controller() {
+    public ServerController() {
         games = new HashMap<>();
     }
 

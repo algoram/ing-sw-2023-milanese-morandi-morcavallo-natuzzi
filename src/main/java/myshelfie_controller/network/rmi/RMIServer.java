@@ -1,5 +1,6 @@
 package myshelfie_controller.network.rmi;
 
+import myshelfie_controller.ServerController;
 import myshelfie_controller.network.NetworkServer;
 
 import java.net.MalformedURLException;
@@ -10,11 +11,13 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class RMIServer extends NetworkServer {
 
-    public RMIServer() {
+    public RMIServer(ServerController serverController) {
+        super(serverController);
+
         try {
             LocateRegistry.createRegistry(1099);
 
-            RMINetworkInterfaceImpl impl = new RMINetworkInterfaceImpl(controller);
+            RMINetworkInterfaceImpl impl = new RMINetworkInterfaceImpl(serverController);
             RMINetworkInterface stub = (RMINetworkInterface) UnicastRemoteObject.exportObject(impl, 0);
 
             Naming.rebind("MyShelfieRMI", stub);

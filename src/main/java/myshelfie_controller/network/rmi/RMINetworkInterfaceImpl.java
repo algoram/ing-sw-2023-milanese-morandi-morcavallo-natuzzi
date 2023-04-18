@@ -1,6 +1,6 @@
 package myshelfie_controller.network.rmi;
 
-import myshelfie_controller.Controller;
+import myshelfie_controller.ServerController;
 import myshelfie_model.Position;
 
 import java.rmi.RemoteException;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class RMINetworkInterfaceImpl implements RMINetworkInterface {
 
-    private final Controller controller;
+    private final ServerController serverController;
 
-    public RMINetworkInterfaceImpl(Controller controller) {
-        this.controller = controller;
+    public RMINetworkInterfaceImpl(ServerController serverController) {
+        this.serverController = serverController;
     }
 
     @Override
