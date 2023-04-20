@@ -1,39 +1,24 @@
 package myshelfie_controller.network.rmi;
 
-import myshelfie_controller.ServerController;
-import myshelfie_model.Position;
-
-import java.rmi.RemoteException;
-import java.util.ArrayList;
+import myshelfie_controller.EventHandler;
+import myshelfie_controller.event.Event;
 
 public class RMINetworkInterfaceImpl implements RMINetworkInterface {
 
-    private final ServerController serverController;
+    private final EventHandler eventHandler;
 
-    public RMINetworkInterfaceImpl(ServerController serverController) {
-        this.serverController = serverController;
+    public RMINetworkInterfaceImpl(EventHandler handler) {
+        eventHandler = handler;
     }
 
     @Override
-    public void connect(String gameName, String username) throws RemoteException {
-        System.out.println(String.format("Player %s connected to game %s", username, gameName));
+    public void dispatchEvent(Event event) {
+        System.out.println("Event added to the queue");
+        eventHandler.addToEventQueue(event);
     }
 
     @Override
-    public void disconnect(String gameName, String username) throws RemoteException {
-        System.out.println(String.format("Player %s disconnected from game %s", username, gameName));
-    }
+    public void setClient(RMIClient client) {
 
-    @Override
-    public boolean take(String gameName, String username, int column, ArrayList<Position> positions) throws RemoteException {
-        System.out.println(String.format("Player %s (game %s) tried to take %d tiles", username, gameName, positions.size()));
-
-        return false;
-    }
-
-    @Override
-    public void chat(String gameName, String username, String to, String message) throws RemoteException {
-        System.out.println(String.format("Player %s (game %s) sent a message", username, gameName));
-        System.out.println(message);
     }
 }

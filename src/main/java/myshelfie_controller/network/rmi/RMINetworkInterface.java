@@ -1,5 +1,6 @@
 package myshelfie_controller.network.rmi;
 
+import myshelfie_controller.event.Event;
 import myshelfie_model.Position;
 
 import java.rmi.Remote;
@@ -8,12 +9,8 @@ import java.util.ArrayList;
 
 public interface RMINetworkInterface extends Remote {
 
-    public void connect(String gameName, String username) throws RemoteException;
+    void dispatchEvent(Event event) throws RemoteException;
 
-    public void disconnect(String gameName, String username) throws RemoteException;
-
-    public boolean take(String gameName, String username, int column, ArrayList<Position> positions) throws RemoteException;
-
-    public void chat(String gameName, String username, String to, String message) throws RemoteException;
+    void setClient(RMIClient client) throws RemoteException;
 
 }

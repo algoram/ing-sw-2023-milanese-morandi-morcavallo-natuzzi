@@ -1,35 +1,30 @@
-import myshelfie_controller.ClientController;
+import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.network.rmi.RMIClient;
-import myshelfie_controller.network.rmi.RMINetworkInterface;
-import myshelfie_controller.network.rmi.RMINetworkInterfaceImpl;
-import myshelfie_model.Position;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.ArrayList;
 
 public class Client {
 
     public static void main(String[] args) {
-        ClientController clientController = new ClientController();
+        UpdateHandler updateHandler = new UpdateHandler();
 
+        RMIClient rmiClient = null;
         try {
-            RMIClient client = new RMIClient(clientController);
-
-            client.connect("localhost");
-
-            client.join("gamename", "username");
-
-            client.chat(null, "Hello World!");
-
-            client.close();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        } catch (NotBoundException e) {
+            rmiClient = new RMIClient(updateHandler, "localhost");
+        } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
+
+        EventDispatcher eventDispatcher = new EventDispatcher(
+                rmiClient,
+                "gamename",
+                "username"
+        );
+
+        eventDispatcher.chat(null, "Hello World!");
+        eventDispatcher.chat("player2", "Hello Player 2!");
     }
 
 }

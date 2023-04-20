@@ -1,13 +1,13 @@
 package myshelfie_view;
 
-import myshelfie_controller.ClientController;
+import myshelfie_controller.EventDispatcher;
 
 public class View {
 
-    protected ClientController clientController;
+    protected EventDispatcher eventDispatcher;
 
-    public View(ClientController controller) {
-        clientController = controller;
+    public View(EventDispatcher dispatcher) {
+        eventDispatcher = dispatcher;
     }
 
 }

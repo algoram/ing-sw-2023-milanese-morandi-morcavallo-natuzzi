@@ -1,12 +1,12 @@
 package myshelfie_controller.network;
 
-import myshelfie_controller.ServerController;
+import myshelfie_controller.EventHandler;
 
 public class NetworkServer {
 
-    protected final ServerController serverController;
+    protected final EventHandler eventHandler;
 
-    public NetworkServer(ServerController serverController) {
-        this.serverController = serverController;
+    public NetworkServer(EventHandler handler) {
+        eventHandler = handler;
     }
 }

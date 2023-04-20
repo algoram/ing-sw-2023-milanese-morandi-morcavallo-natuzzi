@@ -1,13 +1,16 @@
 package myshelfie_controller.network;
 
-import myshelfie_controller.ClientController;
+import myshelfie_controller.UpdateHandler;
+import myshelfie_controller.event.Event;
 
-public class NetworkClient {
+public abstract class NetworkClient {
 
-    protected ClientController clientController;
+    protected UpdateHandler updateHandler;
 
-    public NetworkClient(ClientController controller) {
-        clientController = controller;
+    public NetworkClient(UpdateHandler handler) {
+        updateHandler = handler;
     }
+
+    public abstract void dispatchEvent(Event event);
 
 }
