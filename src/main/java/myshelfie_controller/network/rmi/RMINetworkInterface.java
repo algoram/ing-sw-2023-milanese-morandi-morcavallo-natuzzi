@@ -11,6 +11,4 @@ public interface RMINetworkInterface extends Remote {
 
     void dispatchEvent(Event event) throws RemoteException;
 
-    void setClient(RMIClient client) throws RemoteException;
-
 }

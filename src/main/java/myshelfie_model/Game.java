@@ -18,7 +18,7 @@ public class Game {
     private int finishedFirst;
 
     private Board board;
-    private Player[] players;
+    private ArrayList<Player> players;
 
     private List<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
@@ -26,6 +26,9 @@ public class Game {
 
     private CommonGoal[] commonGoals;
     private final int COMMON_GOALS = 2;
+
+    private ArrayList<Integer> possiblePersonalGoals;
+    private int numberOfPlayers;
 
     /**
      * Starts a new game with the given number of players (clamped between 2 and MAX_PLAYERS),
@@ -40,7 +43,9 @@ public class Game {
         if (numPlayers < 2) numPlayers = 2;
         if (numPlayers > MAX_PLAYERS) numPlayers = MAX_PLAYERS;
 
-        players = new Player[numPlayers];
+        numberOfPlayers = numPlayers;
+
+        players = new ArrayList<>(numberOfPlayers);
 
         // create the different personal goals
         ArrayList<Integer> possiblePersonalGoals = new ArrayList<>();
@@ -50,14 +55,7 @@ public class Game {
         }
 
         for (int i = 0; i < numPlayers; i++) {
-            // generate a random personal goal from the above list
-            int personalGoalIndex = random.nextInt(possiblePersonalGoals.size());
 
-            // create the player and give them a unique personal goal
-            players[i] = new Player(new PersonalGoal(possiblePersonalGoals.get(personalGoalIndex)));
-
-            // remove the goal from the list to avoid giving the same to another player
-            possiblePersonalGoals.remove(personalGoalIndex);
         }
 
         // create all the tiles in a random order
@@ -143,7 +141,58 @@ public class Game {
      * @return all the tiles that could be picked by a player
      */
     public ArrayList<Position> getAvailableTiles() {
-        return board.getAvailableTiles(players.length);
+        return board.getAvailableTiles(players.size());
+    }
+
+    /**
+     * Adds a player to the game if it's not full and if there's not already someone with the same username
+     * @param username the username that the player will be identified with
+     * @return whether the player has been added or not
+     */
+    public boolean addPlayer(String username) {
+        // check that the game is not already full
+        if (players.size() == numberOfPlayers) {
+            return false;
+        }
+
+        // check that there's not someone with the same username
+        for (Player player : players) {
+            if (player.getUsername().equals(username)) {
+                return false;
+            }
+        }
+
+        Random random = new Random();
+
+        // generate a random personal goal from the above list
+        int personalGoalIndex = random.nextInt(possiblePersonalGoals.size());
+
+        // create the player and give them a unique personal goal
+        players.add(new Player(
+                username,
+                new PersonalGoal(possiblePersonalGoals.get(personalGoalIndex))
+        ));
+
+        // remove the goal from the list to avoid giving the same to another player
+        possiblePersonalGoals.remove(personalGoalIndex);
+
+        return true;
+    }
+
+    /**
+     * Returns an array of usernames
+     * @return array of usernames
+     */
+    public String[] getPlayersUsernames() {
+        return (String[]) players.stream().map(Player::getUsername).toArray();
+    }
+
+    /**
+     * Returns the number of players the game can have
+     * @return the number of players the game can have
+     */
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
     }
 
     /**
@@ -168,7 +217,7 @@ public class Game {
         }
 
         // check that the player has enough space in the bookshelf
-        if (players[playerNumber].getBookshelf().emptyCol()[column] < chosenTiles.size()) {
+        if (players.get(playerNumber).getBookshelf().emptyCol()[column] < chosenTiles.size()) {
             return false;
         }
 
@@ -183,17 +232,17 @@ public class Game {
         }
 
         // insert the tiles inside the bookshelf column
-        players[playerNumber].getBookshelf().fill(column, tiles);
+        players.get(playerNumber).getBookshelf().fill(column, tiles);
 
         // check if the player has filled the bookshelf first
-        if (players[playerNumber].getBookshelf().isFull() && finishedFirst == -1) {
+        if (players.get(playerNumber).getBookshelf().isFull() && finishedFirst == -1) {
             finishedFirst = playerNumber;
         }
 
         checkGoals(playerNumber);
 
         // go to the next player
-        turn = (turn + 1) % players.length;
+        turn = (turn + 1) % players.size();
 
         return true;
     }
@@ -216,11 +265,11 @@ public class Game {
         // check common goals, personal ones are automatically checked
         for (int i = 0; i < commonGoals.length; i++) {
             // if the player has not achieved the goal before
-            if (players[playerNumber].getCommonGoalPoints(i) == null) {
+            if (players.get(playerNumber).getCommonGoalPoints(i) == null) {
                 // if the player has achieved the goal now
-                if (commonGoals[i].check(players[playerNumber].getBookshelf())) {
+                if (commonGoals[i].check(players.get(playerNumber).getBookshelf())) {
                     // give the player the token at the top of the corresponding common goal token stack
-                    players[playerNumber].setCommonGoalToken(i, commonGoals[i].popTokens());
+                    players.get(playerNumber).setCommonGoalToken(i, commonGoals[i].popTokens());
                 }
             }
         }
@@ -237,16 +286,16 @@ public class Game {
      */
     public int getPoints(int playerNumber) {
         // points awarded for achieving the personal goal
-        int personalGoalPoints = players[playerNumber].getPersonalGoalPoints();
+        int personalGoalPoints = players.get(playerNumber).getPersonalGoalPoints();
 
         // points awarded for achieving the common goals
         int commonGoalsPoints = 0;
         for (int i = 0; i < COMMON_GOALS; i++) {
-            commonGoalsPoints += players[playerNumber].getCommonGoalPoints(i).getPoints();
+            commonGoalsPoints += players.get(playerNumber).getCommonGoalPoints(i).getPoints();
         }
 
         // points awarded for adjacent tiles on the bookshelf
-        int bookshelfPoints = players[playerNumber].getBookshelf().getPoints();
+        int bookshelfPoints = players.get(playerNumber).getBookshelf().getPoints();
 
         return personalGoalPoints
                 + commonGoalsPoints
@@ -259,7 +308,7 @@ public class Game {
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                if (board.isLegalPosition(players.length, i, j)) {
+                if (board.isLegalPosition(players.size(), i, j)) {
                     if (tiles[i][j] == null) {
                         System.out.print("X");
                     } else {

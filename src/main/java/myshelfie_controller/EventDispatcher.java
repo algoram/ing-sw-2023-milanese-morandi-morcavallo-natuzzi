@@ -1,6 +1,6 @@
 package myshelfie_controller;
 
-import myshelfie_controller.event.MessageSent;
+import myshelfie_controller.event.MessageSend;
 import myshelfie_controller.network.NetworkClient;
 
 public class EventDispatcher {
@@ -16,7 +16,7 @@ public class EventDispatcher {
     }
 
     public void chat(String to, String message) {
-        networkClient.dispatchEvent(new MessageSent(
+        networkClient.dispatchEvent(new MessageSend(
                 player,
                 game,
                 to,

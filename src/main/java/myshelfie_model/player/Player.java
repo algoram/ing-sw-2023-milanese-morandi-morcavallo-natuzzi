@@ -8,12 +8,19 @@ public class Player {
     private Token[] commonGoalsToken;
     private Bookshelf bookshelf;
     private PersonalGoal personalGoal;
+    private String username;
 
-    public Player(PersonalGoal personalGoal) {
+    public Player(String username, PersonalGoal personalGoal) {
+        this.username = username;
+
         commonGoalsToken = new Token[2];
         bookshelf = new Bookshelf();
 
         this.personalGoal = personalGoal;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public int getPersonalGoalPoints(){

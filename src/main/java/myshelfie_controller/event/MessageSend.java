@@ -2,12 +2,12 @@ package myshelfie_controller.event;
 
 import java.io.Serializable;
 
-public class MessageSent extends Event implements Serializable {
+public class MessageSend extends Event implements Serializable {
 
     private String to;
     private String message;
 
-    public MessageSent(String player, String game, String to, String message) {
+    public MessageSend(String player, String game, String to, String message) {
         super(player, game);
 
         this.to = to;

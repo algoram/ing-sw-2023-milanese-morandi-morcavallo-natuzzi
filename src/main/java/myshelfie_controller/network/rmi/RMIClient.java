@@ -3,6 +3,7 @@ package myshelfie_controller.network.rmi;
 import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.event.Event;
 import myshelfie_controller.network.NetworkClient;
+import myshelfie_controller.response.Response;
 import myshelfie_model.Position;
 
 import java.rmi.NotBoundException;
@@ -29,5 +30,10 @@ public class RMIClient extends NetworkClient {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void receiveResponse(Response response) throws RemoteException {
+
     }
 }
