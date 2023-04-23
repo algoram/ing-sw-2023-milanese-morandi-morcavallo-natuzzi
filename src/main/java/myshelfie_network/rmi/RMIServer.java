@@ -1,12 +1,11 @@
-package myshelfie_controller.network.rmi;
+package myshelfie_network.rmi;
 
 import myshelfie_controller.ClientID;
 import myshelfie_controller.EventHandler;
 import myshelfie_controller.GameManager;
 import myshelfie_controller.event.Event;
-import myshelfie_controller.network.NetworkServer;
+import myshelfie_network.Server;
 import myshelfie_controller.response.Response;
-import myshelfie_model.Game;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -15,7 +14,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class RMIServer extends NetworkServer implements RMINetworkInterface {
+public class RMIServer extends Server implements RMINetworkInterface {
 
     private HashMap<ClientID, RMIClient> clients;
 

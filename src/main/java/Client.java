@@ -1,6 +1,6 @@
 import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.UpdateHandler;
-import myshelfie_controller.network.rmi.RMIClient;
+import myshelfie_network.rmi.RMIClient;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;

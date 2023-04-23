@@ -1,4 +1,4 @@
-package myshelfie_controller.network;
+package myshelfie_network;
 
 import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.event.Event;
@@ -6,11 +6,11 @@ import myshelfie_controller.response.Response;
 
 import java.rmi.RemoteException;
 
-public abstract class NetworkClient {
+public abstract class Client {
 
     protected UpdateHandler updateHandler;
 
-    public NetworkClient(UpdateHandler handler) {
+    public Client(UpdateHandler handler) {
         updateHandler = handler;
     }
 

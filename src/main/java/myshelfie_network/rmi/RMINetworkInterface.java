@@ -1,11 +1,9 @@
-package myshelfie_controller.network.rmi;
+package myshelfie_network.rmi;
 
 import myshelfie_controller.event.Event;
-import myshelfie_model.Position;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 public interface RMINetworkInterface extends Remote {
 

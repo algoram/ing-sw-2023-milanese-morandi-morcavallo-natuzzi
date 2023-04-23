@@ -1,7 +1,7 @@
 package myshelfie_controller;
 
-import myshelfie_controller.network.rmi.RMIServer;
-import myshelfie_controller.network.socket.SocketServer;
+import myshelfie_network.rmi.RMIServer;
+import myshelfie_network.socket.SocketServer;
 import myshelfie_controller.response.Response;
 
 public class UpdateDispatcher {

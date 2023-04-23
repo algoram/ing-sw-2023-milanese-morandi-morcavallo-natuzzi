@@ -1,7 +1,7 @@
 import myshelfie_controller.EventHandler;
 import myshelfie_controller.GameManager;
 import myshelfie_controller.UpdateDispatcher;
-import myshelfie_controller.network.rmi.RMIServer;
+import myshelfie_network.rmi.RMIServer;
 
 public class Server {
 

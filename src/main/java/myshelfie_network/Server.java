@@ -1,15 +1,15 @@
-package myshelfie_controller.network;
+package myshelfie_network;
 
 import myshelfie_controller.EventHandler;
 import myshelfie_controller.GameManager;
 import myshelfie_controller.response.Response;
 
-public abstract class NetworkServer {
+public abstract class Server {
 
     protected final EventHandler eventHandler;
     protected final GameManager gameManager;
 
-    public NetworkServer(EventHandler handler, GameManager manager) {
+    public Server(EventHandler handler, GameManager manager) {
         eventHandler = handler;
         gameManager = manager;
 
