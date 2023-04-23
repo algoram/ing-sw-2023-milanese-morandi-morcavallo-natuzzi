@@ -7,8 +7,8 @@ public class Server {
 
     public static void main(String[] args) {
         UpdateDispatcher updateDispatcher = new UpdateDispatcher();
-        EventHandler eventHandler = new EventHandler(updateDispatcher);
         GameManager gameManager = new GameManager();
+        EventHandler eventHandler = new EventHandler(updateDispatcher, gameManager);
         RMIServer rmiServer = new RMIServer(eventHandler, gameManager);
     }
 

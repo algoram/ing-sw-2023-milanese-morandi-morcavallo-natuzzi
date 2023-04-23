@@ -179,6 +179,8 @@ public class Game {
         return true;
     }
 
+    //TODO removePlayer
+
     /**
      * Returns an array of usernames
      * @return array of usernames
