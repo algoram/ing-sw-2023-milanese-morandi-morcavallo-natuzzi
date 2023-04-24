@@ -5,7 +5,9 @@ import myshelfie_model.board.Board2players;
 import myshelfie_model.board.Board3players;
 import myshelfie_model.board.Board4players;
 import myshelfie_model.goal.PersonalGoal;
+import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.*;
+import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 
 import java.util.*;
@@ -319,6 +321,34 @@ public class Game {
                 + bookshelfPoints
                 + (playerNumber == finishedFirst ? 1 : 0); // point awarded for finishing first
     }
+
+    //-------------------- Game Manager METHODS --------------------
+    public Board getBoard() {
+        return board;
+    }
+
+    public Bookshelf getBookshelf(String player) {
+        return players.get(players.indexOf(player)).getBookshelf();
+    }
+
+    public Token[] getCommonGoalTokens(String player) {
+        Token[] tokens = new Token[COMMON_GOALS];
+
+        for (int i = 0; i < COMMON_GOALS; i++) {
+            tokens[i] = players.get(players.indexOf(player)).getCommonGoalPoints(i);
+        }
+
+        return tokens;
+    }
+
+    public int getPersonalScore(String player) {
+        return players.get(players.indexOf(player)).getPersonalGoalPoints();
+    }
+
+    //TODO end game manager methods and change int to string for players
+
+
+    //-------------------- DEBUGGING METHODS --------------------
 
     public void debugBoard() {
         Tile[][] tiles = board.getBoard();
