@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
+
+
 
 
 public class SocketClient implements Client {
@@ -15,6 +16,7 @@ public class SocketClient implements Client {
     private static SocketClient instance = null;
 
     private String host;
+    private String username;
     private int port;
     private Socket socket;
     private ObjectOutputStream outputStream;
@@ -40,10 +42,18 @@ public class SocketClient implements Client {
         this.host = host;
         this.port = port;
 
+
         socket = new Socket(host, port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
+        try {
+            outputStream.writeObject(username);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     /***
      * close resources when the client is no longer needed.
@@ -71,7 +81,7 @@ public class SocketClient implements Client {
     }
 
     @Override
-    public void receiveResponse(Response response) throws RemoteException {
+    public void receiveResponse(Response response) {
         UpdateHandler.getInstance().handle(response);
     }
 }

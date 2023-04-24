@@ -10,6 +10,6 @@ public interface Client {
 
     void dispatchEvent(Event event);
 
-    void receiveResponse(Response response) throws RemoteException;
+    void receiveResponse(Response response);
 
 }

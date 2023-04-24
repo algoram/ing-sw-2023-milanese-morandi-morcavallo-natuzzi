@@ -41,7 +41,7 @@ public class RMIClient implements Client {
     }
 
     @Override
-    public void receiveResponse(Response response) throws RemoteException {
-
+    public void receiveResponse(Response response) {
+        UpdateHandler.getInstance().handle(response);
     }
 }
