@@ -10,10 +10,7 @@ import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class EventHandler {
 
@@ -22,9 +19,15 @@ public class EventHandler {
     private final Queue<Event> eventQueue;
     private boolean threadRun;
 
+    Map<String,Long> lastPingTimes ;
+    Long pingTime ;
+
+
     private EventHandler() {
         eventQueue = new LinkedList<>();
         threadRun = true;
+        lastPingTimes = new HashMap<>();
+        pingTime = System.currentTimeMillis();
 
         new Thread(() -> {
             while (threadRun) {
@@ -36,6 +39,11 @@ public class EventHandler {
 
                 if (event != null) {
                     handle(event);
+                }
+
+                if (System.currentTimeMillis() - pingTime > 5000){
+                    //TODO check if need a new thread
+                    // here I need a way to get from the player to the game
                 }
             }
         }).start();
@@ -101,7 +109,9 @@ public class EventHandler {
 
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player, game));
 
-                //if everyone is connected send the connect update to all players
+                lastPingTimes.put(player, System.currentTimeMillis());
+
+                //if everyone is connected send the connection update to all players
                 if(GameManager.getInstance().getPlayers(game).length == GameManager.getInstance().getNumberOfPlayers(game)){
 
                     ConnectUpdate connectUpdate = new ConnectUpdate(player,game, GameManager.getInstance().getGameState(game));
@@ -128,10 +138,12 @@ public class EventHandler {
 
 
         } else if (event instanceof Ping){
-            //TODO implement ping
-            System.out.println("Ping");
 
-
+            if (!lastPingTimes.containsKey(player)) {
+                System.out.println("PingFailure player not found: " + player);
+            }
+            lastPingTimes.replace(player, System.currentTimeMillis());
+            UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player, game));
 
         } else if (event instanceof TakeTiles){
             System.out.println("TakeTiles");
