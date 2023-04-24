@@ -10,7 +10,10 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 
 
-public class SocketClient extends Client {
+public class SocketClient implements Client {
+
+    private static SocketClient instance = null;
+
     private String host;
     private int port;
     private Socket socket;
@@ -18,24 +21,28 @@ public class SocketClient extends Client {
     private ObjectInputStream inputStream;
 
 
-    public SocketClient(UpdateHandler handler, String host, int port) {
-        super(handler);
-        this.host = host;
-        this.port = port;
+    private SocketClient() {}
+
+    public static SocketClient getInstance() {
+        if (instance == null) {
+            instance = new SocketClient();
+        }
+
+        return instance;
     }
+
     /***
      * Connect client to the server and create the input/output streams.
      * A separate thread (`ResponseReader`) is also created to read responses from the server.
      *
      * */
-    public void start() throws IOException {
+    public void start(String host, int port) throws IOException {
+        this.host = host;
+        this.port = port;
+
         socket = new Socket(host, port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
-
-        // Start a thread to read server response
-        Thread responseThread = new Thread(new receiveResponse());
-        responseThread.start();
     }
 
     /***
@@ -65,33 +72,7 @@ public class SocketClient extends Client {
 
     @Override
     public void receiveResponse(Response response) throws RemoteException {
-
-    }
-
-
-    /***
-     * `receiveResponse` thread reads the responses from the server via the `ObjectInputStream` and
-     *  calls the `handleResponse()` method to handle them.
-     *
-     * */
-    @Override
-    private class receiveResponse implements Runnable {
-        public void run() {
-            while (true) {
-                try {
-                    Response response = (Response) inputStream.readObject();
-                    handleResponse(response);
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
-        }
-        private void handleResponse(Object data) {
-
-            //TODO: implementare la gestione dei dati (eventi) ricevuti dal server
-        }
-
+        UpdateHandler.getInstance().handle(response);
     }
 }
 

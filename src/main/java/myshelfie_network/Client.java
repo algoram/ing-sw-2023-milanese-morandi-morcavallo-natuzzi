@@ -6,16 +6,10 @@ import myshelfie_controller.response.Response;
 
 import java.rmi.RemoteException;
 
-public abstract class Client {
+public interface Client {
 
-    protected UpdateHandler updateHandler;
+    void dispatchEvent(Event event);
 
-    public Client(UpdateHandler handler) {
-        updateHandler = handler;
-    }
-
-    public abstract void dispatchEvent(Event event);
-
-    public abstract void receiveResponse(Response response) throws RemoteException;
+    void receiveResponse(Response response) throws RemoteException;
 
 }

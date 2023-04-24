@@ -10,13 +10,23 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class RMIClient extends Client {
+public class RMIClient implements Client {
+
+    private static RMIClient instance = null;
 
     private RMINetworkInterface server;
 
-    public RMIClient(UpdateHandler handler, String host) throws RemoteException, NotBoundException {
-        super(handler);
+    private RMIClient() {}
 
+    public static RMIClient getInstance() {
+        if (instance == null) {
+            instance = new RMIClient();
+        }
+
+        return instance;
+    }
+
+    public void connect(String host) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(host);
         server = (RMINetworkInterface) registry.lookup("MyShelfieRMI");
     }
