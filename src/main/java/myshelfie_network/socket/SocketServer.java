@@ -13,19 +13,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SocketServer extends Server{
+public class SocketServer implements Server {
+
+    private static SocketServer instance = null;
 
     private ServerSocket serverSocket;
     private int port;
     private List<ClientHandler> clients = new ArrayList<>();
 
 
-    public SocketServer(EventHandler handler, GameManager manager, int port)  throws IOException {
-        super(handler, manager);
-        this.port = port;
+    private SocketServer() {}
+
+    public static SocketServer getInstance() {
+        if (instance == null) {
+            instance = new SocketServer();
+        }
+
+        return instance;
     }
 
-    public void start() throws IOException {
+    public void start(int port) throws IOException {
+        this.port = port;
+
         serverSocket = new ServerSocket(port);
         while (true) {
             try {

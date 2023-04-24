@@ -4,18 +4,9 @@ import myshelfie_controller.EventHandler;
 import myshelfie_controller.GameManager;
 import myshelfie_controller.response.Response;
 
-public abstract class Server {
+public interface Server {
 
-    protected final EventHandler eventHandler;
-    protected final GameManager gameManager;
+    boolean hasClient(String game, String player);
 
-    public Server(EventHandler handler, GameManager manager) {
-        eventHandler = handler;
-        gameManager = manager;
-
-    }
-
-    public abstract boolean hasClient(String game, String player);
-
-    public abstract void sendResponse(Response response);
+    void sendResponse(Response response);
 }

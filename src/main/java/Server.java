@@ -6,10 +6,7 @@ import myshelfie_network.rmi.RMIServer;
 public class Server {
 
     public static void main(String[] args) {
-        UpdateDispatcher updateDispatcher = new UpdateDispatcher();
-        GameManager gameManager = new GameManager();
-        EventHandler eventHandler = new EventHandler(updateDispatcher, gameManager);
-        RMIServer rmiServer = new RMIServer(eventHandler, gameManager);
+        RMIServer.getInstance().start(1099);
     }
 
 }

@@ -63,6 +63,11 @@ public class SocketClient extends Client {
         }
     }
 
+    @Override
+    public void receiveResponse(Response response) throws RemoteException {
+
+    }
+
 
     /***
      * `receiveResponse` thread reads the responses from the server via the `ObjectInputStream` and

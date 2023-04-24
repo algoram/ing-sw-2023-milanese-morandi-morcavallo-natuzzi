@@ -8,6 +8,18 @@ public class GameManager {
 
     private final HashMap<String, Game> games = new HashMap<>();
 
+    private static GameManager instance = null;
+
+    private GameManager() {}
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance = new GameManager();
+        }
+
+        return instance;
+    }
+
     public boolean gameExists(String game) {
         return games.containsKey(game);
     }
