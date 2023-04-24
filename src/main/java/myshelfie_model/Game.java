@@ -179,7 +179,22 @@ public class Game {
         return true;
     }
 
-    //TODO removePlayer
+
+
+    /**
+     * Removes a player from the game when it disconnects
+     * @param username the username of the player to remove
+     * @return whether the player has been removed or not
+     */
+    public boolean removePlayer(String username){
+        for (Player player : players) {
+            if (player.getUsername().equals(username)) {
+                players.remove(player);
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns an array of usernames
