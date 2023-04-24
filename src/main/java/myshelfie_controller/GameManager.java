@@ -1,8 +1,13 @@
 package myshelfie_controller;
 
 import myshelfie_model.Game;
+import myshelfie_model.Position;
+import myshelfie_model.board.Board;
+import myshelfie_model.goal.Token;
+import myshelfie_model.player.Bookshelf;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class GameManager {
 
@@ -37,5 +42,33 @@ public class GameManager {
     }
 
 
+    public boolean takeTiles(String game, String player, int column, List<Position> tiles) {
+        return games.get(game).takeTiles(player, tiles, column);
+    }
+
+    //TODO: add function to game
+    public Board getBoard(String game) {
+        return games.get(game).getBoard();
+    }
+
+    public Bookshelf getBookshelf(String game, String player) {
+        return games.get(game).getBookshelf(player);
+    }
+
+    public Token[] getCommonTokens(String game, String player) {
+        return games.get(game).getCommonGoalTokens(player);
+    }
+
+    public Token getFinishToken(String game, String player) {
+        return games.get(game).getFinishToken();
+    }
+
+    public int getAdjacentScore(String game, String player) {
+        return games.get(game).getAdjacentScore(player);
+    }
+
+    public int getPersonalScore(String game, String player) {
+        return games.get(game).getPersonalScore(player);
+    }
 
 }
