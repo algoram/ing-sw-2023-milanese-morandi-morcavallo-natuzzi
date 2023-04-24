@@ -324,9 +324,8 @@ public class Game {
     }
 
     //-------------------- Game Manager METHODS --------------------
-    public Board getBoard() {
-        return board;
-    }
+
+    // Taketilesupdate Response methods
 
     public Bookshelf getBookshelf(String player) {
         return players.get(players.indexOf(player)).getBookshelf();
@@ -353,6 +352,37 @@ public class Game {
     public int getAdjacentScore(String player) {
         return players.get(players.indexOf(player)).getBookshelf().getPoints();
     }
+
+
+    // GameSTate Response methods
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public CommonGoal[] getCommonGoals() {
+        return commonGoals;
+    }
+
+    public int getFinishedFirst() {
+        return finishedFirst;
+    }
+
+    public int getPlayerSeat() {
+        return playerSeat;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public int getTurn() {return turn;}
+
+
+
+
+
+
 
 
     //-------------------- DEBUGGING METHODS --------------------

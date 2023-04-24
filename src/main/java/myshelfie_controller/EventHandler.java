@@ -2,11 +2,15 @@ package myshelfie_controller;
 
 import myshelfie_controller.event.*;
 import myshelfie_controller.response.*;
+import myshelfie_model.GameState;
 import myshelfie_model.Position;
 import myshelfie_model.board.Board;
 import myshelfie_model.goal.Token;
+import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Bookshelf;
+import myshelfie_model.player.Player;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -85,12 +89,29 @@ public class EventHandler {
 
         } else if (event instanceof PlayerConnect) {
             System.out.println("PlayerConnect");
+
             int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
+
             if (!GameManager.getInstance().addGame(game, player, numberOfPlayers)) {
+
                 //TODO fix messages to distinguish between different errors
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, game,"Error in connection"));
+
             } else {
+
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player, game));
+
+                //if everyone is connected send the connect update to all players
+                if(GameManager.getInstance().getPlayers(game).length == GameManager.getInstance().getNumberOfPlayers(game)){
+
+                    ConnectUpdate connectUpdate = new ConnectUpdate(player,game, GameManager.getInstance().getGameState(game));
+
+                    String[] players = GameManager.getInstance().getPlayers(game);
+                    for(String p : players){
+                        UpdateDispatcher.getInstance().dispatchResponse(connectUpdate);
+                    }
+
+                }
             }
 
 
@@ -129,11 +150,11 @@ public class EventHandler {
                     String[] players = GameManager.getInstance().getPlayers(game);
 
                     //Notify the success of the take tiles and update the view for all players
-
+                    //TODO fix this it may beacame a update using gamestate
                     Board board = GameManager.getInstance().getBoard(game);
                     Bookshelf bookshelf = GameManager.getInstance().getBookshelf(game, player);
                     Token[] commonTokens = GameManager.getInstance().getCommonTokens(game, player);
-                    Token playerTokens = GameManager.getInstance().getFinishToken(game, player);
+                    int playerTokens = GameManager.getInstance().getFinishToken(game, player);
                     int adjacentScore = GameManager.getInstance().getAdjacentScore(game, player);
                     int personalScore = GameManager.getInstance().getPersonalScore(game, player);
 
@@ -142,7 +163,7 @@ public class EventHandler {
 
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            updateDispatcher.dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, player));
+                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, player));
                         }
                     }
 
@@ -159,5 +180,6 @@ public class EventHandler {
     public void closeHandler() {
         threadRun = false;
     }
+
 
 }

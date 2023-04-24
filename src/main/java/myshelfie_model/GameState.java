@@ -13,12 +13,14 @@ public class GameState {
     private final CommonGoal[] commonGoals;
 
     private final int playerSeat;
-    private int turn;
-    private int finishedFirst;
+    private final int turn;
+    private final int finishedFirst;
 
     private ArrayList<Player> players;
 
     public GameState(String gameName, Board board, CommonGoal[] commonGoals, int playerSeat,int turn, int finishedFirst, ArrayList<Player> players) {
+        //TODO deep clone objects by serializing and deserializing
+
         this.gameName = gameName;
         this.board = board;
         this.commonGoals = commonGoals;
@@ -28,13 +30,31 @@ public class GameState {
         this.players = players;
     }
 
-    public void gameStateUpdate(int turn, int finishedFirst){
-        this.turn = turn;
-        this.finishedFirst = finishedFirst;
-
+    public String getGameName() {
+        return gameName;
     }
 
-    //TODO end Class GameState, save here game, use it to send update to client when connects
+    public Board getBoard() {
+        return board;
+    }
 
+    public CommonGoal[] getCommonGoals() {
+        return commonGoals;
+    }
 
+    public int getPlayerSeat() {
+        return playerSeat;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public int getFinishedFirst() {
+        return finishedFirst;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
 }
