@@ -1,6 +1,6 @@
 package myshelfie_controller;
 
-import myshelfie_controller.response.Response;
+import myshelfie_controller.response.*;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -44,6 +44,29 @@ public class UpdateHandler {
 
     public void handle(Response response) {
         // TODO: update view from here
+        if (response instanceof PlayerConnectSuccess){
+
+        } else if (response instanceof PlayerConnectFailure) {
+
+            
+        } else if (response instanceof MessageSendSuccess) {
+
+            
+        } else if (response instanceof TakeTilesSuccess) {
+
+            
+        } else if (response instanceof TakeTilesUpdate) {
+
+            
+        } else if (response instanceof PingAck) {
+
+            
+        } else if (response instanceof PlayerDisconnectSuccess) {
+
+
+        } else if (response instanceof TakeTilesFailure) {
+
+        }
     }
 
     public void closeHandler() {
