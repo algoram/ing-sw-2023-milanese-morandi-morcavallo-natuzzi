@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
-
+import java.util.LinkedList;
 
 
 public class SocketClient implements Client {
@@ -21,6 +20,7 @@ public class SocketClient implements Client {
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+    private boolean threadRun;
 
 
     private SocketClient() {}
@@ -42,7 +42,6 @@ public class SocketClient implements Client {
         this.host = host;
         this.port = port;
 
-
         socket = new Socket(host, port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
@@ -52,6 +51,20 @@ public class SocketClient implements Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        threadRun = true;
+
+        new Thread(() -> {
+            while (threadRun) {
+                try {
+                    Response response = (Response) inputStream.readObject();
+                    receiveResponse(response);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
 
@@ -62,6 +75,7 @@ public class SocketClient implements Client {
     public void stop() throws IOException {
         inputStream.close();
         outputStream.close();
+        threadRun=false;
         socket.close();
     }
 
