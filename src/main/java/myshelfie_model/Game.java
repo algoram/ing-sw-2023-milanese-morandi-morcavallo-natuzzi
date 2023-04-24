@@ -219,13 +219,14 @@ public class Game {
      * putting them in the column specified, checks whether the move is legal
      * (the chosen tiles all have at least one free side) and the column can take
      * all the tiles chosen, if the move is successful, returns true
-     * @param playerNumber the player index to avoid making a move when it's not your turn
+     * @param player the player username
      * @param chosenTiles a list of positions that represent the tiles to take from the board
      * @param column the column in which the player wants to store the taken tiles
      * @return a boolean that indicates whether the move was successful or not
      */
-    public boolean takeTiles(int playerNumber, List<Position> chosenTiles, int column) {
+    public boolean takeTiles(String player, List<Position> chosenTiles, int column) {
         // check if the game has finished
+        int playerNumber = players.indexOf(player);
         if (hasFinished()) {
             return false;
         }
@@ -345,7 +346,13 @@ public class Game {
         return players.get(players.indexOf(player)).getPersonalGoalPoints();
     }
 
-    //TODO end game manager methods and change int to string for players
+    public boolean getFinishPoint(String player) {
+        return players.indexOf(player) == finishedFirst;
+    }
+
+    public int getAdjacentScore(String player) {
+        return players.get(players.indexOf(player)).getBookshelf().getPoints();
+    }
 
 
     //-------------------- DEBUGGING METHODS --------------------

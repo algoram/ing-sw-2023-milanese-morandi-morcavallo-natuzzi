@@ -46,7 +46,7 @@ public class GameManager {
         return games.get(game).takeTiles(player, tiles, column);
     }
 
-    //TODO: add function to game
+
     public Board getBoard(String game) {
         return games.get(game).getBoard();
     }
@@ -59,8 +59,9 @@ public class GameManager {
         return games.get(game).getCommonGoalTokens(player);
     }
 
-    public Token getFinishToken(String game, String player) {
-        return games.get(game).getFinishToken();
+    public int getFinishToken(String game, String player) {
+        if (games.get(game).getFinishPoint(player)) { return 1;}
+        return 0;
     }
 
     public int getAdjacentScore(String game, String player) {

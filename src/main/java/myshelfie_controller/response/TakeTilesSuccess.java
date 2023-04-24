@@ -11,17 +11,17 @@ public class TakeTilesSuccess extends Response {
     private Bookshelf bookshelf;
 
     private Token[] commontokens;
-    private Token finishToken;
+    private int finishPoint;
     private int adjacentScore;
     private int personalScore;
 
-    public TakeTilesSuccess(String player, String game, Board board, Bookshelf bookshelf, Token[] commontokens, Token finishToken, int adjacentScore, int personalScore) {
+    public TakeTilesSuccess(String player, String game, Board board, Bookshelf bookshelf, Token[] commontokens,int finishPoint, int adjacentScore, int personalScore) {
         super(player, game);
 
         this.board = board;
         this.bookshelf = bookshelf;
         this.commontokens = commontokens;
-        this.finishToken = finishToken;
+        this.finishPoint = finishPoint;
         this.adjacentScore = adjacentScore;
         this.personalScore = personalScore;
     }
@@ -34,12 +34,10 @@ public class TakeTilesSuccess extends Response {
         return bookshelf;
     }
 
-    public Token[] getCommonTokens() {
-        return commontokens;
-    }
+    public Token[] getCommonTokens() {return commontokens;}
 
-    public Token getFinishToken() {
-        return finishToken;
+    public int getFinishPoint() {
+        return finishPoint;
     }
 
     public int getAdjacentScore() {

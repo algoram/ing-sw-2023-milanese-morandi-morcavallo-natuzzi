@@ -86,7 +86,9 @@ public class EventHandler {
                 updateDispatcher.dispatchResponse(new PlayerConnectFailure(player, game,"Error in connection"));
             } else {
                 updateDispatcher.dispatchResponse(new PlayerConnectSuccess(player, game));
+                //if all connected send GameState
             }
+
 
 
         } else if (event instanceof PlayerDisconnect) {
@@ -102,6 +104,8 @@ public class EventHandler {
 
         } else if (event instanceof Ping){
             //TODO implement ping
+            System.out.println("Ping");
+
 
 
         } else if (event instanceof TakeTiles){
@@ -125,16 +129,16 @@ public class EventHandler {
                     Board board = gameManager.getBoard(game);
                     Bookshelf bookshelf = gameManager.getBookshelf(game, player);
                     Token[] commonTokens = gameManager.getCommonTokens(game, player);
-                    Token playerTokens = gameManager.getFinishToken(game, player);
+                    int FinishPoint = gameManager.getFinishToken(game, player);
                     int adjacentScore = gameManager.getAdjacentScore(game, player);
                     int personalScore = gameManager.getPersonalScore(game, player);
 
 
-                    updateDispatcher.dispatchResponse(new TakeTilesSuccess(player, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, personalScore));
+                    updateDispatcher.dispatchResponse(new TakeTilesSuccess(player, game, board, bookshelf, commonTokens, FinishPoint, adjacentScore, personalScore));
 
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            updateDispatcher.dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, player));
+                            updateDispatcher.dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, FinishPoint, adjacentScore, player));
                         }
                     }
 

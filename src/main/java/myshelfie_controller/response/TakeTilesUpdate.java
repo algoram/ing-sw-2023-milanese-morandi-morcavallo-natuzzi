@@ -8,19 +8,18 @@ public class TakeTilesUpdate extends Response{
     private Board board;
     private Bookshelf bookshelf;
     private Token[] commontokens;
-    private Token finishToken;
+    private int finishPoint;
     private int adjacentScore;
+    private String updatePlayer; //the player who took the tiles and updated the bookshelf
 
-    private String updatePlayer;
 
-
-    public TakeTilesUpdate(String player, String game, Board board, Bookshelf bookshelf, Token[] commontokens, Token finishToken, int adjacentScore, String updatePlayer) {
+    public TakeTilesUpdate(String player, String game, Board board, Bookshelf bookshelf, Token[] commontokens, int finishPoint, int adjacentScore, String updatePlayer) {
         super(player, game);
 
         this.board = board;
         this.bookshelf = bookshelf;
         this.commontokens = commontokens;
-        this.finishToken = finishToken;
+        this.finishPoint = finishPoint;
         this.adjacentScore = adjacentScore;
         this.updatePlayer = updatePlayer;
     }
@@ -37,8 +36,8 @@ public class TakeTilesUpdate extends Response{
         return commontokens;
     }
 
-    public Token getFinishToken() {
-        return finishToken;
+    public int getFinishPoint() {
+        return finishPoint;
     }
 
     public int getAdjacentScore() {
