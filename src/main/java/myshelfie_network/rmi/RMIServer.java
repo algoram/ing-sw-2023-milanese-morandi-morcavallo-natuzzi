@@ -14,15 +14,25 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class RMIServer extends Server implements RMINetworkInterface {
+public class RMIServer implements Server, RMINetworkInterface {
 
     private HashMap<ClientID, RMIClient> clients;
 
-    public RMIServer(EventHandler eventHandler, GameManager gameManager) {
-        super(eventHandler, gameManager);
+    private static RMIServer instance = null;
 
+    private RMIServer() {}
+
+    public static RMIServer getInstance() {
+        if (instance == null) {
+            instance = new RMIServer();
+        }
+
+        return instance;
+    }
+
+    public void start(int port) {
         try {
-            LocateRegistry.createRegistry(1099);
+            LocateRegistry.createRegistry(port);
             RMINetworkInterface stub = (RMINetworkInterface) UnicastRemoteObject.exportObject(this, 0);
             Naming.rebind("MyShelfieRMI", stub);
         } catch (RemoteException e) {
@@ -64,6 +74,6 @@ public class RMIServer extends Server implements RMINetworkInterface {
     @Override
     public void dispatchEvent(Event event) throws RemoteException {
         System.out.println("Event added to the queue");
-        eventHandler.addToEventQueue(event);
+        EventHandler.getInstance().addToEventQueue(event);
     }
 }

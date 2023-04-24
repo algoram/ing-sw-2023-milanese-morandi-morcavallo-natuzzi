@@ -13,15 +13,12 @@ import java.util.Queue;
 
 public class EventHandler {
 
+    private static EventHandler instance = null;
+
     private final Queue<Event> eventQueue;
-    private final UpdateDispatcher updateDispatcher;
-    private final GameManager gameManager;
     private boolean threadRun;
 
-    public EventHandler(UpdateDispatcher dispatcher,GameManager gameManager) {
-        updateDispatcher = dispatcher;
-        this.gameManager = gameManager;
-
+    private EventHandler() {
         eventQueue = new LinkedList<>();
         threadRun = true;
 
@@ -40,6 +37,14 @@ public class EventHandler {
         }).start();
     }
 
+    public static EventHandler getInstance() {
+        if (instance == null) {
+            instance = new EventHandler();
+        }
+
+        return instance;
+    }
+
     public void addToEventQueue(Event event) {
         synchronized (eventQueue) {
             eventQueue.add(event);
@@ -56,37 +61,36 @@ public class EventHandler {
                 System.out.println("MessageSend");
 
                 //Notify the success of the message send
-                updateDispatcher.dispatchResponse(new MessageSendSuccess(player, game));
+                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player, game));
 
                 String message = ((MessageSend) event).getMessage();
                 String to = ((MessageSend) event).getRecipient();
 
                 if (to != null) {
                     //if to is not null send the message to the recipient
-                    updateDispatcher.dispatchResponse(new MessageSendResponse(player, game, message, player, false));
+                    UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, game, message, player, false));
                 } else {
-                    String[] players = gameManager.getPlayers(game);
+                    String[] players = GameManager.getInstance().getPlayers(game);
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            updateDispatcher.dispatchResponse(new MessageSendResponse(player, game, message, player, true));
+                            UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, game, message, player, true));
                         }
                     }
                 }
             } else {
                 System.out.println("MessageSendFailure");
-                updateDispatcher.dispatchResponse(new MessageSendFailure(player, game, "Message is null"));
+                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, game, "Message is null"));
             }
 
 
         } else if (event instanceof PlayerConnect) {
             System.out.println("PlayerConnect");
             int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
-            if (!gameManager.addGame(game, player, numberOfPlayers)) {
+            if (!GameManager.getInstance().addGame(game, player, numberOfPlayers)) {
                 //TODO fix messages to distinguish between different errors
-                updateDispatcher.dispatchResponse(new PlayerConnectFailure(player, game,"Error in connection"));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, game,"Error in connection"));
             } else {
-                updateDispatcher.dispatchResponse(new PlayerConnectSuccess(player, game));
-                //if all connected send GameState
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player, game));
             }
 
 
@@ -94,11 +98,11 @@ public class EventHandler {
         } else if (event instanceof PlayerDisconnect) {
             System.out.println("PlayerDisconnect");
 
-            gameManager.removePlayer(player, game);
+            GameManager.getInstance().removePlayer(player, game);
 
-            String[] players = gameManager.getPlayers(game);
+            String[] players = GameManager.getInstance().getPlayers(game);
             for (String p : players) {
-                updateDispatcher.dispatchResponse(new PlayerDisconnectSuccess(p, game, player));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, game, player));
             }
 
 
@@ -115,35 +119,35 @@ public class EventHandler {
             List<Position> tiles = ((TakeTiles) event).getTiles();
 
             if (tiles==null || tiles.size()==0){
-                updateDispatcher.dispatchResponse(new TakeTilesFailure(player, game, "No tiles selected"));
+                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, game, "No tiles selected"));
             }  else if (column < 0 || column > 4){
-                updateDispatcher.dispatchResponse(new TakeTilesFailure(player, game, "Column out of bounds"));
+                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, game, "Column out of bounds"));
 
             } else {
 
-                if (gameManager.takeTiles(game, player, column, tiles)) {
-                    String[] players = gameManager.getPlayers(game);
+                if (GameManager.getInstance().takeTiles(game, player, column, tiles)) {
+                    String[] players = GameManager.getInstance().getPlayers(game);
 
                     //Notify the success of the take tiles and update the view for all players
 
-                    Board board = gameManager.getBoard(game);
-                    Bookshelf bookshelf = gameManager.getBookshelf(game, player);
-                    Token[] commonTokens = gameManager.getCommonTokens(game, player);
-                    int FinishPoint = gameManager.getFinishToken(game, player);
-                    int adjacentScore = gameManager.getAdjacentScore(game, player);
-                    int personalScore = gameManager.getPersonalScore(game, player);
+                    Board board = GameManager.getInstance().getBoard(game);
+                    Bookshelf bookshelf = GameManager.getInstance().getBookshelf(game, player);
+                    Token[] commonTokens = GameManager.getInstance().getCommonTokens(game, player);
+                    Token playerTokens = GameManager.getInstance().getFinishToken(game, player);
+                    int adjacentScore = GameManager.getInstance().getAdjacentScore(game, player);
+                    int personalScore = GameManager.getInstance().getPersonalScore(game, player);
 
 
-                    updateDispatcher.dispatchResponse(new TakeTilesSuccess(player, game, board, bookshelf, commonTokens, FinishPoint, adjacentScore, personalScore));
+                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, personalScore));
 
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            updateDispatcher.dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, FinishPoint, adjacentScore, player));
+                            updateDispatcher.dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, player));
                         }
                     }
 
                 } else {
-                    updateDispatcher.dispatchResponse(new TakeTilesFailure(player, game, "Error in taking tiles"));
+                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, game, "Error in taking tiles"));
                 }
             }
 

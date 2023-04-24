@@ -7,36 +7,66 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
+import java.util.LinkedList;
 
 
-public class SocketClient extends Client {
+public class SocketClient implements Client {
+
+    private static SocketClient instance = null;
+
     private String host;
+    private String username;
     private int port;
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+    private boolean threadRun;
 
 
-    public SocketClient(UpdateHandler handler, String host, int port) {
-        super(handler);
-        this.host = host;
-        this.port = port;
+    private SocketClient() {}
+
+    public static SocketClient getInstance() {
+        if (instance == null) {
+            instance = new SocketClient();
+        }
+
+        return instance;
     }
+
     /***
      * Connect client to the server and create the input/output streams.
      * A separate thread (`ResponseReader`) is also created to read responses from the server.
      *
      * */
-    public void start() throws IOException {
+    public void start(String host, int port) throws IOException {
+        this.host = host;
+        this.port = port;
+
         socket = new Socket(host, port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
+        try {
+            outputStream.writeObject(username);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // Start a thread to read server response
-        Thread responseThread = new Thread(new receiveResponse());
-        responseThread.start();
+        threadRun = true;
+
+        new Thread(() -> {
+            while (threadRun) {
+                try {
+                    Response response = (Response) inputStream.readObject();
+                    receiveResponse(response);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
+
 
     /***
      * close resources when the client is no longer needed.
@@ -45,6 +75,7 @@ public class SocketClient extends Client {
     public void stop() throws IOException {
         inputStream.close();
         outputStream.close();
+        threadRun=false;
         socket.close();
     }
 
@@ -63,30 +94,9 @@ public class SocketClient extends Client {
         }
     }
 
-
-    /***
-     * `receiveResponse` thread reads the responses from the server via the `ObjectInputStream` and
-     *  calls the `handleResponse()` method to handle them.
-     *
-     * */
     @Override
-    private class receiveResponse implements Runnable {
-        public void run() {
-            while (true) {
-                try {
-                    Response response = (Response) inputStream.readObject();
-                    handleResponse(response);
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
-        }
-        private void handleResponse(Object data) {
-
-            //TODO: implementare la gestione dei dati (eventi) ricevuti dal server
-        }
-
+    public void receiveResponse(Response response) {
+        UpdateHandler.getInstance().handle(response);
     }
 }
 

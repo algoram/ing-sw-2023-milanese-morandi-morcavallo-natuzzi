@@ -6,8 +6,20 @@ import myshelfie_controller.response.Response;
 
 public class UpdateDispatcher {
 
+    private static UpdateDispatcher instance = null;
+
     private RMIServer rmiServer;
     private SocketServer socketServer;
+
+    private UpdateDispatcher() {}
+
+    public static UpdateDispatcher getInstance() {
+        if (instance == null) {
+            instance = new UpdateDispatcher();
+        }
+
+        return instance;
+    }
 
     public void dispatchResponse(Response response) {
         String player = response.getTarget()[0];

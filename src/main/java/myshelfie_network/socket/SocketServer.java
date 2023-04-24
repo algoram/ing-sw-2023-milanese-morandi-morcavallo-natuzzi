@@ -1,7 +1,7 @@
 package myshelfie_network.socket;
 
 import myshelfie_controller.EventHandler;
-import myshelfie_controller.GameManager;
+import myshelfie_controller.event.Event;
 import myshelfie_network.Server;
 import myshelfie_controller.response.Response;
 
@@ -13,34 +13,47 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SocketServer extends Server{
+public class SocketServer implements Server {
+
+    private static SocketServer instance = null;
 
     private ServerSocket serverSocket;
     private int port;
     private List<ClientHandler> clients = new ArrayList<>();
 
 
-    public SocketServer(EventHandler handler, GameManager manager, int port)  throws IOException {
-        super(handler, manager);
-        this.port = port;
+    private SocketServer() {}
+
+    public static SocketServer getInstance() {
+        if (instance == null) {
+            instance = new SocketServer();
+        }
+
+        return instance;
     }
 
-    public void start() throws IOException {
+    public void start(int port) throws IOException {
+        this.port = port;
+
         serverSocket = new ServerSocket(port);
         while (true) {
             try {
                 // Accetta le connessioni dei client
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Nuovo client connesso: " + clientSocket.getInetAddress().getHostName());
+                ObjectInputStream inputStreamUsername = new ObjectInputStream(clientSocket.getInputStream());
+                String username = (String) inputStreamUsername.readObject();
+                System.out.println("Nuovo client connesso: " + clientSocket.getInetAddress().getHostName() + "username: " + username );
 
                 // Crea un nuovo thread per gestire il client
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, username);
                 clients.add(clientHandler);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -61,11 +74,15 @@ public class SocketServer extends Server{
      * */
     private class ClientHandler implements Runnable {
         private Socket clientSocket;
+        private String player;
+        private String game;
+
         private ObjectOutputStream outputStream;
         private ObjectInputStream inputStream;
 
-        public ClientHandler(Socket clientSocket) {
+        public ClientHandler(Socket clientSocket, String player) {
             this.clientSocket = clientSocket;
+            this.player = player;
         }
 
         public void run() {
@@ -105,23 +122,33 @@ public class SocketServer extends Server{
          * called whenever the ClientHandler receives data from the client
          * */
         private void handleData(Object data) {
-
-            //TODO: implementare la gestione dei dati (eventi) ricevuti dal client
+            if(data instanceof Event) {
+                Event event = (Event) data;
+                EventHandler.getInstance().addToEventQueue(event);
+            } else throw new RuntimeException("Invalid data type from client");
         }
     }
 
     @Override
     public boolean hasClient(String game, String player) {
-        if(clients.size()>0) {
-            //TODO: implementare hasClient
+        for (ClientHandler client : clients) {
+            if (client.game.equals(game) && client.player.equals(player)) {
+                return true;
+            }
         }
         return false;
     }
 
     @Override
     public void sendResponse(Response response) {
-            //TODO: implementare sendResponse
+        for (ClientHandler client : clients) {
+            if (client.game.equals(response.getTarget()[1]) && client.player.equals(response.getTarget()[0])) {
+                try {
+                    client.outputStream.writeObject(response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-
-
 }

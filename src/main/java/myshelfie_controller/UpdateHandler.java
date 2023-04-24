@@ -7,10 +7,12 @@ import java.util.Queue;
 
 public class UpdateHandler {
 
+    private static UpdateHandler instance = null;
+
     private final Queue<Response> responseQueue = new LinkedList<>();
     private boolean threadRun = true;
 
-    public UpdateHandler() {
+    private UpdateHandler() {
         new Thread(() -> {
             while (threadRun) {
                 Response response;
@@ -24,6 +26,14 @@ public class UpdateHandler {
                 }
             }
         }).start();
+    }
+
+    public static UpdateHandler getInstance() {
+        if (instance == null) {
+            instance = new UpdateHandler();
+        }
+
+        return instance;
     }
 
     public void addToResponseQueue(Response response) {
