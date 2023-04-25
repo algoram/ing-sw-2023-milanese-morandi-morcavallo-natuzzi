@@ -19,8 +19,7 @@ public class EventHandler {
     private final Queue<Event> eventQueue;
     private boolean threadRun;
 
-    Map<String,Long> lastPingTimes ;
-    Long pingTime ;
+    Map<String,Long> lastPingTimes;
 
 
     private EventHandler() {
@@ -28,6 +27,11 @@ public class EventHandler {
         threadRun = true;
         lastPingTimes = new HashMap<>();
         pingTime = System.currentTimeMillis();
+
+
+        // here I need a way to get from the player to the game
+        // I may start this thread after first connection
+        new Thread(() -> { lastPingChecker();}).start();
 
         new Thread(() -> {
             while (threadRun) {
@@ -41,10 +45,6 @@ public class EventHandler {
                     handle(event);
                 }
 
-                if (System.currentTimeMillis() - pingTime > 5000){
-                    //TODO check if need a new thread
-                    // here I need a way to get from the player to the game
-                }
             }
         }).start();
     }
@@ -100,7 +100,7 @@ public class EventHandler {
 
             int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
 
-            if (!GameManager.getInstance().addGame(game, player, numberOfPlayers)) {
+            if (!GameManager.getInstance().addPlayer(player, numberOfPlayers)) {
 
                 //TODO fix messages to distinguish between different errors
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, game,"Error in connection"));
@@ -109,8 +109,9 @@ public class EventHandler {
 
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player, game));
 
-                lastPingTimes.put(player, System.currentTimeMillis());
-
+                synchronized (lastPingTimes) {
+                    lastPingTimes.put(player, System.currentTimeMillis());
+                }
                 //if everyone is connected send the connection update to all players
                 if(GameManager.getInstance().getPlayers(game).length == GameManager.getInstance().getNumberOfPlayers(game)){
 
@@ -138,11 +139,12 @@ public class EventHandler {
 
 
         } else if (event instanceof Ping){
-
-            if (!lastPingTimes.containsKey(player)) {
-                System.out.println("PingFailure player not found: " + player);
+            synchronized (lastPingTimes) {
+                if (!lastPingTimes.containsKey(player)) {
+                    System.out.println("PingFailure player not found: " + player);
+                }
+                lastPingTimes.replace(player, System.currentTimeMillis());
             }
-            lastPingTimes.replace(player, System.currentTimeMillis());
             UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player, game));
 
         } else if (event instanceof TakeTiles){
@@ -186,6 +188,29 @@ public class EventHandler {
 
         } else {
             throw new RuntimeException("Event not implemented");
+        }
+    }
+
+
+    private void lastPingChecker() {
+        while(threadRun){
+            try {
+                wait(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (String player : lastPingTimes.keySet()){
+                synchronized (lastPingTimes.get(player)){
+                    if (System.currentTimeMillis() - lastPingTimes.get(player) > 5000){
+
+                        int game = GameManager.getInstance().lostConnection(player);
+                        String[] players = GameManager.getInstance().getPlayers(game);
+                        for (String p : players) {
+                            UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, game, player));
+                        }
+                    }
+                }
+            }
         }
     }
 
