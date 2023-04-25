@@ -21,6 +21,7 @@ public class Game {
 
     private Board board;
     private ArrayList<Player> players;
+    private ArrayList<Boolean> playerStates;
 
     private List<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
@@ -132,6 +133,7 @@ public class Game {
         playerSeat = random.nextInt(numPlayers);
 
         // also set the turn to the first player
+        // todo what if the first player disconnects before the game starts?
         turn = playerSeat;
 
         // no one has finished yet
@@ -175,6 +177,8 @@ public class Game {
                 new PersonalGoal(possiblePersonalGoals.get(personalGoalIndex))
         ));
 
+        playerStates.add(players.indexOf(username), true); //add state connection
+
         // remove the goal from the list to avoid giving the same to another player
         possiblePersonalGoals.remove(personalGoalIndex);
 
@@ -192,6 +196,7 @@ public class Game {
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
                 players.remove(player);
+                playerStates.remove(players.indexOf(username)); //remove state connection
                 return true;
             }
         }
@@ -262,7 +267,9 @@ public class Game {
         checkGoals(playerNumber);
 
         // go to the next player
-        turn = (turn + 1) % players.size();
+       do{
+           turn = (turn + 1) % players.size();
+       }while(!playerStates.get(turn)); //check if new turn player is connected
 
         return true;
     }
@@ -379,7 +386,14 @@ public class Game {
     public int getTurn() {return turn;}
 
 
-
+    public boolean lostConnection(String player) {
+        if (playerStates.get(players.indexOf(player)) == false) {
+            System.out.println("Player " + player + " had already lost connection"); //Debug messages
+            return false;
+        }
+        playerStates.add(players.indexOf(player), false);
+        return true;
+    }
 
 
 
