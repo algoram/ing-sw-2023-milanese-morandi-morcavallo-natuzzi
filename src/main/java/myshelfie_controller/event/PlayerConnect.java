@@ -2,8 +2,8 @@ package myshelfie_controller.event;
 
 public class PlayerConnect extends Event {
     private int numberOfPlayers;
-    public PlayerConnect(String player, String game,int numberOfPlayers) {
-        super(player, game);
+    public PlayerConnect(String player,int numberOfPlayers) {
+        super(player);
         this.numberOfPlayers = numberOfPlayers;
     }
 

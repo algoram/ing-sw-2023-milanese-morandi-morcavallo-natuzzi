@@ -8,7 +8,7 @@ public class MessageSend extends Event implements Serializable {
     private String message;
 
     public MessageSend(String player, String game, String to, String message) {
-        super(player, game);
+        super(player);
 
         this.to = to;
         this.message = message;
