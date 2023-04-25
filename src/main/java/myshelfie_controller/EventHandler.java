@@ -3,6 +3,7 @@ package myshelfie_controller;
 import myshelfie_controller.event.*;
 import myshelfie_controller.response.*;
 import myshelfie_model.GameState;
+import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
 import myshelfie_model.board.Board;
 import myshelfie_model.goal.Token;
@@ -26,7 +27,6 @@ public class EventHandler {
         eventQueue = new LinkedList<>();
         threadRun = true;
         lastPingTimes = new HashMap<>();
-        pingTime = System.currentTimeMillis();
 
 
         // here I need a way to get from the player to the game
@@ -65,7 +65,7 @@ public class EventHandler {
 
     public void handle(Event event) {
         System.out.printf("Event from %s/%s: ", event.getSource()[0], event.getSource()[1]);
-        String game = event.getSource()[1];
+        //String game = event.getSource()[1];
         String player = event.getSource()[0];
 
         if (event instanceof MessageSend) {
@@ -73,14 +73,14 @@ public class EventHandler {
                 System.out.println("MessageSend");
 
                 //Notify the success of the message send
-                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player, game));
+                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player));
 
                 String message = ((MessageSend) event).getMessage();
                 String to = ((MessageSend) event).getRecipient();
 
                 if (to != null) {
                     //if to is not null send the message to the recipient
-                    UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, game, message, player, false));
+                    UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, false));
                 } else {
                     String[] players = GameManager.getInstance().getPlayers(game);
                     for (String p : players) {
@@ -109,7 +109,7 @@ public class EventHandler {
 
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player, game));
 
-                synchronized (lastPingTimes) {
+                synchronized (lastPingTimes.get(player)) {
                     lastPingTimes.put(player, System.currentTimeMillis());
                 }
                 //if everyone is connected send the connection update to all players
@@ -139,7 +139,7 @@ public class EventHandler {
 
 
         } else if (event instanceof Ping){
-            synchronized (lastPingTimes) {
+            synchronized (lastPingTimes.get(player)) {
                 if (!lastPingTimes.containsKey(player)) {
                     System.out.println("PingFailure player not found: " + player);
                 }
@@ -164,20 +164,17 @@ public class EventHandler {
                     String[] players = GameManager.getInstance().getPlayers(game);
 
                     //Notify the success of the take tiles and update the view for all players
-                    //TODO fix this it may beacame a update using gamestate
-                    Board board = GameManager.getInstance().getBoard(game);
-                    Bookshelf bookshelf = GameManager.getInstance().getBookshelf(game, player);
-                    Token[] commonTokens = GameManager.getInstance().getCommonTokens(game, player);
-                    int playerTokens = GameManager.getInstance().getFinishToken(game, player);
-                    int adjacentScore = GameManager.getInstance().getAdjacentScore(game, player);
-                    int personalScore = GameManager.getInstance().getPersonalScore(game, player);
+                    //TODO: write getgamestateupdate
+                    GameUpdate gameUpdate = GameManager.getInstance().getGameUpdate(game,player);
 
+                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameUpdate));
 
-                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, personalScore));
+                    gameUpdate.removePersonalData(); //remove of personal data for other players update
 
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, game, board, bookshelf, commonTokens, playerTokens, adjacentScore, player));
+
+                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameUpdate, player));
                         }
                     }
 
@@ -203,10 +200,10 @@ public class EventHandler {
                 synchronized (lastPingTimes.get(player)){
                     if (System.currentTimeMillis() - lastPingTimes.get(player) > 5000){
 
-                        int game = GameManager.getInstance().lostConnection(player);
+                        Integer game = GameManager.getInstance().lostConnection(player);
                         String[] players = GameManager.getInstance().getPlayers(game);
                         for (String p : players) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, game, player));
+                            UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
                         }
                     }
                 }

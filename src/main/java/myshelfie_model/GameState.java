@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class GameState {
 
-    private final String gameName;
+    private final Integer gameNumber;
     private final Board board;
     private final CommonGoal[] commonGoals;
 
@@ -18,10 +18,10 @@ public class GameState {
 
     private ArrayList<Player> players;
 
-    public GameState(String gameName, Board board, CommonGoal[] commonGoals, int playerSeat,int turn, int finishedFirst, ArrayList<Player> players) {
+    public GameState(Integer gameNumber, Board board, CommonGoal[] commonGoals, int playerSeat,int turn, int finishedFirst, ArrayList<Player> players) {
         //TODO deep clone objects by serializing and deserializing
 
-        this.gameName = gameName;
+        this.gameNumber = gameNumber;
         this.board = board;
         this.commonGoals = commonGoals;
         this.playerSeat = playerSeat;
@@ -30,8 +30,8 @@ public class GameState {
         this.players = players;
     }
 
-    public String getGameName() {
-        return gameName;
+    public Integer getGameNumber() {
+        return gameNumber;
     }
 
     public Board getBoard() {
