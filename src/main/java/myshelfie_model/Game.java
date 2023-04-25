@@ -21,7 +21,7 @@ public class Game {
 
     private Board board;
     private ArrayList<Player> players;
-    private ArrayList<Boolean> playerStates;
+    private ArrayList<Integer> playerStates; // -1 = disconnected, 0 = lostConnection, 1 = connected
 
     private List<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
@@ -160,8 +160,13 @@ public class Game {
         }
 
         // check that there's not someone with the same username
+        // Todo what if the player disconnects and then reconnects with different username?
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
+                if (playerStates.get(players.indexOf(username)) == 0) { //if the player has lost connection
+                    playerStates.add(players.indexOf(username), 1);
+                    return true;
+                }
                 return false;
             }
         }
@@ -177,7 +182,7 @@ public class Game {
                 new PersonalGoal(possiblePersonalGoals.get(personalGoalIndex))
         ));
 
-        playerStates.add(players.indexOf(username), true); //add state connection
+        playerStates.add(players.indexOf(username), 1); //add state connection
 
         // remove the goal from the list to avoid giving the same to another player
         possiblePersonalGoals.remove(personalGoalIndex);
@@ -195,8 +200,7 @@ public class Game {
     public boolean removePlayer(String username){
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
-                players.remove(player);
-                playerStates.remove(players.indexOf(username)); //remove state connection
+                playerStates.add(players.indexOf(username),-1); //remove state connection
                 return true;
             }
         }
@@ -269,7 +273,7 @@ public class Game {
         // go to the next player
        do{
            turn = (turn + 1) % players.size();
-       }while(!playerStates.get(turn)); //check if new turn player is connected
+       }while(!(playerStates.get(turn) == 1)); //check if new turn player is connected
 
         return true;
     }
@@ -387,11 +391,11 @@ public class Game {
 
 
     public boolean lostConnection(String player) {
-        if (playerStates.get(players.indexOf(player)) == false) {
+        if (playerStates.get(players.indexOf(player)) != 1) {
             System.out.println("Player " + player + " had already lost connection"); //Debug messages
             return false;
         }
-        playerStates.add(players.indexOf(player), false);
+        playerStates.add(players.indexOf(player), 0);
         return true;
     }
 
