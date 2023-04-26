@@ -10,8 +10,8 @@ public abstract class Event implements Serializable {
         sourcePlayer = player;
     }
 
-    public String[] getSource() {
-        return new String[] {sourcePlayer};
+    public String getSource() {
+        return sourcePlayer;
     }
 
 }

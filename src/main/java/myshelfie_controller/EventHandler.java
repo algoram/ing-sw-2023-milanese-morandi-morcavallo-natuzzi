@@ -5,11 +5,7 @@ import myshelfie_controller.response.*;
 import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
-import myshelfie_model.board.Board;
-import myshelfie_model.goal.Token;
-import myshelfie_model.goal.common_goal.CommonGoal;
-import myshelfie_model.player.Bookshelf;
-import myshelfie_model.player.Player;
+
 
 import java.util.*;
 
@@ -20,7 +16,7 @@ public class EventHandler {
     private final Queue<Event> eventQueue;
     private boolean threadRun;
 
-    Map<String,Long> lastPingTimes;
+    private final Map<String,Long> lastPingTimes;
 
 
     private EventHandler() {
@@ -31,7 +27,7 @@ public class EventHandler {
 
         // here I need a way to get from the player to the game
         // I may start this thread after first connection
-        new Thread(() -> { lastPingChecker();}).start();
+        new Thread(this::lastPingChecker).start();
 
         new Thread(() -> {
             while (threadRun) {
@@ -64,9 +60,9 @@ public class EventHandler {
     }
 
     public void handle(Event event) {
-        System.out.printf("Event from %s/%s: ", event.getSource()[0], event.getSource()[1]);
+        System.out.printf("Event from %s: ", event.getSource());
         //String game = event.getSource()[1];
-        String player = event.getSource()[0];
+        String player = event.getSource();
 
         if (event instanceof MessageSend) {
             if (((MessageSend) event).getMessage() != null) {
@@ -82,16 +78,17 @@ public class EventHandler {
                     //if to is not null send the message to the recipient
                     UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, false));
                 } else {
-                    String[] players = GameManager.getInstance().getPlayers(game);
+                    //todo getPlayers in GameManager with a player String as a parameter
+                    String[] players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, game, message, player, true));
+                            UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, true));
                         }
                     }
                 }
             } else {
                 System.out.println("MessageSendFailure");
-                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, game, "Message is null"));
+                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, "Message is null"));
             }
 
 
@@ -103,23 +100,24 @@ public class EventHandler {
             if (!GameManager.getInstance().addPlayer(player, numberOfPlayers)) {
 
                 //TODO fix messages to distinguish between different errors
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, game,"Error in connection"));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player,"Error in connection"));
 
             } else {
 
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player, game));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
 
-                synchronized (lastPingTimes.get(player)) {
+                synchronized (lastPingTimes) {
                     lastPingTimes.put(player, System.currentTimeMillis());
                 }
                 //if everyone is connected send the connection update to all players
-                if(GameManager.getInstance().getPlayers(game).length == GameManager.getInstance().getNumberOfPlayers(game)){
+                if(GameManager.getInstance().getPlayers(player).length == GameManager.getInstance().getNumberOfPlayers(player)){
 
-                    ConnectUpdate connectUpdate = new ConnectUpdate(player,game, GameManager.getInstance().getGameState(game));
 
-                    String[] players = GameManager.getInstance().getPlayers(game);
+                    GameState gameState = GameManager.getInstance().getGameState(player);
+
+                    String[] players = GameManager.getInstance().getPlayers(player);
                     for(String p : players){
-                        UpdateDispatcher.getInstance().dispatchResponse(connectUpdate);
+                        UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
                     }
 
                 }
@@ -130,22 +128,22 @@ public class EventHandler {
         } else if (event instanceof PlayerDisconnect) {
             System.out.println("PlayerDisconnect");
 
-            GameManager.getInstance().removePlayer(player, game);
+            GameManager.getInstance().removePlayer(player);
 
-            String[] players = GameManager.getInstance().getPlayers(game);
+            String[] players = GameManager.getInstance().getPlayers(player);
             for (String p : players) {
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, game, player));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
             }
 
 
         } else if (event instanceof Ping){
-            synchronized (lastPingTimes.get(player)) {
+            synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
                     System.out.println("PingFailure player not found: " + player);
                 }
                 lastPingTimes.replace(player, System.currentTimeMillis());
             }
-            UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player, game));
+            UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player));
 
         } else if (event instanceof TakeTiles){
             System.out.println("TakeTiles");
@@ -154,18 +152,17 @@ public class EventHandler {
             List<Position> tiles = ((TakeTiles) event).getTiles();
 
             if (tiles==null || tiles.size()==0){
-                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, game, "No tiles selected"));
+                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, "No tiles selected"));
             }  else if (column < 0 || column > 4){
-                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, game, "Column out of bounds"));
+                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, "Column out of bounds"));
 
             } else {
 
-                if (GameManager.getInstance().takeTiles(game, player, column, tiles)) {
-                    String[] players = GameManager.getInstance().getPlayers(game);
+                if (GameManager.getInstance().takeTiles(player, column, tiles)) {
+                    String[] players = GameManager.getInstance().getPlayers(player);
 
                     //Notify the success of the take tiles and update the view for all players
-                    //TODO: write getgamestateupdate
-                    GameUpdate gameUpdate = GameManager.getInstance().getGameUpdate(game,player);
+                    GameUpdate gameUpdate = GameManager.getInstance().getGameUpdate(player);
 
                     UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameUpdate));
 
@@ -179,7 +176,7 @@ public class EventHandler {
                     }
 
                 } else {
-                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, game, "Error in taking tiles"));
+                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, "Error in taking tiles"));
                 }
             }
 
@@ -197,11 +194,12 @@ public class EventHandler {
                 e.printStackTrace();
             }
             for (String player : lastPingTimes.keySet()){
-                synchronized (lastPingTimes.get(player)){
+                synchronized (lastPingTimes){
                     if (System.currentTimeMillis() - lastPingTimes.get(player) > 5000){
 
-                        Integer game = GameManager.getInstance().lostConnection(player);
-                        String[] players = GameManager.getInstance().getPlayers(game);
+                        GameManager.getInstance().lostConnection(player);
+
+                        String[] players = GameManager.getInstance().getPlayers(player);
                         for (String p : players) {
                             UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
                         }
