@@ -6,8 +6,8 @@ public class ConnectUpdate extends Response {
 
     private GameState gameState;
 
-    public ConnectUpdate(String player, String game, GameState gameState) {
-        super(player, game);
+    public ConnectUpdate(String player, GameState gameState) {
+        super(player);
         this.gameState = gameState;
     }
 

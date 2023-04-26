@@ -2,8 +2,8 @@ package myshelfie_controller.response;
 
 public class MessageSendFailure extends Response {
         private String message;
-        public MessageSendFailure(String player, String game, String message) {
-            super(player, game);
+        public MessageSendFailure(String player, String message) {
+            super(player);
 
             this.message = message;
         }

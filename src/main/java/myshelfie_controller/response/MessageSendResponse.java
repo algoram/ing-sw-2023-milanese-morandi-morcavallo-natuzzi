@@ -6,8 +6,8 @@ public class MessageSendResponse extends Response{
     private String from;//the player who sent the message
     private Boolean AllPlayers;
 
-    public MessageSendResponse(String player, String game, String message, String from, Boolean AllPlayers) {
-        super(player, game);
+    public MessageSendResponse(String player, String message, String from, Boolean AllPlayers) {
+        super(player);
         this.message = message;
         this.from = from;
         this.AllPlayers = AllPlayers;

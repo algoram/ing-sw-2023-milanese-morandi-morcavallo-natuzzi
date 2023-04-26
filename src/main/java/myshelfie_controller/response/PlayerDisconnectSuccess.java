@@ -3,8 +3,8 @@ package myshelfie_controller.response;
 public class PlayerDisconnectSuccess extends Response{
     private final String disconnectedPlayer;
 
-    public PlayerDisconnectSuccess(String player, String game, String disconnectedPlayer) {
-        super(player, game);
+    public PlayerDisconnectSuccess(String player,String disconnectedPlayer) {
+        super(player);
         this.disconnectedPlayer = disconnectedPlayer;
     }
 
