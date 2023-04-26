@@ -10,6 +10,7 @@ import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,8 +125,10 @@ public class GameManager {
         int turn = GameManager.getInstance().getTurn(game);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
 
-        return new GameState(game, board, commonGoals, playerSeat, turn, finishedFirst, players);
+        return new GameState(game, board, commonGoals, playerSeat, turn, finishedFirst, players).deepClone();
     }
+
+
 
     public GameUpdate getGameUpdate(String player) {
         Integer game = playerToGame.get(player);
@@ -135,7 +138,8 @@ public class GameManager {
         int finishPoint = GameManager.getInstance().getFinishToken(player);
         int adjacentScore = GameManager.getInstance().getAdjacentScore(player);
         int personalScore = GameManager.getInstance().getPersonalScore(player);
-        return new GameUpdate(board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore);
+
+        return new GameUpdate(board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore).deepClone();
     }
 
     //all the functions below are used to get the gameState and may become private later

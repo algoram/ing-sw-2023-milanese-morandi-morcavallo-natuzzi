@@ -189,7 +189,7 @@ public class EventHandler {
     private void lastPingChecker() {
         while(threadRun){
             try {
-                wait(1000);
+                wait(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
