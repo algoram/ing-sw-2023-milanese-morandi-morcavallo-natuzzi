@@ -10,6 +10,4 @@ public interface Client {
 
     void dispatchEvent(Event event);
 
-    void receiveResponse(Response response);
-
 }

@@ -81,7 +81,7 @@ public class EventHandler {
                     UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, false));
                 } else {
                     //todo getPlayers in GameManager with a player String as a parameter
-                    String[] players = GameManager.getInstance().getPlayers(player);
+                    List<String> players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {
                         if (!p.equals(player)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, true));
@@ -119,12 +119,12 @@ public class EventHandler {
                     lastPingTimes.put(player, System.currentTimeMillis());
                 }
                 //if everyone is connected send the connection update to all players
-                if(GameManager.getInstance().getPlayers(player).length == GameManager.getInstance().getNumberOfPlayers(player)){
+                if(GameManager.getInstance().getPlayers(player).size() == GameManager.getInstance().getNumberOfPlayers(player)){
 
 
                     GameState gameState = GameManager.getInstance().getGameState(player);
 
-                    String[] players = GameManager.getInstance().getPlayers(player);
+                    List<String> players = GameManager.getInstance().getPlayers(player);
                     for(String p : players){
                         UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
                     }
@@ -139,7 +139,7 @@ public class EventHandler {
 
             GameManager.getInstance().removePlayer(player);
 
-            String[] players = GameManager.getInstance().getPlayers(player);
+            List<String> players = GameManager.getInstance().getPlayers(player);
             for (String p : players) {
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
             }
@@ -168,7 +168,7 @@ public class EventHandler {
             } else {
 
                 if (GameManager.getInstance().takeTiles(player, column, tiles)) {
-                    String[] players = GameManager.getInstance().getPlayers(player);
+                    List<String> players = GameManager.getInstance().getPlayers(player);
 
                     //Notify the success of the take tiles and update the view for all players
                     GameUpdate gameUpdate = GameManager.getInstance().getGameUpdate(player);
@@ -208,7 +208,7 @@ public class EventHandler {
 
                         GameManager.getInstance().lostConnection(player);
 
-                        String[] players = GameManager.getInstance().getPlayers(player);
+                        List<String> players = GameManager.getInstance().getPlayers(player);
                         for (String p : players) {
                             UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
                         }

@@ -43,6 +43,8 @@ public class UpdateHandler {
     }
 
     public void handle(Response response) {
+        System.out.println("Response received");
+
         // TODO: update view from here
         if (response instanceof PlayerConnectSuccess){
 

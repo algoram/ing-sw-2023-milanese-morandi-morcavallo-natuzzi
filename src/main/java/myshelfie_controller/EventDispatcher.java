@@ -2,6 +2,7 @@ package myshelfie_controller;
 
 import myshelfie_controller.event.Event;
 import myshelfie_controller.event.MessageSend;
+import myshelfie_controller.event.PlayerConnect;
 import myshelfie_network.Client;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
@@ -14,8 +15,8 @@ public class EventDispatcher {
     private static EventDispatcher instance = null;
 
     private String player;
-    private String game;
     private ConnectionType connectionType;
+    private UUID uuid = UUID.randomUUID();
 
     private EventDispatcher() {}
 
@@ -27,13 +28,16 @@ public class EventDispatcher {
         return instance;
     }
 
-    public void setPlayerCredentials(String game, String player) {
-        this.game = game;
+    public void setPlayerCredentials(String player) {
         this.player = player;
     }
 
     public void setConnectionType(ConnectionType type) {
         connectionType = type;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public void chat(String to, String message) {
@@ -44,7 +48,13 @@ public class EventDispatcher {
         ));
     }
 
+    public void connect(int backupNumPlayers) {
+        sendEvent(new PlayerConnect(player, backupNumPlayers));
+    }
+
     private void sendEvent(Event e) {
+        e.setUuid(uuid);
+
         if (connectionType == ConnectionType.RMI) {
             RMIClient.getInstance().dispatchEvent(e);
         } else if (connectionType == ConnectionType.SOCKET) {

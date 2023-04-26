@@ -1,5 +1,6 @@
 package myshelfie_network.rmi;
 
+import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.event.Event;
 import myshelfie_network.Client;
@@ -17,7 +18,6 @@ public class RMIClient extends UnicastRemoteObject implements Client, RMIClientI
     private static RMIClient instance = null;
 
     private RMIServerInterface server;
-    private final UUID uuid = UUID.randomUUID();
 
     private RMIClient() throws RemoteException {}
 
@@ -38,13 +38,11 @@ public class RMIClient extends UnicastRemoteObject implements Client, RMIClientI
         Registry registry = LocateRegistry.getRegistry(host);
         server = (RMIServerInterface) registry.lookup("MyShelfieRMI");
 
-        server.setRMIClient(uuid, this);
+        server.setRMIClient(EventDispatcher.getInstance().getUuid(), this);
     }
 
     @Override
     public void dispatchEvent(Event event) {
-        event.setUuid(uuid);
-
         try {
             server.dispatchEvent(event);
         } catch (RemoteException e) {
@@ -53,12 +51,7 @@ public class RMIClient extends UnicastRemoteObject implements Client, RMIClientI
     }
 
     @Override
-    public void receiveResponse(Response response) {
-        UpdateHandler.getInstance().handle(response);
-    }
-
-    @Override
     public void dispatchResponse(Response response) throws RemoteException {
-        receiveResponse(response);
+        UpdateHandler.getInstance().handle(response);
     }
 }

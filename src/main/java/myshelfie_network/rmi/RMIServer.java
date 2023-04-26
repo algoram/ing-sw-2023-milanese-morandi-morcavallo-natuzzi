@@ -84,19 +84,11 @@ public class RMIServer implements Server, RMIServerInterface {
 
     @Override
     public void dispatchEvent(Event event) throws RemoteException {
-        System.out.println("Event added to the queue");
         EventHandler.getInstance().addToEventQueue(event);
     }
 
     @Override
     public void setRMIClient(UUID uuid, RMIClientInterface client) throws RemoteException {
-        System.out.println(uuid);
-        System.out.println(client);
-
-        if (client == null) {
-            System.out.println("Client nullo");
-        }
-
         tempClients.put(uuid, client);
     }
 }

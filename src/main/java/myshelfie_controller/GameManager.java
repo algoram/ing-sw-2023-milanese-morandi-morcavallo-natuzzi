@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class GameManager {
 
-    private final HashMap<Integer, Game> games = new HashMap<>();
+    private final ArrayList<Game> games = new ArrayList<>();
     private final HashMap<String, Integer> playerToGame = new HashMap<>();
 
     private static GameManager instance = null;
@@ -37,7 +37,7 @@ public class GameManager {
         games.get(playerToGame.get(player)).removePlayer(player);
     }
 
-    public String[] getPlayers(String player) {
+    public List<String> getPlayers(String player) {
         return games.get(playerToGame.get(player)).getPlayersUsernames();
     }
 
@@ -48,29 +48,23 @@ public class GameManager {
      * @return true if the player was added, false if the addPlayer failed
      */
     public boolean addPlayer(String newPlayer, int players) {
-
-        int index = 0;
-
-        // if there is no game with empty seats, create a new game with the given number of players
-        for (Map.Entry<Integer, Game> entry : games.entrySet()) {
-
-            if (index < entry.getKey()){ index = entry.getKey(); } //save the largest index
-
-            if (entry.getValue().getNumberOfPlayers() > entry.getValue().getPlayers().size()){
-
-                playerToGame.put(newPlayer, entry.getKey());  //added player to game in GameManager
-                return entry.getValue().addPlayer(newPlayer);         //added player to game in Game
-
+        for (int i = 0; i < games.size(); i++) {
+            // check if the game is not full
+            if (games.get(i).getPlayers().size() < games.get(i).getNumberOfPlayers()) {
+                playerToGame.put(newPlayer, i); // save which game the player is playing
+                return games.get(i).addPlayer(newPlayer); // add the player to the game
             }
         }
-        // if there is no game with empty seats, create a new game with the given number of players
 
-        Game newGame = new Game();
-        newGame.startGame(players);
-        games.put(index+1, newGame);
-        playerToGame.put(newPlayer, index+1);
-        return newGame.addPlayer(newPlayer);
+        // if all games are full we create a new one
+        Game game = new Game();
+        game.startGame(players); // start it with the number of players specified
 
+        games.add(game);
+
+        playerToGame.put(newPlayer, games.size() - 1); // save which game the player is playing
+
+        return game.addPlayer(newPlayer); // add the player to the game
     }
 
 

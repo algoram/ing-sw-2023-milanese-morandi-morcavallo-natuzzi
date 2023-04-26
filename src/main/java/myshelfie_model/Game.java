@@ -21,7 +21,7 @@ public class Game {
 
     private Board board;
     private ArrayList<Player> players;
-    private ArrayList<Integer> playerStates; // -1 = disconnected, 0 = lostConnection, 1 = connected
+    private ArrayList<Integer> playerStates = new ArrayList<>(); // -1 = disconnected, 0 = lostConnection, 1 = connected
 
     private List<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
@@ -51,14 +51,10 @@ public class Game {
         players = new ArrayList<>(numberOfPlayers);
 
         // create the different personal goals
-        ArrayList<Integer> possiblePersonalGoals = new ArrayList<>();
+        possiblePersonalGoals = new ArrayList<>();
 
         for (int i = 0; i < PersonalGoal.MAX_CARDS; i++) {
             possiblePersonalGoals.add(i + 1);
-        }
-
-        for (int i = 0; i < numPlayers; i++) {
-
         }
 
         // create all the tiles in a random order
@@ -163,8 +159,8 @@ public class Game {
         // Todo what if the player disconnects and then reconnects with different username?
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
-                if (playerStates.get(players.indexOf(username)) == 0) { //if the player has lost connection
-                    playerStates.add(players.indexOf(username), 1);
+                if (playerStates.get(findPlayer(username)) == 0) { //if the player has lost connection
+                    playerStates.add(findPlayer(username), 1);
                     return true;
                 }
                 return false;
@@ -182,7 +178,16 @@ public class Game {
                 new PersonalGoal(possiblePersonalGoals.get(personalGoalIndex))
         ));
 
-        playerStates.add(players.indexOf(username), 1); //add state connection
+        // find where the player is located
+        int playerIndex = -1;
+
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getUsername().equals(username)) {
+                playerIndex = i;
+            }
+        }
+
+        playerStates.add(playerIndex, 1); //add state connection
 
         // remove the goal from the list to avoid giving the same to another player
         possiblePersonalGoals.remove(personalGoalIndex);
@@ -200,7 +205,7 @@ public class Game {
     public boolean removePlayer(String username){
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
-                playerStates.add(players.indexOf(username),-1); //remove state connection
+                playerStates.add(findPlayer(username),-1); //remove state connection
                 return true;
             }
         }
@@ -211,8 +216,8 @@ public class Game {
      * Returns an array of usernames
      * @return array of usernames
      */
-    public String[] getPlayersUsernames() {
-        return (String[]) players.stream().map(Player::getUsername).toArray();
+    public List<String> getPlayersUsernames() {
+        return players.stream().map(Player::getUsername).toList();
     }
 
     /**
@@ -235,7 +240,7 @@ public class Game {
      */
     public boolean takeTiles(String player, List<Position> chosenTiles, int column) {
         // check if the game has finished
-        int playerNumber = players.indexOf(player);
+        int playerNumber = findPlayer(player);
         if (hasFinished()) {
             return false;
         }
@@ -339,29 +344,29 @@ public class Game {
     // Taketilesupdate Response methods
 
     public Bookshelf getBookshelf(String player) {
-        return players.get(players.indexOf(player)).getBookshelf();
+        return players.get(findPlayer(player)).getBookshelf();
     }
 
     public Token[] getCommonGoalTokens(String player) {
         Token[] tokens = new Token[COMMON_GOALS];
 
         for (int i = 0; i < COMMON_GOALS; i++) {
-            tokens[i] = players.get(players.indexOf(player)).getCommonGoalPoints(i);
+            tokens[i] = players.get(findPlayer(player)).getCommonGoalPoints(i);
         }
 
         return tokens;
     }
 
     public int getPersonalScore(String player) {
-        return players.get(players.indexOf(player)).getPersonalGoalPoints();
+        return players.get(findPlayer(player)).getPersonalGoalPoints();
     }
 
     public boolean getFinishPoint(String player) {
-        return players.indexOf(player) == finishedFirst;
+        return findPlayer(player) == finishedFirst;
     }
 
     public int getAdjacentScore(String player) {
-        return players.get(players.indexOf(player)).getBookshelf().getPoints();
+        return players.get(findPlayer(player)).getBookshelf().getPoints();
     }
 
 
@@ -391,12 +396,22 @@ public class Game {
 
 
     public boolean lostConnection(String player) {
-        if (playerStates.get(players.indexOf(player)) != 1) {
+        if (playerStates.get(findPlayer(player)) != 1) {
             System.out.println("Player " + player + " had already lost connection"); //Debug messages
             return false;
         }
-        playerStates.add(players.indexOf(player), 0);
+        playerStates.add(findPlayer(player), 0);
         return true;
+    }
+
+    private int findPlayer(String player) {
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getUsername().equals(player)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 

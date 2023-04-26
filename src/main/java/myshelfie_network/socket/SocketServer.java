@@ -38,14 +38,17 @@ public class SocketServer implements Server {
         serverSocket = new ServerSocket(port);
         while (true) {
             try {
-                // Accetta le connessioni dei client
+                // Accept client connections
                 Socket clientSocket = serverSocket.accept();
-                ObjectInputStream inputStreamUsername = new ObjectInputStream(clientSocket.getInputStream());
-                String username = (String) inputStreamUsername.readObject();
-                System.out.println("Nuovo client connesso: " + clientSocket.getInetAddress().getHostName() + "username: " + username );
+                ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+                outputStream.flush();
+                ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
+                String username = (String) inputStream.readObject();
+                System.out.println("New client connected: " + clientSocket.getInetAddress().getHostName() + " username: " + username );
 
-                // Crea un nuovo thread per gestire il client
+                // Create new thread to handle the client
                 ClientHandler clientHandler = new ClientHandler(clientSocket, username);
+                clientHandler.setStreams(outputStream, inputStream);
                 clients.add(clientHandler);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
@@ -84,11 +87,13 @@ public class SocketServer implements Server {
             this.player = player;
         }
 
+        public void setStreams(ObjectOutputStream o, ObjectInputStream i) {
+            outputStream = o;
+            inputStream = i;
+        }
+
         public void run() {
             try {
-                outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-                inputStream = new ObjectInputStream(clientSocket.getInputStream());
-
                 while (true) {
                     // Read data from client
                     Object data = inputStream.readObject();

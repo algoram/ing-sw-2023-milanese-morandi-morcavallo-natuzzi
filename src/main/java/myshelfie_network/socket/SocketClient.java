@@ -43,7 +43,9 @@ public class SocketClient implements Client {
         this.port = port;
 
         socket = new Socket(host, port);
+        System.out.println("Connected to " + host + ":" + port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
+        outputStream.flush();
         inputStream = new ObjectInputStream(socket.getInputStream());
         try {
             outputStream.writeObject(username);
@@ -58,7 +60,7 @@ public class SocketClient implements Client {
             while (threadRun) {
                 try {
                     Response response = (Response) inputStream.readObject();
-                    receiveResponse(response);
+                    UpdateHandler.getInstance().handle(response);
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -92,11 +94,6 @@ public class SocketClient implements Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void receiveResponse(Response response) {
-        UpdateHandler.getInstance().handle(response);
     }
 }
 
