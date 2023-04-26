@@ -8,9 +8,6 @@ public class UpdateDispatcher {
 
     private static UpdateDispatcher instance = null;
 
-    private RMIServer rmiServer;
-    private SocketServer socketServer;
-
     private UpdateDispatcher() {}
 
     public static UpdateDispatcher getInstance() {
@@ -22,13 +19,12 @@ public class UpdateDispatcher {
     }
 
     public void dispatchResponse(Response response) {
-        String player = response.getTarget()[0];
-        String game = response.getTarget()[1];
+        String player = response.getTarget();
 
-        if (rmiServer.hasClient(game, player)) {
-            rmiServer.sendResponse(response);
-        } else if (socketServer.hasClient(game, player)) {
-            socketServer.sendResponse(response);
+        if (RMIServer.getInstance().hasClient(player)) {
+            RMIServer.getInstance().sendResponse(response);
+        } else if (SocketServer.getInstance().hasClient(player)) {
+            SocketServer.getInstance().sendResponse(response);
         }
     }
 

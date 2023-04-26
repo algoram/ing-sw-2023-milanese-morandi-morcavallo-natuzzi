@@ -5,6 +5,8 @@ import myshelfie_controller.response.*;
 import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
+import myshelfie_network.rmi.RMIServer;
+import myshelfie_network.socket.SocketClient;
 
 
 import java.util.*;
@@ -104,6 +106,13 @@ public class EventHandler {
 
             } else {
 
+                // tell the network stack to memorize the player's client
+                UUID uuid = event.getUuid();
+
+                if (RMIServer.getInstance().hasTempClient(uuid)) {
+                    RMIServer.getInstance().addClient(uuid, player);
+                }
+
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
 
                 synchronized (lastPingTimes) {
@@ -189,7 +198,7 @@ public class EventHandler {
     private void lastPingChecker() {
         while(threadRun){
             try {
-                wait(2000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -1,9 +1,8 @@
 package myshelfie_network.rmi;
 
-import myshelfie_controller.ClientID;
 import myshelfie_controller.EventHandler;
-import myshelfie_controller.GameManager;
 import myshelfie_controller.event.Event;
+import myshelfie_controller.event.PlayerConnect;
 import myshelfie_network.Server;
 import myshelfie_controller.response.Response;
 
@@ -13,10 +12,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.UUID;
 
-public class RMIServer implements Server, RMINetworkInterface {
+public class RMIServer implements Server, RMIServerInterface {
 
-    private HashMap<ClientID, RMIClient> clients;
+    private HashMap<String, RMIClientInterface> clients = new HashMap<>();
+    private HashMap<UUID, RMIClientInterface> tempClients = new HashMap<>();
 
     private static RMIServer instance = null;
 
@@ -33,32 +34,42 @@ public class RMIServer implements Server, RMINetworkInterface {
     public void start(int port) {
         try {
             LocateRegistry.createRegistry(port);
-            RMINetworkInterface stub = (RMINetworkInterface) UnicastRemoteObject.exportObject(this, 0);
+            RMIServerInterface stub = (RMIServerInterface) UnicastRemoteObject.exportObject(this, 0);
             Naming.rebind("MyShelfieRMI", stub);
         } catch (RemoteException e) {
             System.err.println("Couldn't create the registry.");
+            System.err.println(e);
         } catch (MalformedURLException e) {
             System.err.println("Bad url for the stub.");
         }
     }
 
     @Override
-    public boolean hasClient(String game, String player) {
-        return clients.containsKey(new ClientID(game, player));
+    public boolean hasClient(String player) {
+        return clients.containsKey(player);
+    }
+
+    public boolean hasTempClient(UUID uuid) {
+        return tempClients.containsKey(uuid);
+    }
+
+    public void addClient(UUID uuid, String username) {
+        clients.put(username, tempClients.get(uuid));
+
+        tempClients.remove(uuid);
     }
 
     @Override
     public void sendResponse(Response response) {
-        String player = response.getTarget()[0];
-        String game = response.getTarget()[1];
+        String player = response.getTarget();
 
-        RMIClient client = clients.get(new ClientID(game, player));
+        RMIClientInterface client = clients.get(player);
 
         int tries = 3;
 
         while (tries > 0) {
             try {
-                client.receiveResponse(response);
+                client.dispatchResponse(response);
 
                 break;
             } catch (RemoteException e) {
@@ -75,5 +86,17 @@ public class RMIServer implements Server, RMINetworkInterface {
     public void dispatchEvent(Event event) throws RemoteException {
         System.out.println("Event added to the queue");
         EventHandler.getInstance().addToEventQueue(event);
+    }
+
+    @Override
+    public void setRMIClient(UUID uuid, RMIClientInterface client) throws RemoteException {
+        System.out.println(uuid);
+        System.out.println(client);
+
+        if (client == null) {
+            System.out.println("Client nullo");
+        }
+
+        tempClients.put(uuid, client);
     }
 }

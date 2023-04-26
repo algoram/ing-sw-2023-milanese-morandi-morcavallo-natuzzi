@@ -7,8 +7,8 @@ public abstract class Response {
         targetPlayer = player;
     }
 
-    public String[] getTarget() {
-        return new String[] {targetPlayer};
+    public String getTarget() {
+        return targetPlayer;
     }
 
 }

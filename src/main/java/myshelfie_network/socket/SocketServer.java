@@ -75,7 +75,6 @@ public class SocketServer implements Server {
     private class ClientHandler implements Runnable {
         private Socket clientSocket;
         private String player;
-        private String game;
 
         private ObjectOutputStream outputStream;
         private ObjectInputStream inputStream;
@@ -130,9 +129,9 @@ public class SocketServer implements Server {
     }
 
     @Override
-    public boolean hasClient(String game, String player) {
+    public boolean hasClient(String player) {
         for (ClientHandler client : clients) {
-            if (client.game.equals(game) && client.player.equals(player)) {
+            if (client.player.equals(player)) {
                 return true;
             }
         }
@@ -142,7 +141,7 @@ public class SocketServer implements Server {
     @Override
     public void sendResponse(Response response) {
         for (ClientHandler client : clients) {
-            if (client.game.equals(response.getTarget()[1]) && client.player.equals(response.getTarget()[0])) {
+            if (client.player.equals(response.getTarget())) {
                 try {
                     client.outputStream.writeObject(response);
                 } catch (IOException e) {

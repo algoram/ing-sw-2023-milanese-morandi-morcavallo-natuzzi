@@ -6,7 +6,7 @@ import myshelfie_controller.response.Response;
 
 public interface Server {
 
-    boolean hasClient(String game, String player);
+    boolean hasClient(String player);
 
     void sendResponse(Response response);
 }

@@ -9,18 +9,26 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.UUID;
 
-public class RMIClient implements Client {
+public class RMIClient extends UnicastRemoteObject implements Client, RMIClientInterface {
 
     private static RMIClient instance = null;
 
-    private RMINetworkInterface server;
+    private RMIServerInterface server;
+    private final UUID uuid = UUID.randomUUID();
 
-    private RMIClient() {}
+    private RMIClient() throws RemoteException {}
 
     public static RMIClient getInstance() {
         if (instance == null) {
-            instance = new RMIClient();
+            try {
+                instance = new RMIClient();
+            } catch (RemoteException e) {
+                // something went horribly wrong
+                throw new RuntimeException(e);
+            }
         }
 
         return instance;
@@ -28,11 +36,15 @@ public class RMIClient implements Client {
 
     public void connect(String host) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(host);
-        server = (RMINetworkInterface) registry.lookup("MyShelfieRMI");
+        server = (RMIServerInterface) registry.lookup("MyShelfieRMI");
+
+        server.setRMIClient(uuid, this);
     }
 
     @Override
     public void dispatchEvent(Event event) {
+        event.setUuid(uuid);
+
         try {
             server.dispatchEvent(event);
         } catch (RemoteException e) {
@@ -43,5 +55,10 @@ public class RMIClient implements Client {
     @Override
     public void receiveResponse(Response response) {
         UpdateHandler.getInstance().handle(response);
+    }
+
+    @Override
+    public void dispatchResponse(Response response) throws RemoteException {
+        receiveResponse(response);
     }
 }
