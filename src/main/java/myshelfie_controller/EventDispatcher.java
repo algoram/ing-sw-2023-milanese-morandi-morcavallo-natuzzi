@@ -2,6 +2,7 @@ package myshelfie_controller;
 
 import myshelfie_controller.event.Event;
 import myshelfie_controller.event.MessageSend;
+import myshelfie_controller.event.Ping;
 import myshelfie_controller.event.PlayerConnect;
 import myshelfie_network.Client;
 import myshelfie_network.rmi.RMIClient;
@@ -17,6 +18,7 @@ public class EventDispatcher {
     private String player;
     private ConnectionType connectionType;
     private UUID uuid = UUID.randomUUID();
+    private boolean pingThreadRun;
 
     private EventDispatcher() {}
 
@@ -60,6 +62,27 @@ public class EventDispatcher {
         } else if (connectionType == ConnectionType.SOCKET) {
             SocketClient.getInstance().dispatchEvent(e);
         }
+    }
+
+    public void startPinging() {
+        pingThreadRun = true;
+
+        new Thread(() -> {
+            while (pingThreadRun) {
+                sendEvent(new Ping(player));
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    pingThreadRun = false;
+                }
+            }
+        }).start();
+    }
+
+    public void stopPinging() {
+        pingThreadRun = false;
     }
 
 }

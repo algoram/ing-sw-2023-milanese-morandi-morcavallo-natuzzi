@@ -97,7 +97,6 @@ public class SocketServer implements Server {
                 while (true) {
                     // Read data from client
                     Object data = inputStream.readObject();
-                    System.out.println("Dati ricevuti dal client: " + data);
 
                     // Manage data
                     handleData(data);

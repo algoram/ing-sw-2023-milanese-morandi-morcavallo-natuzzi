@@ -70,10 +70,13 @@ public class RMIServer implements Server, RMIServerInterface {
         while (tries > 0) {
             try {
                 client.dispatchResponse(response);
+                System.out.println("Trying to send...");
 
                 break;
             } catch (RemoteException e) {
                 tries--;
+                System.out.println("Failed to send. Retrying...");
+                e.printStackTrace();
             }
         }
 

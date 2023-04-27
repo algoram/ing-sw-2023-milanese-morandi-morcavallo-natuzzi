@@ -1,7 +1,9 @@
 package myshelfie_controller.response;
 
 
-public class PlayerConnectSuccess extends Response{
+import java.io.Serializable;
+
+public class PlayerConnectSuccess extends Response {
 
     public PlayerConnectSuccess(String player) {
         super(player);

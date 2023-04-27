@@ -1,6 +1,8 @@
 package myshelfie_controller.response;
 
-public abstract class Response {
+import java.io.Serializable;
+
+public abstract class Response implements Serializable {
 
     protected String targetPlayer;
     public Response(String player) {

@@ -46,13 +46,13 @@ public class SocketClient implements Client {
         System.out.println("Connected to " + host + ":" + port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         outputStream.flush();
-        inputStream = new ObjectInputStream(socket.getInputStream());
         try {
             outputStream.writeObject(username);
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        inputStream = new ObjectInputStream(socket.getInputStream());
 
         threadRun = true;
 

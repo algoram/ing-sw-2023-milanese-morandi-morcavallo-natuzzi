@@ -43,11 +43,13 @@ public class UpdateHandler {
     }
 
     public void handle(Response response) {
-        System.out.println("Response received");
+        System.out.println("Received response " + response.getClass().getSimpleName());
 
         // TODO: update view from here
         if (response instanceof PlayerConnectSuccess){
-
+            // start pinging server
+            System.out.println("Starting to ping...");
+            EventDispatcher.getInstance().startPinging();
         } else if (response instanceof PlayerConnectFailure) {
 
             

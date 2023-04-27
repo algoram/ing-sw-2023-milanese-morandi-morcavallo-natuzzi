@@ -19,12 +19,17 @@ public class UpdateDispatcher {
     }
 
     public void dispatchResponse(Response response) {
+        System.out.println("Sending response " + response.getClass().getSimpleName());
         String player = response.getTarget();
 
         if (RMIServer.getInstance().hasClient(player)) {
+            System.out.println("Sending via RMI");
             RMIServer.getInstance().sendResponse(response);
         } else if (SocketServer.getInstance().hasClient(player)) {
+            System.out.println("Sending via socket");
             SocketServer.getInstance().sendResponse(response);
+        } else {
+            System.out.println("Did not send");
         }
     }
 
