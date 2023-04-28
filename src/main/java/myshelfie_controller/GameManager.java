@@ -116,10 +116,10 @@ public class GameManager {
         CommonGoal[] commonGoals = GameManager.getInstance().getCommonGoals(game);
         int playerSeat = GameManager.getInstance().getPlayerSeat(game);
         int finishedFirst = GameManager.getInstance().getFinishedFirst(game);
-        int turn = GameManager.getInstance().getTurn(game);
+        String playerTurn = GameManager.getInstance().getTurn(game);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
 
-        return new GameState(game, board, commonGoals, playerSeat, turn, finishedFirst, players).deepClone();
+        return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players).deepClone();
     }
 
 
@@ -157,7 +157,7 @@ public class GameManager {
         return games.get(game).getPlayers();
     }
 
-    private int getTurn(Integer game) {
+    private String getTurn(Integer game) {
         return games.get(game).getTurn();
     }
 

@@ -392,7 +392,7 @@ public class Game {
         return players;
     }
 
-    public int getTurn() {return turn;}
+    public String getTurn() {return players.get(turn).toString();}
 
 
     public boolean lostConnection(String player) {
