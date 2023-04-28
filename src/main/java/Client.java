@@ -22,7 +22,7 @@ public class Client {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        //init()
         EventDispatcher.getInstance().setPlayerCredentials("player");
         EventDispatcher.getInstance().setConnectionType(ConnectionType.SOCKET);
 
