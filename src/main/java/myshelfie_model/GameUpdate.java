@@ -15,14 +15,16 @@ public class GameUpdate {
     private final int finishPoint;
     private final int adjacentScore;
     private int personalScore;
+    private final String playerTurn;
 
-    public GameUpdate (Board board, Bookshelf bookshelf, Token[] commontokens,int finishPoint, int adjacentScore, int personalScore) {
+    public GameUpdate (Board board, Bookshelf bookshelf, Token[] commontokens,int finishPoint, int adjacentScore, int personalScore, String playerTurn) {
         this.board = board;
         this.bookshelf = bookshelf;
         this.commontokens = commontokens;
         this.finishPoint = finishPoint;
         this.adjacentScore = adjacentScore;
         this.personalScore = personalScore;
+        this.playerTurn = playerTurn;
     }
 
     public Board getBoard() {
@@ -49,6 +51,10 @@ public class GameUpdate {
 
     public void removePersonalData() {
         this.personalScore = 0;
+    }
+
+    public String getPlayerTurn() {
+        return playerTurn;
     }
 
     public GameUpdate deepClone() {

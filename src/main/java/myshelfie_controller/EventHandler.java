@@ -141,7 +141,7 @@ public class EventHandler {
 
             List<String> players = GameManager.getInstance().getPlayers(player);
             for (String p : players) {
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player, GameManager.getInstance().getTurn(player)));
             }
 
 
@@ -210,7 +210,9 @@ public class EventHandler {
 
                         List<String> players = GameManager.getInstance().getPlayers(player);
                         for (String p : players) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player));
+                            UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
+                                                                                                        player,
+                                                                                                        GameManager.getInstance().getTurn(player)));
                         }
                     }
                 }

@@ -16,21 +16,22 @@ public class GameState implements Serializable {
     private final CommonGoal[] commonGoals;
 
     private final int playerSeat;
-    private final int turn;
     private final int finishedFirst;
+    private final String playerTurn;
 
-    private ArrayList<Player> players;
 
-    public GameState(Integer gameNumber, Board board, CommonGoal[] commonGoals, int playerSeat, int turn, int finishedFirst, ArrayList<Player> players) {
+    private final ArrayList<Player> players;
+
+    public GameState(Integer gameNumber, Board board, CommonGoal[] commonGoals, int playerSeat, String playerTurn, int finishedFirst, ArrayList<Player> players) {
         //TODO deep clone objects by serializing and deserializing
 
         this.gameNumber = gameNumber;
         this.board = board;
         this.commonGoals = commonGoals;
         this.playerSeat = playerSeat;
-        this.turn = turn;
         this.finishedFirst = finishedFirst;
         this.players = players;
+        this.playerTurn = playerTurn;
     }
 
     public Integer getGameNumber() {
@@ -49,8 +50,8 @@ public class GameState implements Serializable {
         return playerSeat;
     }
 
-    public int getTurn() {
-        return turn;
+    public String getPlayerTurn() {
+        return playerTurn;
     }
 
     public int getFinishedFirst() {
@@ -60,6 +61,7 @@ public class GameState implements Serializable {
     public ArrayList<Player> getPlayers() {
         return players;
     }
+
 
     public GameState deepClone() {
         try {
