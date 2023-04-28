@@ -79,7 +79,6 @@ public class GameManager {
 
     public void lostConnection(String player) {
         Integer game = playerToGame.get(player);
-        //if (game == null) { return false; }
         games.get(game).lostConnection(player);
     }
 
@@ -116,7 +115,7 @@ public class GameManager {
         CommonGoal[] commonGoals = GameManager.getInstance().getCommonGoals(game);
         int playerSeat = GameManager.getInstance().getPlayerSeat(game);
         int finishedFirst = GameManager.getInstance().getFinishedFirst(game);
-        String playerTurn = GameManager.getInstance().getTurn(game);
+        String playerTurn = GameManager.getInstance().getTurn(player);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
 
         return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players).deepClone();
@@ -132,8 +131,10 @@ public class GameManager {
         int finishPoint = GameManager.getInstance().getFinishToken(player);
         int adjacentScore = GameManager.getInstance().getAdjacentScore(player);
         int personalScore = GameManager.getInstance().getPersonalScore(player);
+        String playerTurn = GameManager.getInstance().getTurn(player);
 
-        return new GameUpdate(board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore).deepClone();
+
+        return new GameUpdate(board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore, playerTurn).deepClone();
     }
 
     //all the functions below are used to get the gameState and may become private later
@@ -157,8 +158,8 @@ public class GameManager {
         return games.get(game).getPlayers();
     }
 
-    private String getTurn(Integer game) {
-        return games.get(game).getTurn();
+    public String getTurn(String player){
+        return games.get(playerToGame.get(player)).getTurn();
     }
 
 
