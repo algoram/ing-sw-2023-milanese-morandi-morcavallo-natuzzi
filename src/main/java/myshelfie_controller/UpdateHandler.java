@@ -52,72 +52,71 @@ public class UpdateHandler {
             // start pinging server
             System.out.println("Starting to ping...");
             EventDispatcher.getInstance().startPinging();
-            View.getInstance().showMessage("Waiting for other players to enter!");
+            View.getInstance().connectionSuccessful();
 
         } else if (response instanceof PlayerConnectFailure) {
             String message = ((PlayerConnectFailure) response).getMessage();
-            View.getInstance().showMessage(message);
             EventDispatcher.getInstance().setPlayerCredentials(null);
+            View.getInstance().connectionFailed(message);
+
 
         } else if (response instanceof PlayerDisconnectSuccess) {
 
             String playerout = ((PlayerDisconnectSuccess) response).getDisconnectedPlayer();
             String playerTurn = ((PlayerDisconnectSuccess) response).getPlayerTurn();
 
-            View.getInstance().showMessage("Player"+ playerout + "disconnected");
+            //todo the following showMessage could become a function to better regulate disconnections
+            View.getInstance().playerDisconnected(playerout);
 
-            if (playerTurn.equals(EventDispatcher.getInstance().getPlayerCredentials().getUsername())){
-                View.getInstance().showMessage("it's your turn");
-            }else{
-                View.getInstance().showMessage("it's + " + playerTurn + "'s turn");
-            }
+            playerTurn(playerTurn);
 
         } else if (response instanceof MessageSendSuccess) {
-            View.getInstance().showMessage("Message sent successfully!");
+            View.getInstance().messageSentSuccessfully();
 
         } else if (response instanceof MessageSendFailure) {
-            View.getInstance().showMessage("Message send Failure");
+            String errorMessage = ((MessageSendFailure) response).getMessage();
+            View.getInstance().messageSentFailure(errorMessage);
 
         } else if (response instanceof MessageSendResponse) {
             String message = ((MessageSendResponse) response).getMessage();
             String sender = ((MessageSendResponse) response).getFrom();
-            Boolean AllPlayers = ((MessageSendResponse) response).getAllPlayers();
+            Boolean allPlayers = ((MessageSendResponse) response).getAllPlayers();
 
-            if (AllPlayers){
-                View.getInstance().showMessage("Message from " + sender + "to everyone:");
-            }else{
-                View.getInstance().showMessage("Message from " + sender + "to you:");
-            }
-            View.getInstance().showMessage(message);
+            View.getInstance().chatIn(sender, message, allPlayers);
 
         } else if (response instanceof PingAck) {
             // do nothing
 
         } else if (response instanceof ConnectUpdate) {
             GameState gameState = ((ConnectUpdate) response).getGameState();
-            View.getInstance().showMessage("");
-            updateView(gameState);
-
+            View.getInstance().initGameState(gameState);
 
         } else if (response instanceof TakeTilesSuccess) {
-            View.getInstance().showMessage("Tiles taken successfully!");
-            GameUpdate gameUpdate = ((TakeTilesSuccess) response).getGameUpdate();
 
+            GameUpdate gameUpdate = ((TakeTilesSuccess) response).getGameUpdate();
+            View.getInstance().showGameUpdate(gameUpdate);
 
         } else if (response instanceof TakeTilesUpdate) {
 
+            GameUpdate gameUpdate = ((TakeTilesSuccess) response).getGameUpdate();
+            View.getInstance().showGameUpdate(gameUpdate);
+            playerTurn(gameUpdate.getPlayerTurn());
 
         } else if (response instanceof TakeTilesFailure) {
+
+            String reason = ((TakeTilesFailure) response).getReason();
+            View.getInstance().takeFailed(reason);
+            View.getInstance().yourTurn();
 
         }
     }
 
-    private void updateView(GameState gameState){
-
-    }
-
-    private void updateView(GameUpdate gameUpdate){
-
+    private void playerTurn(String playerTurn){
+        if (playerTurn.equals(EventDispatcher.getInstance().getUsername())){
+            View.getInstance().yourTurn();
+        }else{
+            View.getInstance().turnOf(playerTurn);
+        }
     }
 
     public void closeHandler() {

@@ -9,24 +9,29 @@ import java.io.*;
 public class GameUpdate {
 
     private static final long serialVersionUID = 4532440671217154070L;
+
+    private final String playerUpdated;
     private final Board board;
     private final Bookshelf bookshelf;
     private final Token[] commontokens;
     private final int finishPoint;
     private final int adjacentScore;
-    private int personalScore;
+    private Integer personalScore = 0;//THIS SCORE IS SET TO NULL WHEN THE sent to a player
+                                        // that has not done the takeTiles
     private final String playerTurn;
 
-    public GameUpdate (Board board, Bookshelf bookshelf, Token[] commontokens,int finishPoint, int adjacentScore, int personalScore, String playerTurn) {
+    public GameUpdate (String playerUpdated, Board board, Bookshelf bookshelf, Token[] commontokens,int finishPoint, int adjacentScore, int personalScore, String playerTurn) {
+        this.playerUpdated = playerUpdated;
         this.board = board;
         this.bookshelf = bookshelf;
         this.commontokens = commontokens;
         this.finishPoint = finishPoint;
         this.adjacentScore = adjacentScore;
         this.personalScore = personalScore;
-        this.playerTurn = playerTurn;
+        this.playerTurn = playerTurn; //not used in view when opens the update
     }
 
+    public String getPlayerUpdated(){return playerUpdated;}
     public Board getBoard() {
         return board;
     }
@@ -50,7 +55,7 @@ public class GameUpdate {
     }
 
     public void removePersonalData() {
-        this.personalScore = 0;
+        this.personalScore = null;
     }
 
     public String getPlayerTurn() {

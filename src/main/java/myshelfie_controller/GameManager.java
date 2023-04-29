@@ -140,7 +140,7 @@ public class GameManager {
         String playerTurn = GameManager.getInstance().getTurn(player);
 
 
-        return new GameUpdate(board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore, playerTurn).deepClone();
+        return new GameUpdate(player,board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore, playerTurn).deepClone();
     }
 
     //all the functions below are used to get the gameState and may become private later

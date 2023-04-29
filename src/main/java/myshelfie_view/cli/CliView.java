@@ -29,20 +29,19 @@ public class CliView extends View {
         return instance;
     }
     public void init() {
-
+        out.println("Welcome to MyShelfie!");
+        out.print(  "  __       ____      __     _____ __    __ ______ __       ______ _____ ______    \n" +
+                " |  \     /  \ \    / /    / ____|  |  |  |  ____|  |     |  ____|_   _|  ____|   \n" +
+                " |    \  /    \ \_ / /    | (___ |  |__|  | |__  |  |     | |__    | | | |__      \n" +
+                " |  |  \/     |\ \/ /      \___ \|   __   |  __| |  |     |  __|   | | |  __|     \n" +
+                " |  | |  | |  | |  |       ____) |  |  |  | |____|  |_____| |     _| |_| |____    \n" +
+                " |__| |__| |__| |__|      |_____/|__|  |__|______|________|_|    |_____|______|   \n" +
+                "                                                                                  \n"
+        );
+        out.println("Digit '/help' to see the list of available commands.");
+        out.println("Digit '/exit' to exit the game.");
         new Thread( () ->{
             while (gameIsRunning) {
-                out.println("Welcome to MyShelfie!");
-                out.print(  "  __       ____      __     _____ __    __ ______ __       ______ _____ ______    \n" +
-                        " |  \     /  \ \    / /    / ____|  |  |  |  ____|  |     |  ____|_   _|  ____|   \n" +
-                        " |    \  /    \ \_ / /    | (___ |  |__|  | |__  |  |     | |__    | | | |__      \n" +
-                        " |  |  \/     |\ \/ /      \___ \|   __   |  __| |  |     |  __|   | | |  __|     \n" +
-                        " |  | |  | |  | |  |       ____) |  |  |  | |____|  |_____| |     _| |_| |____    \n" +
-                        " |__| |__| |__| |__|      |_____/|__|  |__|______|________|_|    |_____|______|   \n" +
-                        "                                                                                  \n"
-                );
-                out.println("Digit '/help' to see the list of available commands.");
-                out.println("Digit '/exit' to exit the game.");
 
                 String input = null;
                 input = readSafe();
@@ -108,12 +107,13 @@ public class CliView extends View {
     }
 
     public void connectionSuccessfull() {
-        chatIsRunning = true;
-        out.println("Connection Successful");
+        //todo move  chatIsRunning = true;
+        out.println("Waiting for other players to enter!");
     }
 
-    public void connectionFailed() {
-        out.println("Connection Failed");
+    public void connectionFailed(String reason) {
+        out.println(reason);
+        //todo ask again username try again connect
     }
 
     public void chatIn(String sender, String message) {
@@ -189,13 +189,19 @@ public class CliView extends View {
     private void help(){
         out.println("Available commands:");
         out.println("/help: show the list of available commands");
-        out.println("/chat: send a message to the other players");
+        if (chatIsRunning) out.println("/chat: send a message to the other players");
         out.println("/exit: exit the game");
     }
 
     private void exit(){
         out.println("Bye Bye");
         gameIsRunning = false;
+        EventDispatcher.getInstance().playerDisconnect();
+        //todo notify to server client the disconnection
+    }
+
+    public void showMessage (String message){
+        //todo
     }
 
     public void closeCliView() {

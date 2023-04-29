@@ -1,13 +1,12 @@
 package myshelfie_controller;
 
-import myshelfie_controller.event.Event;
-import myshelfie_controller.event.MessageSend;
-import myshelfie_controller.event.Ping;
-import myshelfie_controller.event.PlayerConnect;
+import myshelfie_controller.event.*;
+import myshelfie_model.Position;
 import myshelfie_network.Client;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -42,27 +41,10 @@ public class EventDispatcher {
         return uuid;
     }
 
-    public void chat(String to, String message) {
-        sendEvent(new MessageSend(
-                player,
-                to,
-                message
-        ));
+    public String getUsername(){
+        return player;
     }
 
-    public void connect(int backupNumPlayers) {
-        sendEvent(new PlayerConnect(player, backupNumPlayers));
-    }
-
-    private void sendEvent(Event e) {
-        e.setUuid(uuid);
-
-        if (connectionType == ConnectionType.RMI) {
-            RMIClient.getInstance().dispatchEvent(e);
-        } else if (connectionType == ConnectionType.SOCKET) {
-            SocketClient.getInstance().dispatchEvent(e);
-        }
-    }
 
     public void startPinging() {
         pingThreadRun = true;
@@ -83,6 +65,38 @@ public class EventDispatcher {
 
     public void stopPinging() {
         pingThreadRun = false;
+    }
+
+    private void sendEvent(Event e) {
+        e.setUuid(uuid);
+
+        if (connectionType == ConnectionType.RMI) {
+            RMIClient.getInstance().dispatchEvent(e);
+        } else if (connectionType == ConnectionType.SOCKET) {
+            SocketClient.getInstance().dispatchEvent(e);
+        }
+    }
+
+    public void chat(String to, String message) {
+        sendEvent(new MessageSend(
+                player,
+                to,
+                message
+        ));
+    }
+
+    public void connect(int backupNumPlayers) {
+        sendEvent(new PlayerConnect(player, backupNumPlayers));
+    }
+
+    public void playerDisconnect(){
+        Event e = new PlayerDisconnect(this.player);
+        sendEvent(e);
+    }
+
+    public void takeTiles(List<Position> tiles, int column){
+        Event e = new TakeTiles(this.player,tiles,column);
+        sendEvent(e);
     }
 
 }
