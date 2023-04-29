@@ -150,8 +150,9 @@ public class Game {
      * @return whether the player has been added or not
      */
     public boolean addPlayer(String username) {
-        // check that the game is not already full
+        // should not be possible to enter this if
         if (players.size() == numberOfPlayers) {
+            System.out.println("The game is full error in calling addPlayer()");
             return false;
         }
 

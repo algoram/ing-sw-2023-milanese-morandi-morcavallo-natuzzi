@@ -23,7 +23,8 @@ public class GameManager {
 
     private static GameManager instance = null;
 
-    private GameManager() {}
+    private GameManager() {
+    }
 
     public static GameManager getInstance() {
         if (instance == null) {
@@ -44,27 +45,32 @@ public class GameManager {
     /**
      * This function is calls from event handler when a player connects to a game.
      * if the game doesn't exist it will be created.
+     *
      * @param newPlayer the player to add
      * @return true if the player was added, false if the addPlayer failed
      */
-    public boolean addPlayer(String newPlayer, int players) {
+    public Boolean addPlayer(String newPlayer, int players) {
         for (int i = 0; i < games.size(); i++) {
-            // check if the game is not full
-            if (games.get(i).getPlayers().size() < games.get(i).getNumberOfPlayers()) {
-                playerToGame.put(newPlayer, i); // save which game the player is playing
-                return games.get(i).addPlayer(newPlayer); // add the player to the game
+
+            if (games.get(i).getPlayers().size() < games.get(i).getNumberOfPlayers()) { // if the game is not full
+
+                if (games.get(i).addPlayer(newPlayer)) {
+                    playerToGame.put(newPlayer, i); // save which game the player is playing
+                    return true;
+                }
+                else { return false;}
             }
         }
 
-        // if all games are full we create a new one
-        Game game = new Game();
+        Game game = new Game(); //otherwise create a new game
         game.startGame(players); // start it with the number of players specified
 
-        games.add(game);
-
-        playerToGame.put(newPlayer, games.size() - 1); // save which game the player is playing
-
-        return game.addPlayer(newPlayer); // add the player to the game
+        if (game.addPlayer(newPlayer)) {
+            games.add(game);
+            playerToGame.put(newPlayer, games.size() - 1); // save which game the player is playing
+            return true;
+        }
+        else { return false;}
     }
 
 

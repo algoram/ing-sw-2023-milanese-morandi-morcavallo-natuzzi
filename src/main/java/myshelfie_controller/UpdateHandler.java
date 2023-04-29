@@ -46,27 +46,28 @@ public class UpdateHandler {
         System.out.println("Received response " + response.getClass().getSimpleName());
 
         // TODO: update view from here
-        if (response instanceof PlayerConnectSuccess){
+        if (response instanceof PlayerConnectSuccess) {
             // start pinging server
             System.out.println("Starting to ping...");
             EventDispatcher.getInstance().startPinging();
         } else if (response instanceof PlayerConnectFailure) {
 
-            
-        } else if (response instanceof MessageSendSuccess) {
-
-            
-        } else if (response instanceof TakeTilesSuccess) {
-
-            
-        } else if (response instanceof TakeTilesUpdate) {
-
-            
-        } else if (response instanceof PingAck) {
-
-            
         } else if (response instanceof PlayerDisconnectSuccess) {
 
+
+        } else if (response instanceof MessageSendSuccess) {
+
+        } else if (response instanceof MessageSendFailure) {
+
+        } else if (response instanceof MessageSendResponse) {
+
+        } else if (response instanceof PingAck) {
+
+        } else if (response instanceof ConnectUpdate) {
+
+        } else if (response instanceof TakeTilesSuccess) {
+
+        } else if (response instanceof TakeTilesUpdate) {
 
         } else if (response instanceof TakeTilesFailure) {
 

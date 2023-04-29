@@ -6,8 +6,6 @@ import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
 import myshelfie_network.rmi.RMIServer;
-import myshelfie_network.socket.SocketClient;
-
 
 import java.util.*;
 
@@ -63,7 +61,6 @@ public class EventHandler {
 
     public void handle(Event event) {
         System.out.printf("Event from %s: ", event.getSource());
-        //String game = event.getSource()[1];
         String player = event.getSource();
 
         if (event instanceof MessageSend) {
@@ -80,7 +77,6 @@ public class EventHandler {
                     //if to is not null send the message to the recipient
                     UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, false));
                 } else {
-                    //todo getPlayers in GameManager with a player String as a parameter
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {
                         if (!p.equals(player)) {
@@ -102,14 +98,14 @@ public class EventHandler {
             if (!GameManager.getInstance().addPlayer(player, numberOfPlayers)) {
 
                 //TODO fix messages to distinguish between different errors
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player,"Error in connection"));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player,"Player name not available"));
 
             } else {
 
                 // tell the network stack to memorize the player's client
                 UUID uuid = event.getUuid();
 
-                if (RMIServer.getInstance().hasTempClient(uuid)) {
+                if ( RMIServer.getInstance().hasTempClient(uuid) ) {
                     RMIServer.getInstance().addClient(uuid, player);
                 }
 
