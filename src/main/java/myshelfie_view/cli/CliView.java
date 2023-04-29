@@ -2,6 +2,7 @@ package myshelfie_view.cli;
 
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.UpdateHandler;
 import myshelfie_view.InputReader;
 import myshelfie_view.View;
 
@@ -9,12 +10,19 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
 public class CliView extends View {
-    private InputReader inputReader;
+    private static CliView instance = null;
+    private static InputReader inputReader;
     private final PrintStream out;
-    public CliView(EventDispatcher dispatcher) {
-        super(dispatcher);
+    private CliView() {
         inputReader = new InputReader();
         out = System.out;
+    }
+
+    public static CliView getInstanceCli() {
+        if (instance == null) {
+            instance = new CliView();
+        }
+        return instance;
     }
 
     public void init() throws ExecutionException, InterruptedException {
