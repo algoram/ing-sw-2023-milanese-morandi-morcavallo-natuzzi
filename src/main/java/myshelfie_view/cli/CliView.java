@@ -3,6 +3,7 @@ package myshelfie_view.cli;
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.UpdateHandler;
+import myshelfie_controller.event.Event;
 import myshelfie_view.InputReader;
 import myshelfie_view.View;
 
@@ -10,12 +11,25 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 
 public class CliView extends View {
+
+    private boolean threadRun;
     private static CliView instance = null;
     private static InputReader inputReader;
     private final PrintStream out;
     private CliView() {
-        inputReader = new InputReader();
+        /*inputReader = new InputReader();
         out = System.out;
+        */
+
+        threadRun = true;
+        new Thread(() -> {
+            try {
+                init();
+            }
+            catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     //******************************************************************************************************************
@@ -44,12 +58,10 @@ public class CliView extends View {
         inputReader = new InputReader();
         String input = null;
 
+
         while(true) {
             input = readCommand();
-            if (input.startsWith("/") && commandAvailable(input)) {
-                //TODO: implementare EXIT mode
-            }
-            else if (input.equals("/start") ){
+            if (input.equals("/start") ){
                 start();
             }
             else{
@@ -92,9 +104,6 @@ public class CliView extends View {
                 EventDispatcher.getInstance().setConnectionType(ConnectionType.RMI);
                 break;
             }
-            else if (input.startsWith("/") && commandAvailable(input) ){
-                //TODO: implementare EXIT mode
-            }
             else {
                 out.println("input not valid");
                 continue;
@@ -110,7 +119,7 @@ public class CliView extends View {
                 //TODO: implementare EXIT mode
             }
             //TODO come viene salvata una stringa fatta di soli spazi???
-            else if ( input.equals("all") || input.equals("") || input == null || input.startsWith("/") || checkAvailableNickname(input)) {
+            else if ( input.equals("all") || input.equals("") || input == null || input.startsWith("/") || input.contains(" ") ) {
                 out.println("input not valid");
             }
             else {
@@ -157,13 +166,15 @@ public class CliView extends View {
     //TODO: gestire errori di lettura
     private String readCommand() {
         String input = null;
-        try {
-            input = inputReader.readLine();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        do{
+            try {
+                input = inputReader.readLine();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }while (input == null || commandAvailable(input));
         return input;
     }
     private boolean checkAvailableNickname(String nickname) {
@@ -186,5 +197,9 @@ public class CliView extends View {
     private void exit(){
         out.println("Bye Bye");
         //TODO exit event
+    }
+
+    public void closeCliView() {
+        threadRun = false;
     }
 }
