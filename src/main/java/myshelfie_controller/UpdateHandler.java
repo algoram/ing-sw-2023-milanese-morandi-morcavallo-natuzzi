@@ -52,6 +52,8 @@ public class UpdateHandler {
             // start pinging server
             System.out.println("Starting to ping...");
             EventDispatcher.getInstance().startPinging();
+            View.getInstance().showMessage("Waiting for other players to enter!");
+
         } else if (response instanceof PlayerConnectFailure) {
             String message = ((PlayerConnectFailure) response).getMessage();
             View.getInstance().showMessage(message);
