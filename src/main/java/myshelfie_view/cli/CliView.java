@@ -5,7 +5,10 @@ import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.event.Event;
 import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
+import myshelfie_model.board.Board;
 import myshelfie_view.View;
+import myshelfie_view.cli.printers.BasicPrint;
+
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -38,8 +41,9 @@ public class CliView extends View {
         return instance;
     }
     public void init() {
-        printLogo();
-        printCommands();
+        BasicPrint basicPrint = new BasicPrint(out);
+        basicPrint.Logo();
+        basicPrint.Commands();
         String input = null;
         input = readSafe();
 
@@ -89,8 +93,14 @@ public class CliView extends View {
 
     //todo:#1
     public void initGameState(GameState gameState){
+        BasicPrint basicPrint = new BasicPrint(out);
+        out.println("Game is starting!");
+        basicPrint.Board(gameState.getBoard(), gameState.getGameNumber());
+        basicPrint.Bookshelfs(gameState.getPlayers());
 
-    };
+
+
+    }
 
 
     public void chatIn(String sender, String message, boolean isPublic) {
@@ -138,25 +148,12 @@ public class CliView extends View {
     //******************************************************************************************************************
     //**************************************************PRIVATE METHODS*************************************************
 
-    private void printLogo(){
-        out.println("Welcome to MyShelfie!");
-        out.print("""
-                
-                
-                
-                
-                
-                """
-        );
 
-    }
-    private void printCommands(){
-
-        out.println("Digit '/help' to see the list of available commands.");
-        out.println("Digit '/exit' to exit the game.");
-
-    }
-
+    /***
+     * restart the init method from the user setup
+     *
+     *param startIsRunning flag to decide if the start phase is running or not
+     * */
     private void askLogin(boolean startIsRunning){
         String input = null;
         //choose nickname
@@ -192,9 +189,6 @@ public class CliView extends View {
             }
         }
     }
-
-
-
 
 
     /***
