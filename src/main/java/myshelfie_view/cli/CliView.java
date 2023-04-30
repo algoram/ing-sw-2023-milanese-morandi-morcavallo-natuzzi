@@ -2,6 +2,9 @@ package myshelfie_view.cli;
 
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.event.Event;
+import myshelfie_model.GameState;
+import myshelfie_model.GameUpdate;
 import myshelfie_view.View;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -17,6 +20,12 @@ public class CliView extends View {
         out = System.out;
         this.scanner = new Scanner(System.in);
         this.gameIsRunning = true;
+        new Thread(() -> {
+            while (gameIsRunning) {
+                init();
+                //todo: check if correct
+            }
+        }).start();
     }
 
     //******************************************************************************************************************
@@ -29,100 +38,164 @@ public class CliView extends View {
         return instance;
     }
     public void init() {
-        out.println("Welcome to MyShelfie!");
-        out.print(  "  __       ____      __     _____ __    __ ______ __       ______ _____ ______    \n" +
-                " |  \     /  \ \    / /    / ____|  |  |  |  ____|  |     |  ____|_   _|  ____|   \n" +
-                " |    \  /    \ \_ / /    | (___ |  |__|  | |__  |  |     | |__    | | | |__      \n" +
-                " |  |  \/     |\ \/ /      \___ \|   __   |  __| |  |     |  __|   | | |  __|     \n" +
-                " |  | |  | |  | |  |       ____) |  |  |  | |____|  |_____| |     _| |_| |____    \n" +
-                " |__| |__| |__| |__|      |_____/|__|  |__|______|________|_|    |_____|______|   \n" +
-                "                                                                                  \n"
-        );
-        out.println("Digit '/help' to see the list of available commands.");
-        out.println("Digit '/exit' to exit the game.");
-        new Thread( () ->{
-            while (gameIsRunning) {
+        printLogo();
+        printCommands();
+        String input = null;
+        input = readSafe();
 
-                String input = null;
-                input = readSafe();
+        boolean startIsRunning = true;
+        //choose connection type
+        while(startIsRunning) {
+            out.println("Digit 's' to socket 'r' to rmi");
+            input = readSafe();
 
-                boolean startIsRunning = true;
-                //choose connection type
-                while(startIsRunning) {
-                    out.println("Digit 's' to socket 'r' to rmi");
-                    input = readSafe();
-
-                    if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
-                        out.println("command not valid");
-                    }
-                    else if (input.equals("s")) {
-                        EventDispatcher.getInstance().setConnectionType(ConnectionType.SOCKET);
-                        break;
-                    }
-                    else if (input.equals("r")) {
-                        EventDispatcher.getInstance().setConnectionType(ConnectionType.RMI);
-                        break;
-                    }
-                    else {
-                        out.println("input not valid");
-                        continue;
-                    }
-                }
-                //choose nickname
-                while(startIsRunning) {
-                    out.println("digit your nicknmame:");
-                    input = readSafe();
-
-                    if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
-                        out.println("command not valid");
-                    }
-                    else if ( input.equals("all") || input.equals("") || input == null || input.startsWith("/") || input.contains(" ") ) {
-                        out.println("input not valid");
-                    }
-                    else {
-                        EventDispatcher.getInstance().setPlayerCredentials(input);
-                        break;
-                    }
-                }
-                //choose number of players
-                while(startIsRunning) {
-                    out.println("digit the number of players");
-                    input = readSafe();
-
-                    if (input.startsWith("/") && commandAvailable(input, startIsRunning) ){
-                        out.println("command not valid");
-                    }
-                    else if (!input.equals("2") && !input.equals("3") && !input.equals("4")) {
-                        out.println("input not valid");
-                    }
-                    else {
-                        EventDispatcher.getInstance().connect(Integer.parseInt(input));
-                        break;
-                    }
-                }
-
+            if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
+                out.println("command not valid");
             }
-        }).start();
-
+            else if (input.equals("s")) {
+                EventDispatcher.getInstance().setConnectionType(ConnectionType.SOCKET);
+                break;
+            }
+            else if (input.equals("r")) {
+                EventDispatcher.getInstance().setConnectionType(ConnectionType.RMI);
+                break;
+            }
+            else {
+                out.println("input not valid");
+                continue;
+            }
+        }
+        askLogin(startIsRunning);
     }
 
-    public void connectionSuccessfull() {
-        //todo move  chatIsRunning = true;
+
+    public void showLogMessage(String message){
+        if(message != null){
+            out.println(message);
+        }
+    };
+
+    public void connectionSuccessful() {
+        //todo move chatIsRunning = true;
         out.println("Waiting for other players to enter!");
     }
 
     public void connectionFailed(String reason) {
         out.println(reason);
-        //todo ask again username try again connect
+        out.println("Try again!");
+        boolean startIsRunning = true;
+        askLogin(startIsRunning);
     }
 
-    public void chatIn(String sender, String message) {
-        out.println(sender + ": " + message);
+    //todo:#1
+    public void initGameState(GameState gameState){
+
+    };
+
+
+    public void chatIn(String sender, String message, boolean isPublic) {
+        if(isPublic)
+            out.println(sender + ": " + message);
+        else
+            out.println("(" + sender+ " )" + " to you: " + message);
     }
 
+    //todo:#2
+    public void messageSentSuccessfully() {
+
+    };
+
+    //todo:#2
+    public void messageSentFailure(String errorMessage) {
+
+    };
+
+    //todo:#2
+    public void playerDisconnected(String playerOut) {
+
+    };
+
+    //todo:#1
+    public void yourTurn() {
+
+    };
+
+    //todo:#1
+    public void takeFailed(String reason) {
+
+    };
+
+    //todo:#1
+    public void turnOf(String playerTurn) {
+
+    };
+
+    //todo:#1
+    public void showGameUpdate(GameUpdate gameUpdate) {
+
+    };
 
     //******************************************************************************************************************
     //**************************************************PRIVATE METHODS*************************************************
+
+    private void printLogo(){
+        out.println("Welcome to MyShelfie!");
+        out.print("""
+                
+                
+                
+                
+                
+                """
+        );
+
+    }
+    private void printCommands(){
+
+        out.println("Digit '/help' to see the list of available commands.");
+        out.println("Digit '/exit' to exit the game.");
+
+    }
+
+    private void askLogin(boolean startIsRunning){
+        String input = null;
+        //choose nickname
+        while(startIsRunning) {
+            out.println("digit your nicknmame:");
+            input = readSafe();
+
+            if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
+                out.println("command not valid");
+            }
+            else if ( input.equals("all") || input.equals("") || input == null || input.startsWith("/") || input.contains(" ") ) {
+                out.println("input not valid");
+            }
+            else {
+                EventDispatcher.getInstance().setPlayerCredentials(input);
+                break;
+            }
+        }
+        //choose number of players
+        while(startIsRunning) {
+            out.println("digit the number of players");
+            input = readSafe();
+
+            if (input.startsWith("/") && commandAvailable(input, startIsRunning) ){
+                out.println("command not valid");
+            }
+            else if (!input.equals("2") && !input.equals("3") && !input.equals("4")) {
+                out.println("input not valid");
+            }
+            else {
+                EventDispatcher.getInstance().connect(Integer.parseInt(input));
+                break;
+            }
+        }
+    }
+
+
+
+
 
     /***
      * Check if the command is available, if it is, it will execute it
@@ -200,9 +273,6 @@ public class CliView extends View {
         //todo notify to server client the disconnection
     }
 
-    public void showMessage (String message){
-        //todo
-    }
 
     public void closeCliView() {
         gameIsRunning = false;

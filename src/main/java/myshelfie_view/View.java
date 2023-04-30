@@ -1,6 +1,5 @@
 package myshelfie_view;
 
-import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
@@ -16,23 +15,22 @@ public abstract class View {
             return GuiView.getInstance();
         }
     }
-
-    public abstract void showMessage(String message);
+    public abstract void init();
+    public abstract void showLogMessage(String message);
     public abstract void connectionSuccessful();
     public abstract void connectionFailed(String reason);
+    public abstract void initGameState(GameState gameState);//this function is called when all
+       //players join the game and it starts
     public abstract void chatIn(String sender, String Message, boolean isPublic);
-    public abstract void playerDisconnected(String playerOut);
-    public abstract void yourTurn();
-    public abstract void turnOf(String playerTurn);
     public abstract void messageSentSuccessfully();
     public abstract void messageSentFailure(String errorMessage);
-    public abstract void initGameState(GameState gameState);//this function is called when all
-                                                            //players join the game and it starts
-    public abstract void showGameUpdate(GameUpdate gameUpdate);
+    public abstract void playerDisconnected(String playerOut);
+    public abstract void yourTurn();
     public abstract void takeFailed(String reason);
+    public abstract void turnOf(String playerTurn);
+    public abstract void showGameUpdate(GameUpdate gameUpdate);
 
-    //TODO no exceptions
-    public abstract void init() throws Exception;
+
 
 
 
