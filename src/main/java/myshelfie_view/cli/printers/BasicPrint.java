@@ -72,6 +72,67 @@ public class BasicPrint {
      PLANTS:	§
 
     */
+
+    /*
+    public class BoardImage {
+    private String[][] image;
+
+    public BoardImage(String[][] image) {
+        this.image = image;
+    }
+
+    public String[][] getImage() {
+        return image;
+    }
+
+    public void setImage(String[][] image) {
+        this.image = image;
+    }
+
+    public void addTile(int row, int column, String tile) {
+        image[row][column] = tile;
+    }
+
+    public void removeTile(int row, int column) {
+        image[row][column] = "░";
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (String[] row : image) {
+            for (String column : row) {
+                sb.append(column).append(" ");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+}
+campo = [
+    "░░░░░1░2░3░4░5░6░7░8░9░░░░░░", # 0
+    "░░╔═══╦═══╗░░░░░",              # 1
+    "░░║   ║   ║░░░░░",              # 2
+    "░░╠═══╬═══╬═══╗░░░",            # 3
+    "░░║   ║   ║   ║░░░",            # 4
+    "░░╔═══╬═══╬═══╬═══╬═══╗░░░░░",  # 5
+    "░░║   ║   ║   ║   ║   ║   ║░░░", # 6
+    "░░╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗", # 7
+    "░░║   ║   ║   ║   ║   ║   ║   ║   ║░░░", # 8
+    "░░╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝", # 9
+    "░░║   ║   ║   ║   ║   ║   ║░░╔═══╝░░░", # 10
+    "░░╚═══╬═══╬═══╬═══╬═══╬═══╝░░║░░░░░░", # 11
+    "░░║   ║   ║   █   ║   ║░░░░░║░░░░░░", # 12
+    "░░╚═══╬═══╬═══╬═══╬═══╝░░░░░║░░░░░░", # 13
+    "░░░░░║   ║   ║░░░░░║░░░░░║░░░░░░", # 14
+    "░░░░░╚═══╬═══╬═══╬═══╝░░░░░║░░░░░░", # 15
+    "░░░░░░░░║   ║   ║░░░░░║░░░░░║░░░░░", # 16
+    "░░░░░░░░╚═══╬═══╬═══╝░░░░░║░░░░░░", # 17
+    "░░░░░░░░░░░║   ║░░░░░░░░║░░░░░░", # 18
+    "░░░░░░░░░░░╚═══╝░░░░░░░░░░░░░░░░" # 19
+]
+
+     */
     private void Board4Players(){
         //tile pattern " ©  ║"
         String[][] board_image = new String[20][10];
