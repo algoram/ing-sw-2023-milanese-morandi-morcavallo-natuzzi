@@ -53,16 +53,12 @@ public class GameState implements Serializable {
     public String getPlayerTurn() {
         return playerTurn;
     }
-
     public int getFinishedFirst() {
         return finishedFirst;
     }
-
     public ArrayList<Player> getPlayers() {
         return players;
     }
-
-
     public GameState deepClone() {
         try {
             // Serialize the original GameState object to a byte array

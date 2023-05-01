@@ -6,10 +6,12 @@ import myshelfie_controller.event.Event;
 import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
 import myshelfie_model.board.Board;
+import myshelfie_model.player.Player;
 import myshelfie_view.View;
 import myshelfie_view.cli.printers.BasicPrint;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 
 public class CliView extends View {
@@ -44,8 +46,7 @@ public class CliView extends View {
         BasicPrint basicPrint = new BasicPrint(out);
         basicPrint.Logo();
         basicPrint.Commands();
-        String input = null;
-        input = readSafe();
+        String input = readSafe();
 
         boolean startIsRunning = true;
         //choose connection type
@@ -66,7 +67,6 @@ public class CliView extends View {
             }
             else {
                 out.println("input not valid");
-                continue;
             }
         }
         askLogin(startIsRunning);
@@ -95,11 +95,16 @@ public class CliView extends View {
     public void initGameState(GameState gameState){
         BasicPrint basicPrint = new BasicPrint(out);
         out.println("Game is starting!");
+
+        basicPrint.DisplayAll(gameState);
+        /*
         basicPrint.Board(gameState.getBoard(), gameState.getGameNumber());
-        basicPrint.Bookshelfs(gameState.getPlayers());
+        basicPrint.Bookshelfs(getThisPlayer().getBookshelf());
+        basicPrint.PersonalGoal(getThisPlayer().getPersonalGoal());
+        basicPrint.CommonGoalCards(gameState.getCommonGoals());
+        basicPrint.OtherBookshelfs(gameState.getPlayers(),getThisPlayer());
 
-
-
+         */
     }
 
 
@@ -118,7 +123,7 @@ public class CliView extends View {
     //todo:#2
     public void messageSentFailure(String errorMessage) {
 
-    };
+    }
 
     //todo:#2
     public void playerDisconnected(String playerOut) {
@@ -145,9 +150,12 @@ public class CliView extends View {
 
     };
 
+    public void closeCliView() {
+        gameIsRunning = false;
+    }
+
     //******************************************************************************************************************
     //**************************************************PRIVATE METHODS*************************************************
-
 
     /***
      * restart the init method from the user setup
@@ -164,10 +172,12 @@ public class CliView extends View {
             if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
                 out.println("command not valid");
             }
-            else if ( input.equals("all") || input.equals("") || input == null || input.startsWith("/") || input.contains(" ") ) {
+            else if (input.equals("all") || input.equals("") || input.startsWith("/") || input.contains(" ")) {
                 out.println("input not valid");
-            }
-            else {
+            } else if (input.length()>17) {
+                //17 is the max length of a nickname for the right print on CLI view
+                out.println("nickname too long");
+            } else {
                 EventDispatcher.getInstance().setPlayerCredentials(input);
                 break;
             }
@@ -237,7 +247,7 @@ public class CliView extends View {
         String input = null;
         do {
             input = scanner.nextLine();
-        } while (input.equals("") || input == null);
+        } while (input.equals(""));
 
         return input;
     }
@@ -267,8 +277,13 @@ public class CliView extends View {
         //todo notify to server client the disconnection
     }
 
-
-    public void closeCliView() {
-        gameIsRunning = false;
+    private Player getThisPlayer(List<Player> players){
+        for(Player player : players){
+            if(player.getUsername().equals(EventDispatcher.getInstance().getUsername())){
+                return player;
+            }
+        }
+        return null;
     }
+
 }
