@@ -125,16 +125,47 @@ public class BasicPrint {
      *
      * */
     public void DisplayAll(GameState gameState){
+        char[][] background = new char[100][100];
+        char[][] board = new char[20][20];
+        char[] commonGoal1 = new char[3];
+        char[] commonGoal2 = new char[3];
+        char[] yourPoints = new char[3];
+        char[][] bookshelf = new char[13][21];
+        char[][] personalGoal = new char[13][21];
+        char[][] otherBookshelf1 = new char[13][21];
+        char[][] otherBookshelf2 = new char[13][21];
+        char[][] otherBookshelf3 = new char[13][21];
+        List<Bookshelf> otherBookshelfs = otherBookshelfs(gameState.getPlayers());
 
+        board = Board(gameState.getBoard(), gameState.getGameNumber());
+        bookshelf = Bookshelf(getThisPlayer().getBookshelf())
+        personalGoal = PersonalGoal(getThisPlayer().getPersonalGoal());
+
+        otherBookshelf1 = Bookshelf(otherBookshelfs.get(0));
+        OtherBookshelfs(gameState.getPlayers(),getThisPlayer());
 
     }
 
-    private void Board(Board board, int numPlayers){
-        switch (numPlayers) {
-            case 2 -> Board2Players();
-            case 3 -> Board3Players();
-            default -> Board4Players();
+    private void Background(char[][] background){
+        for (int i = 0; i < background.length; i++) {
+            for (int j = 0; j < background[i].length; j++) {
+                background[i][j] = '░';
+            }
         }
+    }
+    private char[][] Board(Board board, int numPlayers){
+        switch (numPlayers) {
+            case 2 -> {
+                return Board2Players();
+            }
+            case 3 -> {
+                return Board3Players();
+            }
+            case 4 -> {
+                return Board4Players();
+            }
+        }
+        return null;
     }
 
 
@@ -205,9 +236,7 @@ public class BasicPrint {
     private void setTiles4P(char tile, int letter, int col){
         if (letter==1 && col == 4) boardImage[0][1] = String.valueOf(tile);  //A4
     }
-
-
-    private void Board4Players(){
+    private char[][] Board4Players(){
         //tile pattern " ©  ║"
 
         //todo implement board_image as object in order to print it with other objects (bookshelfs, cards, etc) horizontally
@@ -222,23 +251,17 @@ public class BasicPrint {
 
 
     };
-    private void Board3Players(){
+    private char[][] Board3Players(){
 
     }
-    private void Board2Players(){
+    private char[][] Board2Players(){
 
+        return new char[0][];
     }
 
-
-
-
-
-
-
-    public void Bookshelfs(List<Player> players){
+    public List<Bookshelf> otherBookshelfs(List<Player> players){
         for (Player player : players) {
-            Bookshelf(player.getBookshelf());
-        }
+            if (player.getNickname().equals("Player1")) {
     }
 
     /**
@@ -264,7 +287,7 @@ public class BasicPrint {
      * 	 TROPHIES: 	©
      * 	 PLANTS:	§
      * **/
-    private void Bookshelf(Bookshelf bookshelf){
+    private Bookshelf(Bookshelf bookshelf){
         //todo implement bookshelfs as object in order to print it with other objects (board, cards, etc) horizontally
 
     }

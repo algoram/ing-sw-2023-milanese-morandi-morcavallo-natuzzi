@@ -97,14 +97,6 @@ public class CliView extends View {
         out.println("Game is starting!");
 
         basicPrint.DisplayAll(gameState);
-        /*
-        basicPrint.Board(gameState.getBoard(), gameState.getGameNumber());
-        basicPrint.Bookshelfs(getThisPlayer().getBookshelf());
-        basicPrint.PersonalGoal(getThisPlayer().getPersonalGoal());
-        basicPrint.CommonGoalCards(gameState.getCommonGoals());
-        basicPrint.OtherBookshelfs(gameState.getPlayers(),getThisPlayer());
-
-         */
     }
 
 
