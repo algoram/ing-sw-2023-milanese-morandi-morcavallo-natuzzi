@@ -1,5 +1,6 @@
 package myshelfie_view.cli.printers;
 
+import myshelfie_model.Tile;
 import myshelfie_model.board.Board;
 import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
@@ -9,6 +10,9 @@ import java.util.List;
 
 public class BasicPrint {
     private final PrintStream out;
+
+    private String[][] boardImage;
+
     public BasicPrint( PrintStream out) {
         this.out = out;
     }
@@ -73,70 +77,55 @@ public class BasicPrint {
 
     */
 
-    /*
-    public class BoardImage {
-    private String[][] image;
+    /***
+     * 
+     * this method is used to set the tiles on the board
+     *         A:1
+     *         B:2
+     *         C:3
+     *         D:4
+     *         E:5
+     *         F:6
+     *         G:7
+     *         H:8
+     *         I:9
+     * */
+    public void setTilesBoard(Tile tile, int letter, int col , int num_players){
+        
+        switch (num_players)
+        {
+            case 2:
+                setTiles2P(tile, letter, col);
+                break;  
+            case 3:
+                setTiles3P(tile, letter, col);
+                break;
+            case 4:
+                setTiles4P(tile, letter, col);
 
-    public BoardImage(String[][] image) {
-        this.image = image;
-    }
-
-    public String[][] getImage() {
-        return image;
-    }
-
-    public void setImage(String[][] image) {
-        this.image = image;
-    }
-
-    public void addTile(int row, int column, String tile) {
-        image[row][column] = tile;
-    }
-
-    public void removeTile(int row, int column) {
-        image[row][column] = "░";
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String[] row : image) {
-            for (String column : row) {
-                sb.append(column).append(" ");
-            }
-            sb.append("\n");
+                break;
         }
-        return sb.toString();
     }
-}
-campo = [
-    "░░░░░1░2░3░4░5░6░7░8░9░░░░░░", # 0
-    "░░╔═══╦═══╗░░░░░",              # 1
-    "░░║   ║   ║░░░░░",              # 2
-    "░░╠═══╬═══╬═══╗░░░",            # 3
-    "░░║   ║   ║   ║░░░",            # 4
-    "░░╔═══╬═══╬═══╬═══╬═══╗░░░░░",  # 5
-    "░░║   ║   ║   ║   ║   ║   ║░░░", # 6
-    "░░╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗", # 7
-    "░░║   ║   ║   ║   ║   ║   ║   ║   ║░░░", # 8
-    "░░╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝", # 9
-    "░░║   ║   ║   ║   ║   ║   ║░░╔═══╝░░░", # 10
-    "░░╚═══╬═══╬═══╬═══╬═══╬═══╝░░║░░░░░░", # 11
-    "░░║   ║   ║   █   ║   ║░░░░░║░░░░░░", # 12
-    "░░╚═══╬═══╬═══╬═══╬═══╝░░░░░║░░░░░░", # 13
-    "░░░░░║   ║   ║░░░░░║░░░░░║░░░░░░", # 14
-    "░░░░░╚═══╬═══╬═══╬═══╝░░░░░║░░░░░░", # 15
-    "░░░░░░░░║   ║   ║░░░░░║░░░░░║░░░░░", # 16
-    "░░░░░░░░╚═══╬═══╬═══╝░░░░░║░░░░░░", # 17
-    "░░░░░░░░░░░║   ║░░░░░░░░║░░░░░░", # 18
-    "░░░░░░░░░░░╚═══╝░░░░░░░░░░░░░░░░" # 19
-]
+    
+    //todo implement setTiles2P, setTiles3P, setTiles4P
+    private void setTiles4P(char tile, int letter, int col){
+        if (letter==1 && col == 4) boardImage[0][1] = String.valueOf(tile);  //A4
+    }
 
-     */
+
     private void Board4Players(){
         //tile pattern " ©  ║"
-        String[][] board_image = new String[20][10];
+
         //todo implement board_image as object in order to print it with other objects (bookshelfs, cards, etc) horizontally
+        boardImage = new String[][]{
+                {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░░░░░░"}, //r0
+                {"░░             ╔═══╦═══╗                 ░░░░░"}, //r1
+                {"A              ║ ", " ", " ║ ", " ", " ║                 ░░░░░"}, //r2
+                {"░░             ╠═══╬═══╬═══╗             ░░░░░"}
+        };
+
+
+
 
     };
     private void Board3Players(){
@@ -145,6 +134,11 @@ campo = [
     private void Board2Players(){
 
     }
+
+
+
+
+
 
 
     public void Bookshelfs(List<Player> players){
@@ -178,6 +172,7 @@ campo = [
      * **/
     private void Bookshelf(Bookshelf bookshelf){
         //todo implement bookshelfs as object in order to print it with other objects (board, cards, etc) horizontally
+
     }
 
 
