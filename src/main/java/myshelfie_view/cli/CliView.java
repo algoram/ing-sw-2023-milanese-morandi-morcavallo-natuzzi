@@ -269,13 +269,5 @@ public class CliView extends View {
         //todo notify to server client the disconnection
     }
 
-    private Player getThisPlayer(List<Player> players){
-        for(Player player : players){
-            if(player.getUsername().equals(EventDispatcher.getInstance().getUsername())){
-                return player;
-            }
-        }
-        return null;
-    }
 
 }

@@ -1,5 +1,6 @@
 package myshelfie_view.cli.printers;
 
+import myshelfie_controller.EventDispatcher;
 import myshelfie_model.GameState;
 import myshelfie_model.Tile;
 import myshelfie_model.board.Board;
@@ -7,40 +8,40 @@ import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 
 import java.io.PrintStream;
+import java.lang.foreign.Addressable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class BasicPrint {
     private final PrintStream out;
 
-    private char[][] AllSetup ;
+    private char[][] allSetup;
 
-    public BasicPrint( PrintStream out) {
+    public BasicPrint(PrintStream out) {
         this.out = out;
-        AllSetup = new char[100][100];
+        allSetup = new char[40][100];
     }
-    public void Logo(){
+
+    public void Logo() {
         out.println("Welcome to MyShelfie!");
         out.print("""
-                
-                
-                
-                
-                
+                                
+                                
+                                
+                                
+                                
                 """
         );
 
     }
-    public void Commands(){
+
+    public void Commands() {
 
         out.println("Digit '/help' to see the list of available commands.");
         out.println("Digit '/exit' to exit the game.");
 
     }
-
-
-
-
-
 
 
     /***
@@ -70,7 +71,7 @@ public class BasicPrint {
      * ░░Z                                       W░░░░░ Z                   W ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ Personal Goal ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     * ░░░░    Your Bookshelf:    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░U   Your Bookshelf:   V░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░░░   1 ░ 2 ░ 3 ░ 4 ░ 5   ░░░░░ player_1          ░░░ player_2          ░░░ player_3          ░░░░░
      * ░░░░ X                   Y ░░░ X                   Y X                   Y X                   Y ░░░
      * ░░░░                       ░░░                                                                   ░░░
@@ -124,86 +125,292 @@ public class BasicPrint {
      *
      *
      * */
-    public void DisplayAll(GameState gameState){
-        char[][] background = new char[100][100];
-        char[][] board = new char[20][20];
-        char[] commonGoal1 = new char[3];
-        char[] commonGoal2 = new char[3];
-        char[] yourPoints = new char[3];
-        char[][] bookshelf = new char[13][21];
-        char[][] personalGoal = new char[13][21];
-        char[][] otherBookshelf1 = new char[13][21];
-        char[][] otherBookshelf2 = new char[13][21];
-        char[][] otherBookshelf3 = new char[13][21];
-        List<Bookshelf> otherBookshelfs = otherBookshelfs(gameState.getPlayers());
-
-        board = Board(gameState.getBoard(), gameState.getGameNumber());
-        bookshelf = Bookshelf(getThisPlayer().getBookshelf())
-        personalGoal = PersonalGoal(getThisPlayer().getPersonalGoal());
-
-        otherBookshelf1 = Bookshelf(otherBookshelfs.get(0));
-        OtherBookshelfs(gameState.getPlayers(),getThisPlayer());
-
+    public void DisplayAll(GameState gameState) {
+       allSetup= BuildSetup(gameState);
+       out.println(allSetup);
     }
 
-    private void Background(char[][] background){
+    private char[][] BuildSetup(GameState gameState){
+        Player thisPlayer = getThisPlayer(gameState.getPlayers());
+        List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
+
+        char[][] background = new char[40][100];
+        char[][] board = new char[20][20];;
+        char[][] commonGoals = new char[4][24];
+        char[][] yourPoints = new char[2][13];
+        char[][] bookshelf = new char[13][21];
+        char[][] personalGoal = new char[13][21];
+        List<char[][]> otherBookshelf = new ArrayList<>();
+
+        buildBackground(background);
+        buildBoard(board, gameState.getBoard(), gameState.getGameNumber());
+        buildCommonGoals(commonGoals, gameState.getCommonGoals());
+        buildYourPoints(yourPoints, thisPlayer.getPoints());
+        buildPersonalGoal(personalGoal,thisPlayer.getPersonalGoal());
+        buildBookshelf(bookshelf,thisPlayer.getBookshelf());
+
+
+        for (int i = 0; i < otherPlayers.size(); i++) {
+            otherBookshelf.add(buildBookshelf(otherPlayers.get(i).getBookshelf()));
+        }
+    }
+
+
+    private void buildBackground(char[][] background) {
         for (int i = 0; i < background.length; i++) {
             for (int j = 0; j < background[i].length; j++) {
                 background[i][j] = '░';
             }
         }
     }
-    private char[][] Board(Board board, int numPlayers){
+
+    private void buildBoard(char[][] board,Board modelBoard, int numPlayers) {
+
         switch (numPlayers) {
-            case 2 -> {
-                return Board2Players();
-            }
-            case 3 -> {
-                return Board3Players();
-            }
-            case 4 -> {
-                return Board4Players();
-            }
+            case 2 -> Board2Players(board);
+
+            case 3 -> Board3Players(board);
+
+            case 4 -> Board4Players(board);
+
         }
-        return null;
     }
 
 
 
+
+        /***
+         ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
+         ░░             ╔═══╦═══╗
+         A              ║   ║   ║
+         ░░             ╠═══╬═══╬═══╗
+         B              ║   ║   ║   ║
+         ░░         ╔═══╬═══╬═══╬═══╬═══╗
+         C          ║   ║   ║   ║   ║   ║
+         ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗
+         D      ║   ║   ║   ║   ║   ║   ║   ║   ║
+         ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣
+         E  ║   ║   ║   ║   ║   ║   ║   ║   ║   ║
+         ░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝
+         F  ║   ║   ║   ║   ║   ║   ║   ║   ║
+         ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝
+         G          ║   ║   ║   ║   ║   ║
+         ░░         ╚═══╬═══╬═══╬═══╬═══╝
+         H              ║   ║   ║   ║
+         ░░             ╚═══╬═══╬═══╣
+         I                  ║   ║   ║
+         ░░                 ╚═══╩═══╝
+
+
+
+
+         */
+
+    private void Board4Players(char[][] board) {
+    /*
+    //todo implement board_image as object in order to print it with other objects (bookshelfs, cards, etc) horizontally
+    boardImage = new String[][]{
+            {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░"}, //r0
+            {"░░             ╔═══╦═══╗                 "}, //r1
+            {"A              ║ ", " ", " ║ ", " ", " ║     "}, //r2
+            {"░░             ╠═══╬═══╬═══╗             "},
+            {"B              ║ ", " ", " ║ ", " ", " ║ ", " ", " ║             "},
+            {"░░         ╔═══╬═══╬═══╬═══╬═══╗         "},
+            {"C          ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║         "},
+            {"░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗ "},
+            {"D      ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ "},
+            {"░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣ "},
+            {"E  ║ ", " ", "  ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║   ║ "},
+            {"░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ "},
+            {"F  ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║     "},
+            {"░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝     "},
+            {"G          ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║ ", " ", " ║         "},
+            {"░░         ╚═══╬═══╬═══╬═══╬═══╝         "},
+            {"H              ║ ", " ", " ║ ", " ", " ║ ", " ", " ║             "},
+            {"░░             ╚═══╬═══╬═══╣             "},
+            {"I                  ║ ", " ", " ║ ", " ", " ║             "},
+            {"░░                 ╚═══╩═══╝             "},
+            {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"}
+    }
+     */
+        String boardImage = """
+                ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
+                ░░             ╔═══╦═══╗                \s
+                A              ║   ║   ║                \s
+                ░░             ╠═══╬═══╬═══╗            \s
+                B              ║   ║   ║   ║            \s
+                ░░         ╔═══╬═══╬═══╬═══╬═══╗        \s
+                C          ║   ║   ║   ║   ║   ║        \s
+                ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗\s
+                D      ║   ║   ║   ║   ║   ║   ║   ║   ║\s
+                ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣\s
+                E  ║   ║   ║   ║   ║   ║   ║   ║   ║   ║\s
+                ░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝\s
+                F  ║   ║   ║   ║   ║   ║   ║   ║   ║    \s
+                ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝    \s
+                G          ║   ║   ║   ║   ║   ║        \s
+                ░░         ╚═══╬═══╬═══╬═══╬═══╝        \s
+                H              ║   ║   ║   ║            \s
+                ░░             ╚═══╬═══╬═══╣            \s
+                I                  ║   ║   ║            \s
+                ░░                 ╚═══╩═══╝            \s
+                """;
+        board = String2CharMatrix(boardImage);
+    }
+
+
+        ;
+
+        /***
+         ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
+         ░░             ╔═══╗
+         A              ║   ║
+         ░░             ╠═══╬═══╗
+         B              ║   ║   ║
+         ░░         ╔═══╬═══╬═══╬═══╦═══╗
+         C          ║   ║   ║   ║   ║   ║
+         ░░         ╠═══╬═══╬═══╬═══╬═══╬═══╦═══╗
+         D          ║   ║   ║   ║   ║   ║   ║   ║
+         ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝
+         E      ║   ║   ║   ║   ║   ║   ║   ║
+         ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝
+         F  ║   ║   ║   ║   ║   ║   ║   ║
+         ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╣
+         G          ║   ║   ║   ║   ║   ║
+         ░░         ╚═══╩═══╬═══╬═══╬═══╝
+         H                  ║   ║   ║
+         ░░                 ╚═══╬═══╣
+         I                      ║   ║
+         ░░                     ╚═══╝
+
+         */
+
+    private char[][] Board3Players(char[][] board) {
+
+        String boardImage = """
+                 ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
+                 ░░             ╔═══╗                    \s
+                 A              ║   ║                    \s
+                 ░░             ╠═══╬═══╗                \s
+                 B              ║   ║   ║                \s
+                 ░░         ╔═══╬═══╬═══╬═══╦═══╗        \s
+                 C          ║   ║   ║   ║   ║   ║        \s
+                 ░░         ╠═══╬═══╬═══╬═══╬═══╬═══╦═══╗\s
+                 D          ║   ║   ║   ║   ║   ║   ║   ║\s
+                 ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝\s
+                 E      ║   ║   ║   ║   ║   ║   ║   ║    \s
+                 ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝    \s
+                 F  ║   ║   ║   ║   ║   ║   ║   ║        \s
+                 ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╣        \s
+                 G          ║   ║   ║   ║   ║   ║        \s
+                 ░░         ╚═══╩═══╬═══╬═══╬═══╝        \s
+                 H                  ║   ║   ║            \s
+                 ░░                 ╚═══╬═══╣            \s
+                 I                      ║   ║            \s
+                 ░░                     ╚═══╝            \s
+                 """;
+        return String2CharMatrix(boardImage);
+    };
+
+
     /***
-     Version 4 players
-     ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░░░░░░ //r0
-     ░░             ╔═══╦═══╗                 ░░░░░ //r1
-     A              ║   ║   ║                 ░░░░░ //r2
-     ░░             ╠═══╬═══╬═══╗             ░░░░░ //r3
-     B              ║   ║   ║   ║             ░░░░░ //r4
-     ░░         ╔═══╬═══╬═══╬═══╬═══╗         ░░░░░ //r5
-     C          ║   ║   ║   ║   ║   ║         ░░░░░ //r6
-     ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗ ░░░░░ //r7
-     D      ║   ║   ║   ║   ║   ║   ║   ║   ║ ░░░░░ //r8
-     ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣ ░░░░░ //r9
-     E  ║   ║   ║   ║   ║   ║   ║   ║   ║   ║ ░░░░░ //r10
-     ░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ ░░░░░ //r11
-     F  ║   ║   ║ █ ║   ║   ║   ║   ║   ║     ░░░░░ //r12
-     ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝     ░░░░░ //r13
-     G          ║ █ ║   ║   ║   ║   ║         ░░░░░ //r14
-     ░░         ╚═══╬═══╬═══╬═══╬═══╝         ░░░░░ //r15
-     H              ║   ║   ║   ║             ░░░░░ //r16
-     ░░             ╚═══╬═══╬═══╣             ░░░░░ //r17
-     I                  ║   ║   ║             ░░░░░ //r18
-     ░░                 ╚═══╩═══╝             ░░░░░ //r19
-     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░
+     * ░░
+     * ░░
+     * ░░             ╔═══╦═══╗
+     *  A             ║   ║   ║
+     * ░░         ╔═══╬═══╬═══╬═══╗
+     *  B         ║   ║   ║   ║   ║
+     * ░░         ╠═══╬═══╬═══╬═══╬═══╦═══╗
+     *  C         ║   ║   ║   ║   ║   ║   ║
+     * ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣
+     *  D     ║   ║   ║   ║   ║   ║   ║   ║
+     * ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝
+     *  E     ║   ║   ║   ║   ║   ║   ║
+     * ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝
+     *  F             ║   ║   ║   ║
+     * ░░             ╚═══╬═══╬═══╣
+     *  G                 ║   ║   ║
+     * ░░                 ╚═══╩═══╝
+     * ░░
+     * ░░
+     *
+     * */
+    private char[][] Board2Players(char[][] board) {
 
-     CAT:		¥
-     BOOKS:		#
-     FRAMES:	¶
-     TROPHIES: 	©
-     PLANTS:	§
+        String boardImage = """
+                ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░░░░░░░
+                ░░                                       \s
+                ░░                                       \s
+                ░░             ╔═══╦═══╗                 \s
+                 A             ║   ║   ║                 \s
+                ░░         ╔═══╬═══╬═══╬═══╗             \s
+                 B         ║   ║   ║   ║   ║             \s
+                ░░         ╠═══╬═══╬═══╬═══╬═══╦═══╗     \s
+                 C         ║   ║   ║   ║   ║   ║   ║     \s
+                ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣     \s
+                 D     ║   ║   ║   ║   ║   ║   ║   ║     \s
+                ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝     \s
+                 E     ║   ║   ║   ║   ║   ║   ║         \s
+                ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝         \s
+                 F             ║   ║   ║   ║             \s
+                ░░             ╚═══╬═══╬═══╣             \s
+                 G                 ║   ║   ║             \s
+                ░░                 ╚═══╩═══╝             \s
+                ░░                                       \s
+                ░░                                       \s
 
-    */
+                                 """;
+        return String2CharMatrix(boardImage);
+    };
+
+    /**
+     * Versione Basic B&W-> tiles char
+     *
+     * ╔═══╦═══╦═══╦═══╦═══╗
+     * ║   ║   ║   ║   ║   ║
+     * ╠═══╬═══╬═══╬═══╬═══╣
+     * ║ § ║   ║   ║   ║   ║
+     * ╠═══╬═══╬═══╬═══╬═══╣
+     * ║ © ║   ║   ║   ║   ║
+     * ╠═══╬═══╬═══╬═══╬═══╣
+     * ║ ¥ ║   ║   ║   ║   ║
+     * ╠═══╬═══╬═══╬═══╬═══╣
+     * ║ # ║   ║   ║   ║   ║
+     * ╠═══╬═══╬═══╬═══╬═══╣
+     * ║ ¶ ║   ║   ║   ║   ║
+     * ╚═══╩═══╩═══╩═══╩═══╝
+     * CAT:		    ¥
+     * BOOKS:		#
+     * FRAMES:	    ¶
+     * TROPHIES: 	©
+     * PLANTS:	    §
+     *
+     * @return
+     */
+    private void buildBookshelf(char [][] bookshelf, Bookshelf modelBookshelf) {
+        String bookshelfImage = """
+                ╔═══╦═══╦═══╦═══╦═══╗
+                ║   ║   ║   ║   ║   ║
+                ╠═══╬═══╬═══╬═══╬═══╣
+                ║   ║   ║   ║   ║   ║
+                ╠═══╬═══╬═══╬═══╬═══╣
+                ║   ║   ║   ║   ║   ║
+                ╠═══╬═══╬═══╬═══╬═══╣
+                ║   ║   ║   ║   ║   ║
+                ╠═══╬═══╬═══╬═══╬═══╣
+                ║   ║   ║   ║   ║   ║
+                ╠═══╬═══╬═══╬═══╬═══╣
+                ║   ║   ║   ║   ║   ║
+                ╚═══╩═══╩═══╩═══╩═══╝
+                """;
+        bookshelf = String2CharMatrix(bookshelfImage);
+    }
+
+    //todo implement setTiles2P, setTiles3P, setTiles4P
 
     /***
-     * 
+     *
      * this method is used to set the tiles on the board
      *         A:1
      *         B:2
@@ -215,256 +422,166 @@ public class BasicPrint {
      *         H:8
      *         I:9
      * */
-    public void setTilesBoard(Tile tile, int letter, int col , int num_players){
-        
-        switch (num_players)
-        {
-            case 2:
-                setTiles2P(tile, letter, col);
-                break;  
-            case 3:
-                setTiles3P(tile, letter, col);
-                break;
-            case 4:
-                setTiles4P(tile, letter, col);
-
-                break;
+    public void setTileBoard(char[][] board, char tile, int letter, int col, int num_players) {
+        switch (num_players) {
+            case 2 -> setTile2P(board, tile, letter, col);
+            case 3 -> setTile3P(board, tile, letter, col);
+            case 4 -> setTile4P(board, tile, letter, col);
         }
     }
-    
-    //todo implement setTiles2P, setTiles3P, setTiles4P
-    private void setTiles4P(char tile, int letter, int col){
-        if (letter==1 && col == 4) boardImage[0][1] = String.valueOf(tile);  //A4
+
+    private void setTile2P(char[][] board, Tile[][] tiles, int letter, int col) {
+        //todo
     }
-    /***
-     ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░░░░░░
-     ░░             ╔═══╦═══╗                 ░░░░░
-     A              ║   ║   ║                 ░░░░░
-     ░░             ╠═══╬═══╬═══╗             ░░░░░
-     B              ║   ║   ║   ║             ░░░░░
-     ░░         ╔═══╬═══╬═══╬═══╬═══╗         ░░░░░
-     C          ║   ║   ║   ║   ║   ║         ░░░░░
-     ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗ ░░░░░
-     D      ║   ║   ║   ║   ║   ║   ║   ║   ║ ░░░░░
-     ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣ ░░░░░
-     E  ║   ║   ║   ║   ║   ║   ║   ║   ║   ║ ░░░░░
-     ░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ ░░░░░
-     F  ║   ║   ║ █ ║   ║   ║   ║   ║   ║     ░░░░░
-     ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝     ░░░░░
-     G          ║ █ ║   ║   ║   ║   ║         ░░░░░
-     ░░         ╚═══╬═══╬═══╬═══╬═══╝         ░░░░░
-     H              ║   ║   ║   ║             ░░░░░
-     ░░             ╚═══╬═══╬═══╣             ░░░░░
-     I                  ║   ║   ║             ░░░░░
-     ░░                 ╚═══╩═══╝             ░░░░░
-     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+    private void setTile3P(char[][] board, char tile, int letter, int col) {
 
+    }
+    private void setTile4P(char[][] board, char tile, int letter, int col) {
 
+    }
 
+    /********************************* Util Functions **********+***************************/
+    private char[][] String2CharMatrix(String multilineString ) {
+        String[] rows = multilineString.split("\n");
+        char[][] charMatrix = new char[rows.length][];
+        for (int i = 0; i < rows.length; i++) {
+            charMatrix[i] = rows[i].toCharArray();
+        }
+        return charMatrix;
+    }
 
-     */
-
-    private char[][] Board4Players(){
-        //tile pattern " ©  ║"
-
-        //todo implement board_image as object in order to print it with other objects (bookshelfs, cards, etc) horizontally
-        boardImage = new String[][]{
-                {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░"}, //r0
-                {"░░             ╔═══╦═══╗                 "}, //r1
-                {"A              ║ "," "," ║ "," "," ║     "}, //r2
-                {"░░             ╠═══╬═══╬═══╗             "},
-                {"B              ║ "," "," ║ "," "," ║ "," "," ║             "},
-                {"░░         ╔═══╬═══╬═══╬═══╬═══╗         "},
-                {"C          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║         "},
-                {"░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗ "},
-                {"D      ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "},
-                {"░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣ "},
-                {"E  ║ "," ","  ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║   ║ "},
-                {"░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ "},
-                {"F  ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║     "},
-                {"░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝     "},
-                {"G          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║         "},
-                {"░░         ╚═══╬═══╬═══╬═══╬═══╝         "},
-                {"H              ║ "," "," ║ "," "," ║ "," "," ║             "},
-                {"░░             ╚═══╬═══╬═══╣             "},
-                {"I                  ║ "," "," ║ "," "," ║             "},
-                {"░░                 ╚═══╩═══╝             "},
-                {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"}
-
-
-
-
-
-        };
-
-
-
-
-    };
+    private char Tile2Char(Tile tile) {
+        char tileChar = ' ';
+        switch (tile.getType())
+        {
+            case CATS -> tileChar = '¥';
+            case BOOKS -> tileChar = '#';
+            case FRAMES -> tileChar = '¶';
+            case TROPHIES -> tileChar = '©';
+            case PLANTS -> tileChar = '§';
+        }
+        return tileChar;
+    }
 
     /***
+     *        ╔═══╦═══╦═══╦═══╦═══╗
+     *      F ║   ║   ║   ║   ║   ║
+     *        ╠═══╬═══╬═══╬═══╬═══╣
+     *      E ║ § ║   ║   ║   ║   ║
+     *        ╠═══╬═══╬═══╬═══╬═══╣
+     *      D ║ © ║   ║   ║   ║   ║
+     *        ╠═══╬═══╬═══╬═══╬═══╣
+     *      C ║ ¥ ║   ║   ║   ║   ║
+     *        ╠═══╬═══╬═══╬═══╬═══╣
+     *      B ║ # ║   ║   ║   ║   ║
+     *        ╠═══╬═══╬═══╬═══╬═══╣
+     *      A ║ ¶ ║   ║   ║   ║   ║
+     *        ╚═══╩═══╩═══╩═══╩═══╝
      *
-     * ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░
-     * ░░             ╔═══╗
-     * A              ║   ║
-     * ░░             ╠═══╬═══╗                 ░░░░░
-     * B              ║   ║   ║                 ░░░░░
-     * ░░         ╔═══╬═══╬═══╬═══╦═══╗         ░░░░░
-     * C          ║   ║   ║   ║   ║   ║         ░░░░░
-     * ░░         ╠═══╬═══╬═══╬═══╬═══╬═══╦═══╗ ░░░░░
-     * D          ║   ║   ║   ║   ║   ║   ║   ║ ░░░░░
-     * ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ ░░░░░
-     * E      ║   ║   ║   ║   ║   ║   ║   ║     ░░░░░
-     * ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝     ░░░░░
-     * F  ║   ║   ║   ║   ║   ║   ║   ║         ░░░░░
-     * ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╣         ░░░░░
-     * G          ║   ║   ║   ║   ║   ║         ░░░░░
-     * ░░         ╚═══╩═══╬═══╬═══╬═══╝         ░░░░░
-     * H                  ║   ║   ║             ░░░░░
-     * ░░                 ╚═══╬═══╣             ░░░░░
-     * I                      ║   ║             ░░░░░
-     * ░░                     ╚═══╝             ░░░░░
-     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     */
+     * */
+    private int[] bookshelfMap(int row, char col) {
+        int[] bookshelf = new int[2];
+        HashMap<Character,Integer> coordinateToPositionMap = new HashMap<Character, Integer>();
+        char letter = (char) (row + 65); //Convert the row to a letter
 
-    private char[][] Board3Players(){
-        boardImage = new String[][]{
-                {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░░"},
-                {"░░             ╔═══╗                     "},
-                {"A              ║ "," "," ║               "},
-                {"░░             ╠═══╬═══╗                 "},
-                {"B              ║ "," "," ║ "," "," ║                 "},
-                {"░░         ╔═══╬═══╬═══╬═══╦═══╗         "},
-                {"C          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║         "},
-                {"░░         ╠═══╬═══╬═══╬═══╬═══╬═══╦═══╗ "},
-                {"D          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "},
-                {"░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ "},
-                {"E      ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║     "},
-                {"░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝     "},
-                {"F  ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║         "},
-                {"░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╣         "},
-                {"G          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║         "},
-                {"░░         ╚═══╩═══╬═══╬═══╬═══╝         "},
-                {"H                  ║ "," "," ║ "," "," ║             "},
-                {"░░                 ╚═══╬═══╣             "},
-                {"I                      ║ "," "," ║             "},
-                {"░░                     ╚═══╝             "},
-                {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},
+        // Add mappings for the colums
+        coordinateToPositionMap.put('0',3);
+        coordinateToPositionMap.put('1',6);
+        coordinateToPositionMap.put('2',10);
+        coordinateToPositionMap.put('3',14);
+        coordinateToPositionMap.put('4',18);
+
+        // Add mappings for the rows
+        coordinateToPositionMap.put('F',2);
+        coordinateToPositionMap.put('E',4);
+        coordinateToPositionMap.put('D',6);
+        coordinateToPositionMap.put('C',8);
+        coordinateToPositionMap.put('B',10);
+        coordinateToPositionMap.put('A',12);
 
 
-        };
+        bookshelf[0] = coordinateToPositionMap.get(col);
+        bookshelf[1] = coordinateToPositionMap.get(letter);
+        return bookshelf;
+    }
+    /***
+     * This function is used to map the coordinates to the position on the board for the 4 and 3 players version
+     * */
+    private int[] boardMap43(char letter, char col) {
+        HashMap<Character, Integer> coordinateToPositionMap =new HashMap<Character, Integer>();
+        // Add mappings for the colums
+        coordinateToPositionMap.put('1', 5);
+        coordinateToPositionMap.put('2', 9);
+        coordinateToPositionMap.put('3', 13);
+        coordinateToPositionMap.put('4', 17);
+        coordinateToPositionMap.put('5',21);
+        coordinateToPositionMap.put('6',25);
+        coordinateToPositionMap.put('7',29);
+        coordinateToPositionMap.put('8',33);
+        coordinateToPositionMap.put('9',37);
+
+        // Add mappings for the rows
+        coordinateToPositionMap.put('A',2);
+        coordinateToPositionMap.put('B', 4);
+        coordinateToPositionMap.put('C', 6);
+        coordinateToPositionMap.put('D', 8);
+        coordinateToPositionMap.put('E', 10);
+        coordinateToPositionMap.put('F', 12);
+        coordinateToPositionMap.put('G', 14);
+        coordinateToPositionMap.put('H', 16);
+        coordinateToPositionMap.put('I', 18);
+
+        int[] coordinate = new int[2];
+        coordinate[0] = coordinateToPositionMap.get(letter);
+        coordinate[1] = coordinateToPositionMap.get(col);
+        return coordinate;
     }
 
     /***
-     *
-     * ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░░░░░░░░░░░░░░
-     * ░░                                        ░░░░░░░░░
-     * ░░                                        ░░░░░░░░░
-     * ░░             ╔═══╦═══╗                  ░░░░░░░░░░░░░░░░░░░░░
-     * A              ║   ║   ║                  ░░░░░░░░░░░░░░░░░░░░░
-     * ░░         ╔═══╬═══╬═══╬═══╗              ░░░░░░░░░░░░░░░░░
-     * B          ║   ║   ║   ║   ║              ░░░░░░░░░░░░░░░░░
-     * ░░         ╠═══╬═══╬═══╬═══╬═══╦═══╗      ░░░░░░░░░
-     * C          ║   ║   ║   ║   ║   ║   ║      ░░░░░░░░░
-     * ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣      ░░░░░░░░░
-     * D      ║   ║   ║   ║   ║   ║   ║   ║      ░░░░░░░░░
-     * ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝      ░░░░░░░░░
-     * E      ║   ║   ║   ║   ║   ║   ║          ░░░░░░░░░░░░░
-     * ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝          ░░░░░░░░░░░░░
-     * F              ║   ║   ║   ║              ░░░░░░░░░░░░░░░░░
-     * ░░             ╚═══╬═══╬═══╣              ░░░░░░░░░░░░░░░░░
-     * G                  ║   ║   ║              ░░░░░░░░░░░░░░░░░
-     * ░░                 ╚═══╩═══╝              ░░░░░░░░░░░░░░░░░
-     * ░░                                        ░░░░░░░░░
-     * ░░                                        ░░░░░░░░░
-     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     */
-    private char[][] Board2Players(){
-        boardImage = new String[][]{
-                {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░░░░"},
-                {"░░                                       "},
-                {"░░                                       "},
-                {"░░             ╔═══╦═══╗                 "},
-                {"A              ║ "," "," ║ "," "," ║                 "},
-                {"░░         ╔═══╬═══╬═══╬═══╗             "},
-                {"B          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║             "},
-                {"░░         ╠═══╬═══╬═══╬═══╬═══╦═══╗     "},
-                {"C          ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║     "},
-                {"░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣     "},
-                {"D      ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║     "},
-                {"░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝     "},
-                {"E      ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║         "},
-                {"░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝         "},
-                {"F              ║ "," "," ║ "," "," ║ "," "," ║             "},
-                {"░░             ╚═══╬═══╬═══╣             "},
-                {"G                  ║ "," "," ║ "," "," ║             "},
-                {"░░                 ╚═══╩═══╝             "},
-                {"░░                                       "},
-                {"░░                                       "},
-                {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},
+     * This function is used to map the coordinates to the position on the board for the 2 players version
+     * */
+    private int[] boardMap2(char letter, char col) {
+        HashMap<Character, Integer> coordinateToPositionMap =new HashMap<Character, Integer>();
+        // Add mappings for the colums
+        coordinateToPositionMap.put('1', 9);
+        coordinateToPositionMap.put('2', 13);
+        coordinateToPositionMap.put('3', 17);
+        coordinateToPositionMap.put('4',21);
+        coordinateToPositionMap.put('5',25);
+        coordinateToPositionMap.put('6',29);
+        coordinateToPositionMap.put('7',33);
 
+        // Add mappings for the rows
+        coordinateToPositionMap.put('A', 4);
+        coordinateToPositionMap.put('B', 6);
+        coordinateToPositionMap.put('C', 8);
+        coordinateToPositionMap.put('D', 10);
+        coordinateToPositionMap.put('E', 12);
+        coordinateToPositionMap.put('F', 14);
+        coordinateToPositionMap.put('G', 16);
 
-        };
-
-        return new char[0][];
+        int[] coordinate = new int[2];
+        coordinate[0] = coordinateToPositionMap.get(letter);
+        coordinate[1] = coordinateToPositionMap.get(col);
+        return coordinate;
     }
 
-    public List<Bookshelf> otherBookshelfs(List<Player> players){
+    private List<Player> otherPlayer(List<Player> players, Player thisPlayer) {
+        List<Player> otherPlayers = new ArrayList<>();
         for (Player player : players) {
-            if (player.getNickname().equals("Player1")) {
+            if (!player.equals(thisPlayer)){
+                otherPlayers.add(player);
+            }
+        }
+        return otherPlayers;
     }
-
-    /**
-     *	 Versione Basic B&W-> tiles char
-     *
-     * 	 ╔═══╦═══╦═══╦═══╦═══╗
-     * 	 ║   ║	 ║   ║   ║   ║
-     * 	 ╠═══╬═══╬═══╬═══╬═══╣
-     * 	 ║ § ║	 ║   ║   ║   ║
-     * 	 ╠═══╬═══╬═══╬═══╬═══╣
-     * 	 ║ © ║	 ║   ║   ║   ║
-     * 	 ╠═══╬═══╬═══╬═══╬═══╣
-     * 	 ║ ¥ ║	 ║   ║   ║   ║
-     * 	 ╠═══╬═══╬═══╬═══╬═══╣
-     * 	 ║ # ║	 ║   ║   ║   ║
-     * 	 ╠═══╬═══╬═══╬═══╬═══╣
-     * 	 ║ ¶ ║	 ║   ║   ║   ║
-     * 	 ╚═══╩═══╩═══╩═══╩═══╝
-     *
-     * 	 CAT:		¥
-     * 	 BOOKS:		#
-     * 	 FRAMES:	¶
-     * 	 TROPHIES: 	©
-     * 	 PLANTS:	§
-     * **/
-    private Bookshelf(Bookshelf bookshelf){
-        //todo implement bookshelfs as object in order to print it with other objects (board, cards, etc) horizontally
-        bookshelfImage = new String[][] {
-                {"╔═══╦═══╦═══╦═══╦═══╗"},
-                {"║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║"},
-                {"╠═══╬═══╬═══╬═══╬═══╣"},
-                {"║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║"},
-                {"╠═══╬═══╬═══╬═══╬═══╣"},
-                {"║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║"},
-                {"╠═══╬═══╬═══╬═══╬═══╣"},
-                {"║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║"},
-                {"╠═══╬═══╬═══╬═══╬═══╣"},
-                {"║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║"},
-                {"╠═══╬═══╬═══╬═══╬═══╣"},
-                {"║ "," "," ║ "," "," ║ "," "," ║ "," "," ║ "," "," ║"},
-                {"╚═══╩═══╩═══╩═══╩═══╝"},
-
-
-
-
-
-
-
-            };
+    private Player getThisPlayer(List<Player> players){
+        for(Player player : players){
+            if(player.getUsername().equals(EventDispatcher.getInstance().getUsername())){
+                return player;
+            }
+        }
+        return null;
     }
-
-
-
-
-
 }
+
