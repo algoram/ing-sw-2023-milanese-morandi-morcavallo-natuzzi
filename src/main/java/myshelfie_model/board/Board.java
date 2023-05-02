@@ -273,6 +273,9 @@ public abstract class Board {
         return null;
     }
 
+    public Tile[][] getTiles(){
+        return this.board;
+    }
 // _____________________________________________________________
 //   TEST METHODS
     /**
