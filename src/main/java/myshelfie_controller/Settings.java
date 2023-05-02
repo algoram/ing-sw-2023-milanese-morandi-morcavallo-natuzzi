@@ -1,7 +1,7 @@
 package myshelfie_controller;
 
 public class Settings {
-    //TODO must be effectively final
+    //must be effectively final
     private String username;
 
     private String wiewType;

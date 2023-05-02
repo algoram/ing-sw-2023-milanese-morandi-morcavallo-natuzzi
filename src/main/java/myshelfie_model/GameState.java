@@ -15,10 +15,10 @@ public class GameState implements Serializable {
     private final Board board;
     private final CommonGoal[] commonGoals;
 
-    private final int playerSeat;
+    private final int playerSeat; //the number of the player who started first
+
     private final int finishedFirst;
     private final String playerTurn;
-
 
     private final ArrayList<Player> players;
 

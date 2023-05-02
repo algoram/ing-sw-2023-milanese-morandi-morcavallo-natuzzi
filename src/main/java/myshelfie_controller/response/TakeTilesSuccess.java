@@ -1,22 +1,19 @@
 package myshelfie_controller.response;
 
 
-import myshelfie_model.GameUpdate;
-import myshelfie_model.board.Board;
-import myshelfie_model.goal.Token;
-import myshelfie_model.player.Bookshelf;
+import myshelfie_model.GameState;
 
 public class TakeTilesSuccess extends Response {
 
-    private GameUpdate gameUpdate;
+    private GameState gameState;
 
-    public TakeTilesSuccess(String player, GameUpdate gameUpdate) {
+    public TakeTilesSuccess(String player, GameState gameState) {
 
         super(player);
-        this.gameUpdate = gameUpdate;
+        this.gameState = gameState;
     }
 
-    public GameUpdate getGameUpdate() {
-        return gameUpdate;
+    public GameState getGameState() {
+        return gameState;
     }
 }
