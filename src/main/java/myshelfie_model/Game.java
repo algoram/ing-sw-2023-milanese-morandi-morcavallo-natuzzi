@@ -277,8 +277,15 @@ public class Game {
         checkGoals(playerNumber);
 
         // go to the next player
+        int i = 0;
        do{
            turn = (turn + 1) % players.size();
+           i++;
+           if (i == players.size()) {
+               System.out.println("All players have lost connection");
+               //todo: manage the case in which all players have lost connection
+               return false;
+           }
        }while(!(playerStates.get(turn) == 1)); //check if new turn player is connected
 
         return true;
@@ -396,6 +403,11 @@ public class Game {
     public String getTurn() {return players.get(turn).toString();}
 
 
+    /**
+     * set the player state to zero -> disconnected
+     * @param player
+     * @return
+     */
     public boolean lostConnection(String player) {
         if (playerStates.get(findPlayer(player)) != 1) {
             System.out.println("Player " + player + " had already lost connection"); //Debug messages

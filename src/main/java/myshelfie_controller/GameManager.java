@@ -45,9 +45,17 @@ public class GameManager {
 
     /**
      * This function is calls from event handler when a player connects to a game.
-     * if the game doesn't exist it will be created.
+     *
+     * the function checks if there is a player with the same username
+     * the server should not allow that 2 different players have the same username
+     * it would mean that the player had lost connection
+     *
+     * otherwise it checks if there is a game with a free spot
+     * if there is it adds the player to the game
+     * otherwise it creates a new game and adds the player to it
      *
      * @param newPlayer the player to add
+     * @param players   the number of players in the game
      * @return true if the player was added, false if the addPlayer failed
      */
     public Boolean addPlayer(String newPlayer, int players) {
@@ -112,6 +120,10 @@ public class GameManager {
     }
 
 
+    /**
+     * This function is called from event handler when a player disconnects from a game.
+     * @param player
+     */
     public void lostConnection(String player) {
         Integer game = playerToGame.get(player);
         games.get(game).lostConnection(player);
@@ -144,6 +156,11 @@ public class GameManager {
 
     //------------GAME STATE FUNCTIONS----------------
 
+    /**
+     * Called when there is a Connect to send the entire state of the game
+     * @param player the player that connected is used to know which game to return
+     * @return GameState
+     */
     public GameState getGameState(String player) {
         Integer game = playerToGame.get(player);
         Board board = GameManager.getInstance().getBoard(game);
@@ -157,7 +174,11 @@ public class GameManager {
     }
 
 
-
+    /**
+     * Called after each TakeTiles to update the state of the game.
+     * @param player the player that did the TakeTiles is used to know which game to return
+     * @return
+     */
     public GameUpdate getGameUpdate(String player) {
         Integer game = playerToGame.get(player);
         Board board = GameManager.getInstance().getBoard(game);
