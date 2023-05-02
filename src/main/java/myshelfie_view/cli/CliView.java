@@ -2,16 +2,12 @@ package myshelfie_view.cli;
 
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
-import myshelfie_controller.event.Event;
 import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
-import myshelfie_model.board.Board;
-import myshelfie_model.player.Player;
 import myshelfie_view.View;
-import myshelfie_view.cli.printers.BasicPrint;
+import myshelfie_view.cli.printers.Basic.Basic;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
 
 public class CliView extends View {
@@ -43,9 +39,9 @@ public class CliView extends View {
         return instance;
     }
     public void init() {
-        BasicPrint basicPrint = new BasicPrint(out);
-        basicPrint.Logo();
-        basicPrint.Commands();
+        Basic basic = new Basic(out);
+        basic.Logo();
+        basic.Commands();
         String input = readSafe();
 
         boolean startIsRunning = true;
@@ -93,10 +89,10 @@ public class CliView extends View {
 
     //todo:#1
     public void initGameState(GameState gameState){
-        BasicPrint basicPrint = new BasicPrint(out);
+        Basic basic = new Basic(out);
         out.println("Game is starting!");
 
-        basicPrint.DisplayAll(gameState);
+        basic.DisplayAll(gameState);
     }
 
 
