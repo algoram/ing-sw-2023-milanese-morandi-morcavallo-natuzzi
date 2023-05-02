@@ -1,14 +1,9 @@
 package myshelfie_view.cli.printers;
 
 import myshelfie_controller.EventDispatcher;
-import myshelfie_model.GameState;
-import myshelfie_model.Tile;
-import myshelfie_model.board.Board;
-import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 
 import java.io.PrintStream;
-import java.lang.foreign.Addressable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +12,75 @@ public class BasicPrint {
     private final PrintStream out;
 
     private char[][] allSetup;
+
+
+    /**
+     * Map for the row CORDINATES of the board3Player (and board4Player) in the model
+     * into the CORDINATES of the board3Player (and board4Player) in the view
+     */
+    private final HashMap<Integer, Integer> boardColModel2CLI = new HashMap<>() {{
+        put(0, 2);
+        put(1, 4);
+        put(2, 6);
+        put(3, 8);
+        put(4, 10);
+        put(5, 12);
+        put(6, 14);
+        put(7, 16);
+        put(8, 18);
+    }};
+    /**
+     * Map for the row CORDINATES of the board3Player (and board4Player) in the model
+     * into the CORDINATES of the board3Player (and board4Player) in the view
+     */
+    private final HashMap<Integer, Integer> boardRowModel2CLI = new HashMap<>() {{
+        put(0, 5);
+        put(1, 9);
+        put(2, 13);
+        put(3, 17);
+        put(4,21);
+        put(5,25);
+        put(6,29);
+        put(7,33);
+        put(8,37);
+    }};
+
+    private final HashMap<Character, Integer> board2PCLI2Model = new HashMap<>() {{
+        put('1', 1);
+        put('2', 2);
+        put('3', 3);
+        put('4', 4);
+        put('5', 5);
+        put('6', 6);
+        put('7', 7);
+        put('A', 1);
+        put('B', 2);
+        put('C', 3);
+        put('D', 4);
+        put('E', 5);
+        put('F', 6);
+        put('G', 7);
+    }};
+
+    private final HashMap<Character, Integer> board34PCLI2Model = new HashMap<>() {{
+        put('1', 0);
+        put('2', 1);
+        put('3', 2);
+        put('4', 3);
+        put('5', 4);
+        put('6', 5);
+        put('7', 6);
+        put('8', 7);
+        put('A', 0);
+        put('B', 1);
+        put('C', 2);
+        put('D', 3);
+        put('E', 4);
+        put('F', 5);
+        put('G', 6);
+        put('H', 7);
+        put('I', 8);
+    }};
 
     public BasicPrint(PrintStream out) {
         this.out = out;
@@ -336,7 +400,7 @@ public class BasicPrint {
      * ░░
      *
      * */
-    private char[][] Board2Players(char[][] board) {
+    private char[][] Board2Players(Board modelBoard) {
 
         String boardImage = """
                 ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░░░░░░░
@@ -361,6 +425,8 @@ public class BasicPrint {
                 ░░                                       \s
 
                                  """;
+        modelBoard.getBoard();
+
         return String2CharMatrix(boardImage);
     };
 
@@ -422,23 +488,16 @@ public class BasicPrint {
      *         H:8
      *         I:9
      * */
-    public void setTileBoard(char[][] board, char tile, int letter, int col, int num_players) {
-        switch (num_players) {
-            case 2 -> setTile2P(board, tile, letter, col);
-            case 3 -> setTile3P(board, tile, letter, col);
-            case 4 -> setTile4P(board, tile, letter, col);
+    private void setTileBoard(char[][] board, Tile[][] tiles, int letter, int col) {
+        char tile;
+        for (int i= 0; i < tiles.length; i++) {
+            for (int j=0; j < tiles[i].length; j++) {
+                tile = Tile2Char(tiles[i][j]);
+                board[boardColModel2CLI.get(i)][boardRowModel2CLI.get(j)] = tile;
+            }
         }
     }
 
-    private void setTile2P(char[][] board, Tile[][] tiles, int letter, int col) {
-        //todo
-    }
-    private void setTile3P(char[][] board, char tile, int letter, int col) {
-
-    }
-    private void setTile4P(char[][] board, char tile, int letter, int col) {
-
-    }
 
     /********************************* Util Functions **********+***************************/
     private char[][] String2CharMatrix(String multilineString ) {
@@ -452,7 +511,8 @@ public class BasicPrint {
 
     private char Tile2Char(Tile tile) {
         char tileChar = ' ';
-        switch (tile.getType())
+        if (tile == null) tileChar = ' ';
+        else switch (tile.getType())
         {
             case CATS -> tileChar = '¥';
             case BOOKS -> tileChar = '#';
@@ -537,6 +597,7 @@ public class BasicPrint {
         return coordinate;
     }
 
+
     /***
      * This function is used to map the coordinates to the position on the board for the 2 players version
      * */
@@ -566,6 +627,39 @@ public class BasicPrint {
         return coordinate;
     }
 
+
+
+
+
+
+
+
+
+    private int[] imgBoardMap2(int row, int col) {
+        HashMap<Character, Integer> coordinateToPositionMap =new HashMap<Character, Integer>();
+        // Add mappings for the colums
+        coordinateToPositionMap.put('1', 9);
+        coordinateToPositionMap.put('2', 13);
+        coordinateToPositionMap.put('3', 17);
+        coordinateToPositionMap.put('4',21);
+        coordinateToPositionMap.put('5',25);
+        coordinateToPositionMap.put('6',29);
+        coordinateToPositionMap.put('7',33);
+
+        // Add mappings for the rows
+        coordinateToPositionMap.put('A', 4);
+        coordinateToPositionMap.put('B', 6);
+        coordinateToPositionMap.put('C', 8);
+        coordinateToPositionMap.put('D', 10);
+        coordinateToPositionMap.put('E', 12);
+        coordinateToPositionMap.put('F', 14);
+        coordinateToPositionMap.put('G', 16);
+
+        int[] coordinate = new int[2];
+        coordinate[0] = coordinateToPositionMap.get(row);
+        coordinate[1] = coordinateToPositionMap.get(col);
+        return coordinate;
+    }
     private List<Player> otherPlayer(List<Player> players, Player thisPlayer) {
         List<Player> otherPlayers = new ArrayList<>();
         for (Player player : players) {
