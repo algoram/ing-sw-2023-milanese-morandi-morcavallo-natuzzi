@@ -171,16 +171,14 @@ public class EventHandler {
                     List<String> players = GameManager.getInstance().getPlayers(player);
 
                     //Notify the success of the take tiles and update the view for all players
-                    GameUpdate gameUpdate = GameManager.getInstance().getGameUpdate(player);
+                    GameState gameState = GameManager.getInstance().getGameState(player);
 
-                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameUpdate));
+                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
 
-                    gameUpdate.removePersonalData(); //remove of personal data for other players update
 
                     for (String p : players) {
                         if (!p.equals(player)) {
-
-                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameUpdate, player));
+                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
                         }
                     }
 

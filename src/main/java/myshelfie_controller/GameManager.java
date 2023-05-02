@@ -132,27 +132,6 @@ public class GameManager {
 
     //------------PLAYER STATE FUNCTIONS----------------
 
-    private Bookshelf getBookshelf(String player) {
-        return games.get(playerToGame.get(player)).getBookshelf(player);
-    }
-
-    private Token[] getCommonTokens(String player) {
-        return games.get(playerToGame.get(player)).getCommonGoalTokens(player);
-    }
-
-    private int getFinishToken(String player) {
-        if (games.get(playerToGame.get(player)).getFinishPoint(player)) { return 1;}
-        return 0;
-    }
-
-    private int getAdjacentScore(String player) {
-        return games.get(playerToGame.get(player)).getAdjacentScore(player);
-    }
-
-    private int getPersonalScore( String player) {
-        return games.get(playerToGame.get(player)).getPersonalScore(player);
-    }
-
 
     //------------GAME STATE FUNCTIONS----------------
 
@@ -173,25 +152,6 @@ public class GameManager {
         return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players).deepClone();
     }
 
-
-    /**
-     * Called after each TakeTiles to update the state of the game.
-     * @param player the player that did the TakeTiles is used to know which game to return
-     * @return
-     */
-    public GameUpdate getGameUpdate(String player) {
-        Integer game = playerToGame.get(player);
-        Board board = GameManager.getInstance().getBoard(game);
-        Bookshelf bookshelf = GameManager.getInstance().getBookshelf(player);
-        Token[] commonTokens = GameManager.getInstance().getCommonTokens(player);
-        int finishPoint = GameManager.getInstance().getFinishToken(player);
-        int adjacentScore = GameManager.getInstance().getAdjacentScore(player);
-        int personalScore = GameManager.getInstance().getPersonalScore(player);
-        String playerTurn = GameManager.getInstance().getTurn(player);
-
-
-        return new GameUpdate(player,board, bookshelf, commonTokens, finishPoint, adjacentScore,personalScore, playerTurn).deepClone();
-    }
 
     //all the functions below are used to get the gameState and may become private later
     private Board getBoard(Integer game) {

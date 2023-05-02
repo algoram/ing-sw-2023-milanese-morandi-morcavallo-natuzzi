@@ -47,7 +47,6 @@ public class UpdateHandler {
     public void handle(Response response) {
         System.out.println("Received response " + response.getClass().getSimpleName());
 
-        // TODO: update view from here
         if (response instanceof PlayerConnectSuccess) {
             // start pinging server
             System.out.println("Starting to ping...");
@@ -65,7 +64,6 @@ public class UpdateHandler {
             String playerout = ((PlayerDisconnectSuccess) response).getDisconnectedPlayer();
             String playerTurn = ((PlayerDisconnectSuccess) response).getPlayerTurn();
 
-            //todo the following showMessage could become a function to better regulate disconnections
             View.getInstance().playerDisconnected(playerout);
 
             playerTurn(playerTurn);

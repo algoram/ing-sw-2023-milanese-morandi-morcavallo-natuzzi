@@ -1,3 +1,4 @@
+
 package myshelfie_model;
 
 import myshelfie_model.board.Board;
@@ -5,7 +6,7 @@ import myshelfie_model.goal.Token;
 import myshelfie_model.player.Bookshelf;
 
 import java.io.*;
-
+@Deprecated
 public class GameUpdate {
 
     private static final long serialVersionUID = 4532440671217154070L;

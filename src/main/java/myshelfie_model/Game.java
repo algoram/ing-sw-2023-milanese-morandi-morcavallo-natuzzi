@@ -269,12 +269,14 @@ public class Game {
         // insert the tiles inside the bookshelf column
         players.get(playerNumber).getBookshelf().fill(column, tiles);
 
+        //SET POINTS
         // check if the player has filled the bookshelf first
         if (players.get(playerNumber).getBookshelf().isFull() && finishedFirst == -1) {
+            players.get(playerNumber).setFinishedFirst(true);
             finishedFirst = playerNumber;
         }
-
         checkGoals(playerNumber);
+
 
         // go to the next player
         int i = 0;
@@ -305,20 +307,24 @@ public class Game {
      * gives them the points according to the game rules
      * @param playerNumber player to award the points to
      */
-    public void checkGoals(int playerNumber) {
+    private void checkGoals(int playerNumber) {
         // check common goals, personal ones are automatically checked
         for (int i = 0; i < commonGoals.length; i++) {
+
             // if the player has not achieved the goal before
-            if (players.get(playerNumber).getCommonGoalPoints(i) == null) {
+            if (players.get(playerNumber).getCommonTokens()[i] == null) {
+
                 // if the player has achieved the goal now
                 if (commonGoals[i].check(players.get(playerNumber).getBookshelf())) {
+
                     // give the player the token at the top of the corresponding common goal token stack
-                    players.get(playerNumber).setCommonGoalToken(i, commonGoals[i].popTokens());
+                    players.get(playerNumber).setCommonToken(i, commonGoals[i].popTokens());
+
                 }
             }
         }
     }
-
+/*
     /**
      * Returns the total number of points achieved by a player, including:
      * - points awarded for achieving common goals
@@ -328,6 +334,7 @@ public class Game {
      * @param playerNumber index of the player of which we want the points
      * @return the total number of points achieved by a player
      */
+    /*
     public int getPoints(int playerNumber) {
         // points awarded for achieving the personal goal
         int personalGoalPoints = players.get(playerNumber).getPersonalGoalPoints();
@@ -346,37 +353,7 @@ public class Game {
                 + bookshelfPoints
                 + (playerNumber == finishedFirst ? 1 : 0); // point awarded for finishing first
     }
-
-    //-------------------- Game Manager METHODS --------------------
-
-    // Taketilesupdate Response methods
-
-    public Bookshelf getBookshelf(String player) {
-        return players.get(findPlayer(player)).getBookshelf();
-    }
-
-    public Token[] getCommonGoalTokens(String player) {
-        Token[] tokens = new Token[COMMON_GOALS];
-
-        for (int i = 0; i < COMMON_GOALS; i++) {
-            tokens[i] = players.get(findPlayer(player)).getCommonGoalPoints(i);
-        }
-
-        return tokens;
-    }
-
-    public int getPersonalScore(String player) {
-        return players.get(findPlayer(player)).getPersonalGoalPoints();
-    }
-
-    public boolean getFinishPoint(String player) {
-        return findPlayer(player) == finishedFirst;
-    }
-
-    public int getAdjacentScore(String player) {
-        return players.get(findPlayer(player)).getBookshelf().getPoints();
-    }
-
+   */
 
     // GameSTate Response methods
 
