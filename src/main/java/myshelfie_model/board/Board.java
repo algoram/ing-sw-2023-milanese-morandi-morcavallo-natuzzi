@@ -30,12 +30,12 @@ public abstract class Board {
     //TODO: Modificare uml protected
     protected Tile[][] board;
     //private final Tile emptyTile= new Tile(Type.EMPTY);
-    final int BOARD_LENGTH = 9;
+    protected int BOARD_LENGTH = 9;
 
     //TODO:inserire in UML attributo
     //indicates the position coordinates for the tile refill
     // 0: null, 2: two player, 3:three player, 4: four player
-    final int[][] BOARD_PRE_SET = {
+    protected int[][] BOARD_PRE_SET = {
             {0,0,0,0,4,3,0,0,0},//row:0
             {0,0,0,4,2,2,0,0,0},//row:1
             {0,0,3,2,2,2,3,0,0},//row:2
