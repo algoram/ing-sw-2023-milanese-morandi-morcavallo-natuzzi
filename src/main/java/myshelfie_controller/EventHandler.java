@@ -59,6 +59,10 @@ public class EventHandler {
         }
     }
 
+    /**
+     * this function is called in the private constructor in a while(threadrun).
+     * @param event is the event crated by the client that needs to be handled
+     */
     public void handle(Event event) {
         System.out.printf("Event from %s: ", event.getSource());
         String player = event.getSource();
@@ -190,7 +194,12 @@ public class EventHandler {
         }
     }
 
-
+    /**
+     * this function is called in the private constructor in a while(threadrun).
+     * it checks if the last ping time of a player is greater than 5 seconds
+     * and if it is it disconnects the player
+     * so that the others can continue playing
+     */
     private void lastPingChecker() {
         while(threadRun){
             try {
