@@ -169,7 +169,7 @@ public class BoardTest {
         assertEquals(2, removed.size());
 
         //this assertion check that the board is empty
-        assertTrue(Arrays.stream(randomboard.getBoard()).allMatch(row -> Arrays.stream(row).allMatch(Objects::isNull)));
+        assertTrue(Arrays.stream(randomboard.getBoardTest()).allMatch(row -> Arrays.stream(row).allMatch(Objects::isNull)));
 
     }
 
@@ -192,14 +192,14 @@ public class BoardTest {
         positions.add(new Position(4, 6));
 
         //the assertion calls the remove function  and checks if the list returned is null
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try{
             randomboard.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("A Position is empty!\n No tile has been moved...",e.getMessage());
             //this assertion checks that the Tile[][] old is in each position equal to the return of the randomBoard.getBoard() function
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
 
         //todo in test 4 e 5 controlla la board non modificata
@@ -232,7 +232,7 @@ public class BoardTest {
         assertEquals(3, removed.size());
 
         //this assertion check that the board is empty
-        assertTrue(Arrays.stream(randomboard.getBoard()).allMatch(row -> Arrays.stream(row).allMatch(Objects::isNull)));
+        assertTrue(Arrays.stream(randomboard.getBoardTest()).allMatch(row -> Arrays.stream(row).allMatch(Objects::isNull)));
 
     }
 
@@ -254,14 +254,14 @@ public class BoardTest {
         positions.add(new Position(4,5));
         positions.add(new Position(5,5));
 
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("The Tiles do not form a straight line!\n No tile has been moved...",e.getMessage());
             //this assertion checks that the Tile[][] old is in each position equal to the return of the randomBoard.getBoard() function
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
 
     }
@@ -284,14 +284,14 @@ public class BoardTest {
         positions.add(new Position(4,5));
         positions.add(new Position(4,7));
 
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("The Tiles are not adjacent!\n No tile has been moved...",e.getMessage());
             //this assertion checks that the Tile[][] old is in each position equal to the return of the randomBoard.getBoard() function
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
     }
 
@@ -333,7 +333,7 @@ public class BoardTest {
         positions.add(new Position(2,4));
 
         //save the state of the board before the remove function is called
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
 
         removed = randomboard.remove(positions);
 
@@ -348,7 +348,7 @@ public class BoardTest {
         assertEquals(2, removed.size());
 
         //this assertion checks that the Tile[][] old is in each position equal to the return of the randomBoard.getBoard() function
-        assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+        assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
 
     }
 
@@ -389,13 +389,13 @@ public class BoardTest {
         positions.add(new Position(3,4));
 
         //save the state of the board before the remove function is called
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("A Tile has no free side!\n No tile has been moved...", e.getMessage());
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
     }
 
@@ -437,13 +437,13 @@ public class BoardTest {
         positions.add(new Position(3,5));
 
         //save the state of the board before the remove function is called
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("A Tile has no free side!\n No tile has been moved...", e.getMessage());
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
     }
 
@@ -484,13 +484,13 @@ public class BoardTest {
         positions.add(new Position(5,4));
 
         //save the state of the board before the remove function is called
-        oldBoard = board4.getBoard();
+        oldBoard = board4.getBoardTest();
         try {
             board4.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("The Tiles are not adjacent!\n No tile has been moved...", e.getMessage());
-            assertTrue(Arrays.deepEquals(oldBoard, board4.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, board4.getBoardTest()));
         }
     }
 
@@ -515,7 +515,7 @@ public class BoardTest {
         positions.add(new Position(0,5));
 
         //save the content of the board before the remove
-        oldBoard = board4.getBoard();
+        oldBoard = board4.getBoardTest();
         removed = board4.remove(positions);
 
         //the assertion calls the remove function  and checks if the list returned is null
@@ -526,7 +526,7 @@ public class BoardTest {
         //set the tiles to null in the old board
         oldBoard[0][4] = null;
         oldBoard[0][5] = null;
-        assertTrue(Arrays.deepEquals(oldBoard, board4.getBoard()));
+        assertTrue(Arrays.deepEquals(oldBoard, board4.getBoardTest()));
     }
 
     // TODO : test after refill testing TO COMPLETE
@@ -546,13 +546,13 @@ public class BoardTest {
         randomboard.setTileTest(5,6, new Tile(Type.getRandomType()));
         randomboard.setTileTest(5,7, new Tile(Type.getRandomType()));
 
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(null);
             fail("NullPointerException expected");
         } catch (NullPointerException e) {
             assertEquals("The list of tiles to be removed is null!\n No tile has been moved...", e.getMessage());
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
     }
 
@@ -569,13 +569,13 @@ public class BoardTest {
         randomboard.setTileTest(5,6, new Tile(Type.getRandomType()));
         randomboard.setTileTest(5,7, new Tile(Type.getRandomType()));
 
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(positions);
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException e) {
             assertEquals("The number of tiles to be removed is not valid!\n No tile has been moved...", e.getMessage());
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
     }
 
@@ -595,13 +595,13 @@ public class BoardTest {
         positions.add(new Position(5,6));
         positions.add(new Position(5,7));
 
-        oldBoard = randomboard.getBoard();
+        oldBoard = randomboard.getBoardTest();
         try {
             randomboard.remove(positions);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
             assertEquals("A Position is out of bounds!\n No tile has been moved...", e.getMessage());
-            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoard()));
+            assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
     }
 }

@@ -4,6 +4,7 @@ import myshelfie_model.Tile;
 import myshelfie_model.player.Bookshelf;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static myshelfie_view.cli.printers.Basic.Basic.String2CharMatrix;
 import static myshelfie_view.cli.printers.Basic.Basic.Tile2Char;
@@ -32,6 +33,7 @@ public class BasicBookshelf {
 
 
 
+
     /**
      * Versione Basic B&W-> tiles char
      *
@@ -56,8 +58,7 @@ public class BasicBookshelf {
      *
      * @return
      */
-    public void buildBookshelf(char [][] bookshelf, Bookshelf modelBookshelf) {
-
+    public void buildBookshelf(Bookshelf modelBookshelf) {
         String bookshelfImage = """
                 ╔═══╦═══╦═══╦═══╦═══╗
                 ║   ║   ║   ║   ║   ║
@@ -73,16 +74,19 @@ public class BasicBookshelf {
                 ║   ║   ║   ║   ║   ║
                 ╚═══╩═══╩═══╩═══╩═══╝
                 """;
-        bookshelf = String2CharMatrix(bookshelfImage);
-        setTileBookshelf(bookshelf,modelBookshelf.getTiles());
+        this.bookshelf = String2CharMatrix(bookshelfImage);
+        setTileBookshelf(modelBookshelf.getTiles());
     }
-    private void setTileBookshelf(char[][] bookshelf, Tile[][] tiles) {
+
+    public char[][] getBookshelfCharMatrix() {
+        return this.bookshelf;
+    }
+
+    private void setTileBookshelf(Tile[][] tiles) {
         for (int i= 0; i < tiles.length; i++) {
             for (int j=0; j < tiles[i].length; j++) {
-                bookshelf[bookshelfColModel2CLI.get(i)][bookshelfRowModel2CLI.get(j)] = Tile2Char(tiles[i][j]);;
+                this.bookshelf[bookshelfColModel2CLI.get(i)][bookshelfRowModel2CLI.get(j)] = Tile2Char(tiles[i][j]);;
             }
         }
     }
-
-
 }

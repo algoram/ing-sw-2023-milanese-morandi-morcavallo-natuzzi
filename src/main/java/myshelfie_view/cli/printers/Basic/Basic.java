@@ -4,13 +4,12 @@ import myshelfie_controller.EventDispatcher;
 import myshelfie_model.GameState;
 import myshelfie_model.Tile;
 import myshelfie_model.player.Player;
+import myshelfie_view.cli.printers.Basic.macro.BasicBoardgame;
+import myshelfie_view.cli.printers.Basic.macro.BasicBookshelf;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import static myshelfie_model.Type.*;
 
 
 public class Basic {
@@ -42,19 +41,19 @@ public class Basic {
         out.println("Digit '/exit' to exit the game.");
 
     }
-
-
     /***
+     *
+     *
      * Coordinate system of the Game displayed on the CLI
      *           1         2         3         4         5         6         7         8         9
      * 0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
      * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░X                                       Y░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░                                         ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     * ░░                                         ░░░░░ ┌────────┐  ┌────────┐ ░░░░░ Your POINTS ░░░░░░░░░░
-     * ░░                                         ░░░░░ │ ┬   Y  │  │ ┬┬  Z  │ ░░░░░     X       ░░░░░░░░░░
+     * ░░                                         ░░░░░X┌────────┐  ┌────────┐Y░░░░░XYour PointsY░░░░░░░░░░
+     * ░░                                         ░░░░░ │ ┬   A  │  │ ┬┬  B  │ ░░░░░Z    C      W░░░░░░░░░░
      * ░░                                         ░░░░░ │ ┴  ¯¯¯ │  │ ┴┴ ¯¯¯ │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     * ░░                                         ░░░░░ └────────┘  └────────┘ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░Z└────────┘  └────────┘W░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░                                         ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░                                         ░░░░░ X                   Y ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -69,7 +68,7 @@ public class Basic {
      * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░Z                                       W░░░░░ Z                   W ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ Personal Goal ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ Personal Goal  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░░░U   Your Bookshelf:   V░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░░░   1 ░ 2 ░ 3 ░ 4 ░ 5   ░░░░░ player_1          ░░░ player_2          ░░░ player_3          ░░░░░
@@ -87,108 +86,171 @@ public class Basic {
      * ░░░░                       ░░░                                                                   ░░░
      * ░░░░ Z                   W ░░░ Z                   W Z                   W Z                   W ░░░
      * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     * Board:
-     * X = 1,2
-     * Y = 1,42
-     * Z = 20,2
-     * W = 20,42
-     * Personal:
-     * X = 8,49
-     * Y = 8,69
-     * Z = 20,49
-     * W = 20,69
-     * Bookshelf:
-     * X = 25,5
-     * Y = 25,25
-     * Z = 37,5
-     * W = 37,25
-     * P1:
-     * X = 25,31
-     * Y = 25,51
-     * Z = 37,31
-     * W = 37,51
+     * Board: X = 1,2; Y = 1,42; Z = 20,2; W = 20,42
+     * CommonGoal: X = 3,48 Y = 3,61; Z = 6,48; W = 6,61
+     * Personal: X = 8,49; Y = 8,69; Z = 20,49; W = 20,69
+     * Your Points: X = 3,77; Y = 3,89; Z = 4,77; W = 4,89
+     * Bookshelf: X = 25,5 ; Y = 25,25; Z = 37,5; W = 37,25
+     * P1: X = 25,31; Y = 25,51; Z = 37,31; W = 37,51
+     * P2: X = 25,53; Y = 25,73; Z = 37,53; W = 37,73
+     * P3: X = 25,75; Y = 25,95; Z = 37,75; W = 37,95
      *
-     *
-     * P2:
-     * X = 25,53
-     * Y = 25,73
-     * Z = 37,53
-     * W = 37,73
-     *
-     * P3:
-     * X = 25,75
-     * Y = 25,95
-     * Z = 37,75
-     * W = 37,95
-     *
-     *
+     * Text:
+     *  Personal Goal: U = 2,2; V = 2,22
+     *  Your Bookshelf: U = 21,47 ; V = 21,63
+     *  player_1: U = 24,31; V = 24,50
+     *  player_2: U = 24,53; V = 24,72
+     *  player_3: U = 24,75; V = 24,94
      *
      *
      * */
-    public void DisplayAll(GameState gameState) {
+    public void DisplayAllSetup(GameState gameState) {
        allSetup= BuildSetup(gameState);
        out.println(allSetup);
     }
 
-    private char[][] BuildSetup(GameState gameState){
+    private void BuildSetup(GameState gameState){
         Player thisPlayer = getThisPlayer(gameState.getPlayers());
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
 
         char[][] background = new char[40][100];
-        char[][] board = new char[20][20];;
-        char[][] commonGoals = new char[4][24];
-        char[][] yourPoints = new char[2][13];
-        char[][] bookshelf = new char[13][21];
-        char[][] personalGoal = new char[13][21];
-        List<char[][]> otherBookshelf = new ArrayList<>();
-
-        buildBackground(background);
-        buildBoard(board, gameState.getBoard(), gameState.getPlayers().size());
-        buildCommonGoals(commonGoals, gameState.getCommonGoals());
-        buildYourPoints(yourPoints, thisPlayer.getPoints());
-        buildPersonalGoal(personalGoal,thisPlayer.getPersonalGoal());
-        buildBookshelf(bookshelf,thisPlayer.getBookshelf());
-
-
+        BasicBoardgame boardgame = new BasicBoardgame(new char[20][20]);
+        BasicBookshelf personalGoal = new BasicBookshelf(new char[13][21]);
+        BasicBookshelf bookshelf = new BasicBookshelf(new char[13][21]);
+        List<BasicBookshelf> otherBookshelf = new ArrayList<>();
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(buildBookshelf(otherPlayers.get(i).getBookshelf()));
+            otherBookshelf.add(new BasicBookshelf(new char[13][21]));
+        }
+
+        //Background
+        buildBackground(background, otherPlayers);
+        setOnSetup(background, 0, 0);
+        //Board
+        //TODO: verificare che getPlayers().size() rimanga costante per tutta la partita
+        boardgame.buildBoard(gameState.getBoard(), gameState.getPlayers().size());
+        setOnSetup(boardgame.getBoardCharMatrix(), 1, 2);
+        //CommonGoal
+        //TODO: mi serve il top della pila dei due common goal
+        updateCommongoalStacks(top commongoal1, top commongoal2);
+        //Your Points
+        //TODO: mi serve il totale dei punti del giocatore
+        updateYourPoints(thisPlayer.getPoints());
+
+        //PersonalGoal
+        //TODO: getPersonalGoal() deve ritornare una bookshelf con dentro il personal goal associato al player
+        personalGoal.buildBookshelf(thisPlayer.getPersonalGoal());
+        setOnSetup(personalGoal.getBookshelfCharMatrix(), 8, 49);
+        //your Bookshelf
+        bookshelf.buildBookshelf(thisPlayer.getBookshelf());
+        setOnSetup(bookshelf.getBookshelfCharMatrix(),25,5);
+
+        //otherBookshelf
+        for (int i = 0; i < otherPlayers.size(); i++) {
+            otherBookshelf.add(new BasicBookshelf(new char[13][21]));
+        }
+        for (int i=0; i< otherBookshelf.size(); i++){
+            otherBookshelf.get(i).buildBookshelf(otherPlayers.get(i).getBookshelf());
+            switch (i){
+                case 0 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 31);
+                case 1 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 53);
+                case 2 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 75);
+            }
         }
     }
-
-
-    private void buildBackground(char[][] background) {
+    /**
+     * Build the background of the game
+     * @param background the matrix of the background
+     * @param otherPlayers the list of the other players
+     */
+    private void buildBackground(char[][] background , List<Player> otherPlayers) {
+        List<char[]> otherPlayersUsername = new ArrayList<>();
+        //fill background with ░
         for (int i = 0; i < background.length; i++) {
             for (int j = 0; j < background[i].length; j++) {
                 background[i][j] = '░';
             }
         }
-    }
-
-
-    /********************************* Util Functions **********+***************************/
-    public static char[][] String2CharMatrix(String multilineString) {
-        String[] rows = multilineString.split("\n");
-        char[][] charMatrix = new char[rows.length][];
-        for (int i = 0; i < rows.length; i++) {
-            charMatrix[i] = rows[i].toCharArray();
+        //fill commonGoal
+        String commonGoalString = """
+                 ┌────────┐  ┌────────┐\s
+                 │ ┬   A  │  │ ┬┬  B  │\s 
+                 │ ┴  ¯¯¯ │  │ ┴┴ ¯¯¯ │\s
+                 └────────┘  └────────┘\s
+                """;
+        char[][] commonGoalChar = new char[4][24];
+        commonGoalChar = String2CharMatrix(commonGoalString);
+        for (int i = 0; i < commonGoalChar.length; i++) {
+            for (int j = 0; j < commonGoalChar[i].length; j++) {
+                background[i+3][j+48] = commonGoalChar[i][j];
+            }
+        }
+        //fill YourPoints
+        String yourPointsString = """
+                 Your Points \s
+                     C       \s
+                """;
+        char[][] yourPointsChar = new char[2][13];
+        yourPointsChar = String2CharMatrix(yourPointsString);
+        for (int i = 0; i < yourPointsChar.length; i++) {
+            for (int j = 0; j < yourPointsChar[i].length; j++) {
+                background[i+3][j+77] = yourPointsChar[i][j];
+            }
+        }
+        //fill PersonalGoal
+        char[] personalGoalChar = (" Personal Goal  ").toCharArray();
+        for (int i = 0; i < personalGoalChar.length; i++) {
+            background[21][i+47] = personalGoalChar[i];
+        }
+        //fill YourBookshelf
+        String yourBookshelfString = """
+                    Your Bookshelf:   \s
+                   1 ░ 2 ░ 3 ░ 4 ░ 5  \s
+                """;
+        char[][] yourBookshelfChar = new char[3][23];
+        yourBookshelfChar = String2CharMatrix(yourBookshelfString);
+        for (int i = 0; i < yourBookshelfChar.length; i++) {
+            for (int j = 0; j < yourBookshelfChar[i].length; j++) {
+                background[i+23][j+4] = yourBookshelfChar[i][j];
+            }
+        }
+        //fill player's username
+        for (int i = 0; i < otherPlayers.size(); i++) {
+            otherPlayersUsername.add(otherPlayers.get(i).getUsername().toCharArray());
+        }
+        for (int i = 0; i < otherPlayersUsername.size(); i++) {
+            //j has max length of 17 because the space available for username is max 17 char
+            for (int j = 0; j < otherPlayersUsername.get(i).length && j<17; j++) {
+                switch (i){
+                    case 0 -> background[24][j+31] = otherPlayersUsername.get(i)[j];
+                    case 1 -> background[24][j+53] = otherPlayersUsername.get(i)[j];
+                    case 2 -> background[24][j+75] = otherPlayersUsername.get(i)[j];
+                }
+            }
         }
 
-        return charMatrix;
     }
-
-    public static char Tile2Char(Tile tile) {
-        char tileChar = ' ';
-        switch (tile.getType())
-        {
-            case CATS -> tileChar = '¥';
-            case BOOKS -> tileChar = '#';
-            case FRAMES -> tileChar = '¶';
-            case TROPHIES -> tileChar = '©';
-            case PLANTS -> tileChar = '§';
-        }
-        return tileChar;
+    /***
+     * this method update points of the player in the allSetup matrix
+     * @param yourPoints has to be a number between 0 and 999
+     * */
+    private void updateYourPoints(int yourPoints){
+       char[] yourPointsChar = new char[3];
+       yourPointsChar = (String.valueOf(yourPoints)).toCharArray();
+       setOnSetup(yourPointsChar,4,82);
     }
-
+    /***
+     * this method update the stack of the common goals directly in the allSetup matrix
+     * @param commonStack1 has to be a number between 0 and 9 {0,2,4,8}
+     * @param commonStack2 has to be a number between 0 and 9 {0,2,4,8}
+     * */
+    private void updateCommongoalStacks(int commonStack1, int commonStack2){
+        char[] commonStack1Char = new char[1];
+        commonStack1Char = (String.valueOf(commonStack1)).toCharArray();
+        char[] commonStack2Char = new char[1];
+        commonStack2Char = (String.valueOf(commonStack2)).toCharArray();
+        setOnSetup(commonStack1Char,4,55);
+        setOnSetup(commonStack2Char,4,67);
+    }
     private List<Player> otherPlayer(List<Player> players, Player thisPlayer) {
         List<Player> otherPlayers = new ArrayList<>();
         for (Player player : players) {
@@ -206,138 +268,40 @@ public class Basic {
         }
         return null;
     }
-
-    /******************************** ELIMINARE************************/
-    /***
-     *        ╔═══╦═══╦═══╦═══╦═══╗
-     *      F ║   ║   ║   ║   ║   ║
-     *        ╠═══╬═══╬═══╬═══╬═══╣
-     *      E ║ § ║   ║   ║   ║   ║
-     *        ╠═══╬═══╬═══╬═══╬═══╣
-     *      D ║ © ║   ║   ║   ║   ║
-     *        ╠═══╬═══╬═══╬═══╬═══╣
-     *      C ║ ¥ ║   ║   ║   ║   ║
-     *        ╠═══╬═══╬═══╬═══╬═══╣
-     *      B ║ # ║   ║   ║   ║   ║
-     *        ╠═══╬═══╬═══╬═══╬═══╣
-     *      A ║ ¶ ║   ║   ║   ║   ║
-     *        ╚═══╩═══╩═══╩═══╩═══╝
-     *
-     * */
-    private int[] bookshelfMap(int row, char col) {
-        int[] bookshelf = new int[2];
-        HashMap<Character,Integer> coordinateToPositionMap = new HashMap<Character, Integer>();
-        char letter = (char) (row + 65); //Convert the row to a letter
-
-        // Add mappings for the colums
-        coordinateToPositionMap.put('0',3);
-        coordinateToPositionMap.put('1',6);
-        coordinateToPositionMap.put('2',10);
-        coordinateToPositionMap.put('3',14);
-        coordinateToPositionMap.put('4',18);
-
-        // Add mappings for the rows
-        coordinateToPositionMap.put('F',2);
-        coordinateToPositionMap.put('E',4);
-        coordinateToPositionMap.put('D',6);
-        coordinateToPositionMap.put('C',8);
-        coordinateToPositionMap.put('B',10);
-        coordinateToPositionMap.put('A',12);
-
-
-        bookshelf[0] = coordinateToPositionMap.get(col);
-        bookshelf[1] = coordinateToPositionMap.get(letter);
-        return bookshelf;
+    private void setOnSetup(char [][] image, int x , int y){
+        for(int i= 0; i<image.length; i++){
+            for(int j=0; j<image[i].length; j++){
+                allSetup[x+i][y+j] = image[i][j];
+            }
+        }
     }
-    /***
-     * This function is used to map the coordinates to the position on the board for the 4 and 3 players version
-     * */
-    private int[] boardMap43(char letter, char col) {
-        HashMap<Character, Integer> coordinateToPositionMap =new HashMap<Character, Integer>();
-        // Add mappings for the colums
-        coordinateToPositionMap.put('1', 5);
-        coordinateToPositionMap.put('2', 9);
-        coordinateToPositionMap.put('3', 13);
-        coordinateToPositionMap.put('4', 17);
-        coordinateToPositionMap.put('5',21);
-        coordinateToPositionMap.put('6',25);
-        coordinateToPositionMap.put('7',29);
-        coordinateToPositionMap.put('8',33);
-        coordinateToPositionMap.put('9',37);
-
-        // Add mappings for the rows
-        coordinateToPositionMap.put('A',2);
-        coordinateToPositionMap.put('B', 4);
-        coordinateToPositionMap.put('C', 6);
-        coordinateToPositionMap.put('D', 8);
-        coordinateToPositionMap.put('E', 10);
-        coordinateToPositionMap.put('F', 12);
-        coordinateToPositionMap.put('G', 14);
-        coordinateToPositionMap.put('H', 16);
-        coordinateToPositionMap.put('I', 18);
-
-        int[] coordinate = new int[2];
-        coordinate[0] = coordinateToPositionMap.get(letter);
-        coordinate[1] = coordinateToPositionMap.get(col);
-        return coordinate;
+    private void setOnSetup(char[] string, int x , int y){
+        for(int i= 0; i<string.length; i++){
+            allSetup[x][y+i] = string[i];
+        }
     }
 
+    /********************************* Util Functions **********+***************************/
+    public static char[][] String2CharMatrix(String multilineString) {
+        String[] rows = multilineString.split("\n");
+        char[][] charMatrix = new char[rows.length][];
+        for (int i = 0; i < rows.length; i++) {
+            charMatrix[i] = rows[i].toCharArray();
+        }
 
-    /***
-     * This function is used to map the coordinates to the position on the board for the 2 players version
-     * */
-    private int[] boardMap2(char letter, char col) {
-        HashMap<Character, Integer> coordinateToPositionMap =new HashMap<Character, Integer>();
-        // Add mappings for the colums
-        coordinateToPositionMap.put('1', 9);
-        coordinateToPositionMap.put('2', 13);
-        coordinateToPositionMap.put('3', 17);
-        coordinateToPositionMap.put('4',21);
-        coordinateToPositionMap.put('5',25);
-        coordinateToPositionMap.put('6',29);
-        coordinateToPositionMap.put('7',33);
-
-        // Add mappings for the rows
-        coordinateToPositionMap.put('A', 4);
-        coordinateToPositionMap.put('B', 6);
-        coordinateToPositionMap.put('C', 8);
-        coordinateToPositionMap.put('D', 10);
-        coordinateToPositionMap.put('E', 12);
-        coordinateToPositionMap.put('F', 14);
-        coordinateToPositionMap.put('G', 16);
-
-        int[] coordinate = new int[2];
-        coordinate[0] = coordinateToPositionMap.get(letter);
-        coordinate[1] = coordinateToPositionMap.get(col);
-        return coordinate;
+        return charMatrix;
     }
-
-    private int[] imgBoardMap2(int row, int col) {
-        HashMap<Character, Integer> coordinateToPositionMap =new HashMap<Character, Integer>();
-        // Add mappings for the colums
-        coordinateToPositionMap.put('1', 9);
-        coordinateToPositionMap.put('2', 13);
-        coordinateToPositionMap.put('3', 17);
-        coordinateToPositionMap.put('4',21);
-        coordinateToPositionMap.put('5',25);
-        coordinateToPositionMap.put('6',29);
-        coordinateToPositionMap.put('7',33);
-
-        // Add mappings for the rows
-        coordinateToPositionMap.put('A', 4);
-        coordinateToPositionMap.put('B', 6);
-        coordinateToPositionMap.put('C', 8);
-        coordinateToPositionMap.put('D', 10);
-        coordinateToPositionMap.put('E', 12);
-        coordinateToPositionMap.put('F', 14);
-        coordinateToPositionMap.put('G', 16);
-
-        int[] coordinate = new int[2];
-        coordinate[0] = coordinateToPositionMap.get(row);
-        coordinate[1] = coordinateToPositionMap.get(col);
-        return coordinate;
+    public static char Tile2Char(Tile tile) {
+        char tileChar = ' ';
+        switch (tile.getType())
+        {
+            case CATS -> tileChar = '¥';
+            case BOOKS -> tileChar = '#';
+            case FRAMES -> tileChar = '¶';
+            case TROPHIES -> tileChar = '©';
+            case PLANTS -> tileChar = '§';
+        }
+        return tileChar;
     }
-    /*******************************************************************/
 
 }
-

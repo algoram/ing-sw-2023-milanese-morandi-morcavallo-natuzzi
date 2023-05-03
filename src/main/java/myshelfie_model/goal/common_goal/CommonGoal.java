@@ -14,8 +14,7 @@ public abstract class CommonGoal extends Goal {
 
     public abstract boolean check(Bookshelf b);
 
-
-    /**
+    /***
      * The function creates the Token's Stack
      * depending on the number of players
      * @param numberOfPlayers

@@ -24,7 +24,6 @@ public class GameState implements Serializable {
 
     public GameState(Integer gameNumber, Board board, CommonGoal[] commonGoals, int playerSeat, String playerTurn, int finishedFirst, ArrayList<Player> players) {
         //TODO deep clone objects by serializing and deserializing
-
         this.gameNumber = gameNumber;
         this.board = board;
         this.commonGoals = commonGoals;

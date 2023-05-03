@@ -35,7 +35,7 @@ public class Board4playersTest {
 
         board.refill(tiles);
         assertEquals(0, tiles.size());
-        stateboard = board.getBoard();
+        stateboard = board.getBoardTest();
         for (int i = 8; i >= 0; i--) {
             for (int j = 0; j < 9; j++) {
                 if (stateboard[i][j] != null){

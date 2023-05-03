@@ -11,7 +11,6 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public class CliView extends View {
-
     private boolean gameIsRunning;
     private boolean chatIsRunning = false;
     private static CliView instance = null;
@@ -23,8 +22,14 @@ public class CliView extends View {
         this.gameIsRunning = true;
         new Thread(() -> {
             while (gameIsRunning) {
-                init();
-                //todo: check if correct
+                boolean startIsRunning = true;
+                int theme = askTheme(startIsRunning);
+                switch (theme){
+                    case 0:
+                        init( new Basic(out));
+                        break;
+                    case 1: //init(new Colored(out));
+                }
             }
         }).start();
     }
@@ -38,14 +43,105 @@ public class CliView extends View {
         }
         return instance;
     }
-    public void init() {
-        Basic basic = new Basic(out);
+    public void init( Basic basic) {
         basic.Logo();
         basic.Commands();
         String input = readSafe();
 
         boolean startIsRunning = true;
-        //choose connection type
+        askConnection(startIsRunning);
+        askLogin(startIsRunning);
+    }
+    public void showLogMessage(String message){
+        if(message != null){
+            out.println(message);
+        }
+    };
+    public void connectionSuccessful() {
+        //todo move chatIsRunning = true;
+        out.println("Waiting for other players to enter!");
+    }
+    public void connectionFailed(String reason) {
+        out.println(reason);
+        out.println("Try again!");
+        boolean startIsRunning = true;
+        askLogin(startIsRunning);
+    }
+    //todo:#1
+    public void initGameState(GameState gameState){
+        Basic basic = new Basic(out);
+        out.println("Game is starting!");
+
+        basic.DisplayAllSetup(gameState);
+    }
+    public void chatIn(String sender, String message, boolean isPublic) {
+        if(isPublic)
+            out.println(sender + ": " + message);
+        else
+            out.println("(" + sender+ " )" + " to you: " + message);
+    }
+    //todo:#2
+    public void messageSentSuccessfully() {
+    };
+
+    //todo:#2
+    public void messageSentFailure(String errorMessage) {
+    }
+
+    //todo:#2
+    public void playerDisconnected(String playerOut) {
+
+    };
+    //todo:#1
+    public void yourTurn() {
+
+    };
+    //todo:#1
+    public void takeFailed(String reason) {
+
+    };
+    //todo:#1
+    public void turnOf(String playerTurn) {
+
+    };
+    //todo:#1
+    public void showGameUpdate(GameUpdate gameUpdate) {
+
+    };
+
+    public void closeCliView() {
+        gameIsRunning = false;
+    }
+
+    //******************************************************************************************************************
+    //**************************************************PRIVATE METHODS*************************************************
+
+    private int askTheme(boolean startIsRunning){
+        String input = null;
+        int theme = 0; //0 is default theme B&W, 1 is color theme
+        while(startIsRunning) {
+            out.println("Digit 'b' to B&W Theme 'c' to Color Theme");
+            input = readSafe();
+
+            if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
+                out.println("command not valid");
+            }
+            else if (input.equals("b")) {
+                theme = 0;
+                break;
+            }
+            /*else if (input.equals("c")) {
+                theme = 1;
+                break;
+            }*/
+            else {
+                out.println("input not valid");
+            }
+        }
+        return theme;
+    }
+    private void askConnection(boolean startIsRunning){
+        String input = null;
         while(startIsRunning) {
             out.println("Digit 's' to socket 'r' to rmi");
             input = readSafe();
@@ -65,86 +161,7 @@ public class CliView extends View {
                 out.println("input not valid");
             }
         }
-        askLogin(startIsRunning);
     }
-
-
-    public void showLogMessage(String message){
-        if(message != null){
-            out.println(message);
-        }
-    };
-
-    public void connectionSuccessful() {
-        //todo move chatIsRunning = true;
-        out.println("Waiting for other players to enter!");
-    }
-
-    public void connectionFailed(String reason) {
-        out.println(reason);
-        out.println("Try again!");
-        boolean startIsRunning = true;
-        askLogin(startIsRunning);
-    }
-
-    //todo:#1
-    public void initGameState(GameState gameState){
-        Basic basic = new Basic(out);
-        out.println("Game is starting!");
-
-        basic.DisplayAll(gameState);
-    }
-
-
-    public void chatIn(String sender, String message, boolean isPublic) {
-        if(isPublic)
-            out.println(sender + ": " + message);
-        else
-            out.println("(" + sender+ " )" + " to you: " + message);
-    }
-
-    //todo:#2
-    public void messageSentSuccessfully() {
-
-    };
-
-    //todo:#2
-    public void messageSentFailure(String errorMessage) {
-
-    }
-
-    //todo:#2
-    public void playerDisconnected(String playerOut) {
-
-    };
-
-    //todo:#1
-    public void yourTurn() {
-
-    };
-
-    //todo:#1
-    public void takeFailed(String reason) {
-
-    };
-
-    //todo:#1
-    public void turnOf(String playerTurn) {
-
-    };
-
-    //todo:#1
-    public void showGameUpdate(GameUpdate gameUpdate) {
-
-    };
-
-    public void closeCliView() {
-        gameIsRunning = false;
-    }
-
-    //******************************************************************************************************************
-    //**************************************************PRIVATE METHODS*************************************************
-
     /***
      * restart the init method from the user setup
      *
@@ -227,7 +244,6 @@ public class CliView extends View {
             }
         }
     }
-
     /***
      * Read a string from the console, if the string is empty or null, it will ask again
     */
@@ -239,7 +255,6 @@ public class CliView extends View {
 
         return input;
     }
-
     /***
      * Ask the user to digit the receiver and the message, then it will send the message to the server
      */
@@ -257,7 +272,6 @@ public class CliView extends View {
         if (chatIsRunning) out.println("/chat: send a message to the other players");
         out.println("/exit: exit the game");
     }
-
     private void exit(){
         out.println("Bye Bye");
         gameIsRunning = false;

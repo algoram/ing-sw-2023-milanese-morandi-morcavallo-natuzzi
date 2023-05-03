@@ -292,7 +292,7 @@ public abstract class Board {
      * this method is used to check the state of the board after a remove in Tests
      * @return a copy of the board
      */
-    public Tile[][] getBoard(){
+    public Tile[][] getBoardTest(){
         Tile[][] boardCopy = new Tile[9][9];
         for(int i=0; i<9; i++){
             System.arraycopy(this.board[i], 0, boardCopy[i], 0, 9);

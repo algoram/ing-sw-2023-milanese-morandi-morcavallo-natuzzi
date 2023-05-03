@@ -5,9 +5,7 @@ import myshelfie_model.board.Board2players;
 import myshelfie_model.board.Board3players;
 import myshelfie_model.board.Board4players;
 import myshelfie_model.goal.PersonalGoal;
-import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.*;
-import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 
 import java.util.*;
@@ -413,7 +411,7 @@ public class Game {
     //-------------------- DEBUGGING METHODS --------------------
 
     public void debugBoard() {
-        Tile[][] tiles = board.getBoard();
+        Tile[][] tiles = board.getBoardTest();
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {

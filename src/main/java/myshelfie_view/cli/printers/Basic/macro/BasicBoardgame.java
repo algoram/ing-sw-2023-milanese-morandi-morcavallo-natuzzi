@@ -75,20 +75,25 @@ public class BasicBoardgame {
         put('H', 7);
         put('I', 8);
     }};
-
-    public void BoardGame(char[][] boardgame){
+    public BasicBoardgame(char[][] chars) {
         this.boardgame = boardgame;
     }
-
-    private void buildBoard(char[][] board,Board modelBoard, int numPlayers) {
+    public char[][] getBoardCharMatrix() {
+        return boardgame;
+    }
+    /***
+     * this method build the boardgame and insert all the tiles in the right position
+     * @param modelBoard is the board of the model
+     * @param numPlayers is the number of players: has to be 2, 3 or 4 and remain CONSTANT for the whole game
+     * */
+    public void buildBoard( Board modelBoard, int numPlayers) {
         switch (numPlayers)
         {
-            case 2 -> Board2Players(modelBoard,board);
-            case 3 -> Board3Players(modelBoard,board);
-            case 4 -> Board4Players(modelBoard,board);
+            case 2 -> Board2Players(modelBoard);
+            case 3 -> Board3Players(modelBoard);
+            case 4 -> Board4Players(modelBoard);
         }
     }
-
     /***
      * ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░
      * ░░
@@ -112,7 +117,7 @@ public class BasicBoardgame {
      * ░░
      *
      * */
-    private void Board2Players(Board modelBoard, char[][] board) {
+    private void Board2Players(Board modelBoard) {
         String boardImage = """
                 ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░░░░░░░
                 ░░                                       \s
@@ -135,10 +140,9 @@ public class BasicBoardgame {
                 ░░                                       \s
                 ░░                                       \s
                 """;
-        board = String2CharMatrix(boardImage); //insert the Image
-        setTileBoard(board,modelBoard.getTiles()); //Set all the Tile
+        this.boardgame = String2CharMatrix(boardImage); //insert the Image
+        setTileBoard(this.boardgame,modelBoard.getTiles()); //Set all the Tile
     };
-
     /***
      ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
      ░░             ╔═══╗
@@ -162,7 +166,7 @@ public class BasicBoardgame {
      ░░                     ╚═══╝
 
      */
-    private void Board3Players(Board modelBoard, char[][] board) {
+    private void Board3Players(Board modelBoard) {
         String boardImage = """
                  ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
                  ░░             ╔═══╗                    \s
@@ -185,10 +189,9 @@ public class BasicBoardgame {
                  I                      ║   ║            \s
                  ░░                     ╚═══╝            \s
                  """;
-        board = String2CharMatrix(boardImage); //insert the Image
-        setTileBoard(board,modelBoard.getTiles());
+        this.boardgame = String2CharMatrix(boardImage); //insert the Image
+        setTileBoard(this.boardgame,modelBoard.getTiles());
     };
-
     /***
      ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
      ░░             ╔═══╦═══╗
@@ -215,7 +218,7 @@ public class BasicBoardgame {
      * this method
      *
      */
-    private void Board4Players(Board modelBoard, char[][] board) {
+    private void Board4Players(Board modelBoard) {
         String boardImage = """
                 ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
                 ░░             ╔═══╦═══╗                \s
@@ -238,8 +241,8 @@ public class BasicBoardgame {
                 I                  ║   ║   ║            \s
                 ░░                 ╚═══╩═══╝            \s
                 """;
-        board = String2CharMatrix(boardImage); //insert the Image
-        setTileBoard(board,modelBoard.getTiles());
+        this.boardgame = String2CharMatrix(boardImage); //insert the Image
+        setTileBoard(this.boardgame,modelBoard.getTiles());
     }
     /***
      * this method is used to set the tiles on the board
@@ -260,6 +263,4 @@ public class BasicBoardgame {
             }
         }
     }
-
-
 }
