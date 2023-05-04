@@ -7,15 +7,12 @@ import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class EventDispatcher {
 
     private static EventDispatcher instance = null;
 
-    private String player;
-    private ConnectionType connectionType;
     private UUID uuid = UUID.randomUUID();
     private boolean pingThreadRun;
 
@@ -29,29 +26,16 @@ public class EventDispatcher {
         return instance;
     }
 
-    public void setPlayerCredentials(String player) {
-        this.player = player;
-    }
-
-    public void setConnectionType(ConnectionType type) {
-        connectionType = type;
-    }
-
     public UUID getUuid() {
         return uuid;
     }
-
-    public String getUsername(){
-        return player;
-    }
-
 
     public void startPinging() {
         pingThreadRun = true;
 
         new Thread(() -> {
             while (pingThreadRun) {
-                sendEvent(new Ping(player));
+                sendEvent(new Ping(Settings.getInstance().getUsername()));
 
                 try {
                     Thread.sleep(1000);
@@ -70,32 +54,32 @@ public class EventDispatcher {
     private void sendEvent(Event e) {
         e.setUuid(uuid);
 
-        if (connectionType == ConnectionType.RMI) {
+        if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
             RMIClient.getInstance().dispatchEvent(e);
-        } else if (connectionType == ConnectionType.SOCKET) {
+        } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
             SocketClient.getInstance().dispatchEvent(e);
         }
     }
 
     public void chat(String to, String message) {
         sendEvent(new MessageSend(
-                player,
+                Settings.getInstance().getUsername(),
                 to,
                 message
         ));
     }
 
     public void connect(int backupNumPlayers) {
-        sendEvent(new PlayerConnect(player, backupNumPlayers));
+        sendEvent(new PlayerConnect(Settings.getInstance().getUsername(), backupNumPlayers));
     }
 
     public void playerDisconnect(){
-        Event e = new PlayerDisconnect(this.player);
+        Event e = new PlayerDisconnect(Settings.getInstance().getUsername());
         sendEvent(e);
     }
 
     public void takeTiles(List<Position> tiles, int column){
-        Event e = new TakeTiles(this.player,tiles,column);
+        Event e = new TakeTiles(Settings.getInstance().getUsername(), tiles,column);
         sendEvent(e);
     }
 

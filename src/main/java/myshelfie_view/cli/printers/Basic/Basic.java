@@ -1,6 +1,7 @@
 package myshelfie_view.cli.printers.Basic;
 
 import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
 import myshelfie_model.Tile;
 import myshelfie_model.player.Player;
@@ -13,13 +14,18 @@ import java.util.List;
 
 
 public class Basic {
-    private final PrintStream out;
+    private final PrintStream out = System.out;
 
-    private char[][] allSetup;
+    private char[][] allSetup = new char[40][100];
 
-    public Basic(PrintStream out) {
-        this.out = out;
-        allSetup = new char[40][100];
+    private static Basic instance = null;
+    private Basic() {}
+
+    public static Basic getInstance(){
+        if(instance == null){
+            return new Basic();
+        }
+        else return instance;
     }
 
     public void Logo() {
@@ -105,7 +111,7 @@ public class Basic {
      *
      * */
     public void DisplayAllSetup(GameState gameState) {
-       allSetup= BuildSetup(gameState);
+       BuildSetup(gameState); //build the matrix setup from gameState
        out.println(allSetup);
     }
 
@@ -262,7 +268,7 @@ public class Basic {
     }
     private Player getThisPlayer(List<Player> players){
         for(Player player : players){
-            if(player.getUsername().equals(EventDispatcher.getInstance().getUsername())){
+            if(player.getUsername().equals(Settings.getInstance().getUsername())){
                 return player;
             }
         }

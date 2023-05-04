@@ -2,7 +2,6 @@ package myshelfie_controller;
 
 import myshelfie_controller.response.*;
 import myshelfie_model.GameState;
-import myshelfie_model.GameUpdate;
 import myshelfie_view.View;
 
 import java.util.LinkedList;
@@ -55,7 +54,7 @@ public class UpdateHandler {
 
         } else if (response instanceof PlayerConnectFailure) {
             String message = ((PlayerConnectFailure) response).getMessage();
-            EventDispatcher.getInstance().setPlayerCredentials(null);
+            Settings.getInstance().setUsername(null);
             View.getInstance().connectionFailed(message);
 
 
@@ -91,14 +90,14 @@ public class UpdateHandler {
 
         } else if (response instanceof TakeTilesSuccess) {
 
-            GameUpdate gameUpdate = ((TakeTilesSuccess) response).getGameUpdate();
-            View.getInstance().showGameUpdate(gameUpdate);
+            GameState gameState = ((TakeTilesSuccess) response).getGameState();
+            View.getInstance().displayNewSetup(gameState);
 
         } else if (response instanceof TakeTilesUpdate) {
 
-            GameUpdate gameUpdate = ((TakeTilesSuccess) response).getGameUpdate();
-            View.getInstance().showGameUpdate(gameUpdate);
-            playerTurn(gameUpdate.getPlayerTurn());
+            GameState gameState = ((TakeTilesUpdate) response).getGameState();
+            View.getInstance().displayNewSetup(gameState);
+            playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesFailure) {
 
@@ -110,7 +109,7 @@ public class UpdateHandler {
     }
 
     private void playerTurn(String playerTurn){
-        if (playerTurn.equals(EventDispatcher.getInstance().getUsername())){
+        if (playerTurn.equals(Settings.getInstance().getUsername())){
             View.getInstance().yourTurn();
         }else{
             View.getInstance().turnOf(playerTurn);

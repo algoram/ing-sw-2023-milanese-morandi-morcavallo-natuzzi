@@ -2,8 +2,8 @@ package myshelfie_view.cli;
 
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
-import myshelfie_model.GameUpdate;
 import myshelfie_view.View;
 import myshelfie_view.cli.printers.Basic.Basic;
 
@@ -11,31 +11,31 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public class CliView extends View {
-    private boolean gameIsRunning;
-    private boolean chatIsRunning = false;
+    private boolean gameIsRunning; //the loop
+    private boolean chatIsRunning = false; //the moment in which the chat is available
     private static CliView instance = null;
     private Scanner scanner;
+    private GameState gameState; //is the actual state of the game
     private final PrintStream out;
+
+    private Double refreshRate = 100.0; //refresh rate of the game
+
     private CliView() {
         out = System.out;
         this.scanner = new Scanner(System.in);
         this.gameIsRunning = true;
-        new Thread(() -> {
-            while (gameIsRunning) {
-                boolean startIsRunning = true;
-                int theme = askTheme(startIsRunning);
-                switch (theme){
-                    case 0:
-                        init( new Basic(out));
-                        break;
-                    case 1: //init(new Colored(out));
-                }
-            }
-        }).start();
+        int theme = askTheme();
+        switch (theme){
+            case 0:
+                init(Basic.getInstance());
+                break;
+            case 1: //init(new Colored(out));
+        }
     }
 
     //******************************************************************************************************************
     //*********************************************** PUBLIC METHODS **************************************************
+
 
     public static CliView getInstanceCli() {
         if (instance == null) {
@@ -43,72 +43,103 @@ public class CliView extends View {
         }
         return instance;
     }
-    public void init( Basic basic) {
-        basic.Logo();
-        basic.Commands();
-        String input = readSafe();
+    private void init(Basic basic) {
+        basic.Logo(); //print MyShelfie
+        basic.Commands(); //print available Commands
 
-        boolean startIsRunning = true;
-        askConnection(startIsRunning);
-        askLogin(startIsRunning);
+        askConnection();
+        askLogin();
     }
+
+    @Override
     public void showLogMessage(String message){
         if(message != null){
             out.println(message);
         }
-    };
+    }
+    @Override
     public void connectionSuccessful() {
-        //todo move chatIsRunning = true;
+        this.chatIsRunning = true;
         out.println("Waiting for other players to enter!");
     }
+
+    @Override
     public void connectionFailed(String reason) {
         out.println(reason);
         out.println("Try again!");
-        boolean startIsRunning = true;
-        askLogin(startIsRunning);
+        askLogin();
     }
-    //todo:#1
-    public void initGameState(GameState gameState){
-        Basic basic = new Basic(out);
-        out.println("Game is starting!");
 
-        basic.DisplayAllSetup(gameState);
+    @Override
+    public void initGameState(GameState gameState){
+
+        out.println("Game is starting!");
+        this.gameState = gameState;
+
+        new Thread(() -> {
+            while (gameIsRunning) {
+                synchronized (gameState){
+                    //todo create a class display that memorize a gameState and the last messages
+                    Basic.getInstance().DisplayAllSetup(this.gameState);
+                }
+
+                try{
+                    Thread.sleep(this.refreshRate.longValue());
+                    new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println("Error in the refresh rate");
+                }
+            }
+        }).start();
     }
+
+    @Override
     public void chatIn(String sender, String message, boolean isPublic) {
         if(isPublic)
             out.println(sender + ": " + message);
         else
             out.println("(" + sender+ " )" + " to you: " + message);
     }
-    //todo:#2
-    public void messageSentSuccessfully() {
-    };
 
-    //todo:#2
-    public void messageSentFailure(String errorMessage) {
+    @Override
+    public void messageSentSuccessfully() {
+        System.out.println("Message sent successfully");
     }
 
-    //todo:#2
+    @Override
+    public void messageSentFailure(String errorMessage) {
+        System.out.println("Message sent failure: " + errorMessage);
+    }
+
+    @Override
     public void playerDisconnected(String playerOut) {
+        System.out.println(playerOut + " disconnected");
+    }
 
-    };
-    //todo:#1
+    @Override
     public void yourTurn() {
+        System.out.println("It's your turn!");
+    }
 
-    };
-    //todo:#1
+    @Override
     public void takeFailed(String reason) {
+        System.out.println("Take failed: " + reason);
+    }
 
-    };
-    //todo:#1
+    @Override
     public void turnOf(String playerTurn) {
+        System.out.println("It's " + playerTurn + "'s turn!");
+    }
 
-    };
-    //todo:#1
-    public void showGameUpdate(GameUpdate gameUpdate) {
+    @Override
+    public void displayNewSetup(GameState gameState){
+        synchronized (gameState) {
+            this.gameState = gameState;
+        }
+    }
 
-    };
-
+    @Override
     public void closeCliView() {
         gameIsRunning = false;
     }
@@ -116,18 +147,19 @@ public class CliView extends View {
     //******************************************************************************************************************
     //**************************************************PRIVATE METHODS*************************************************
 
-    private int askTheme(boolean startIsRunning){
-        String input = null;
+    private int askTheme(){
+
+        String input;
         int theme = 0; //0 is default theme B&W, 1 is color theme
-        while(startIsRunning) {
+        while(gameIsRunning) {
             out.println("Digit 'b' to B&W Theme 'c' to Color Theme");
             input = readSafe();
 
-            if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
+            if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("command not valid");
             }
             else if (input.equals("b")) {
-                theme = 0;
+                // do nothing is already default
                 break;
             }
             /*else if (input.equals("c")) {
@@ -140,21 +172,21 @@ public class CliView extends View {
         }
         return theme;
     }
-    private void askConnection(boolean startIsRunning){
-        String input = null;
-        while(startIsRunning) {
+    private void askConnection(){
+        String input;
+        while(gameIsRunning) {
             out.println("Digit 's' to socket 'r' to rmi");
             input = readSafe();
 
-            if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
+            if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("command not valid");
             }
             else if (input.equals("s")) {
-                EventDispatcher.getInstance().setConnectionType(ConnectionType.SOCKET);
+                Settings.getInstance().setConnectionType(ConnectionType.SOCKET);
                 break;
             }
             else if (input.equals("r")) {
-                EventDispatcher.getInstance().setConnectionType(ConnectionType.RMI);
+                Settings.getInstance().setConnectionType(ConnectionType.RMI);
                 break;
             }
             else {
@@ -164,17 +196,16 @@ public class CliView extends View {
     }
     /***
      * restart the init method from the user setup
-     *
      *param startIsRunning flag to decide if the start phase is running or not
      * */
-    private void askLogin(boolean startIsRunning){
+    private void askLogin(){
         String input = null;
         //choose nickname
-        while(startIsRunning) {
+        while(gameIsRunning ) {
             out.println("digit your nicknmame:");
             input = readSafe();
 
-            if (input.startsWith("/") && commandAvailable(input,startIsRunning) ){
+            if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("command not valid");
             }
             else if (input.equals("all") || input.equals("") || input.startsWith("/") || input.contains(" ")) {
@@ -183,16 +214,16 @@ public class CliView extends View {
                 //17 is the max length of a nickname for the right print on CLI view
                 out.println("nickname too long");
             } else {
-                EventDispatcher.getInstance().setPlayerCredentials(input);
+                Settings.getInstance().setUsername(input);
                 break;
             }
         }
         //choose number of players
-        while(startIsRunning) {
+        while(gameIsRunning) {
             out.println("digit the number of players");
             input = readSafe();
 
-            if (input.startsWith("/") && commandAvailable(input, startIsRunning) ){
+            if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("command not valid");
             }
             else if (!input.equals("2") && !input.equals("3") && !input.equals("4")) {
@@ -211,10 +242,9 @@ public class CliView extends View {
      * If the commando corresponds to exit, it will set the gameIsRunning flag to false
      *
      * @param command the command to check
-     * @param stateIsRunning flag to decide if the game is running or not
      * @return true if the command is available, false otherwise
      */
-    private boolean commandAvailable(String command, boolean stateIsRunning){
+    private boolean commandAvailable(String command){
         if(chatIsRunning){
             switch (command) {
                 case "/help":
@@ -224,7 +254,6 @@ public class CliView extends View {
                     chatOut();
                     return true;
                 case "/exit":
-                    stateIsRunning = false;
                     exit();
                     return true;
                 default:
@@ -236,7 +265,6 @@ public class CliView extends View {
                     help();
                     return true;
                 case "/exit":
-                    stateIsRunning = false;
                     exit();
                     return true;
                 default:

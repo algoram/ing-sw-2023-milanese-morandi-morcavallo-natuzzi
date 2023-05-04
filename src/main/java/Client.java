@@ -1,8 +1,7 @@
-import myshelfie_controller.ConnectionType;
-import myshelfie_controller.EventDispatcher;
-import myshelfie_controller.UpdateHandler;
+import myshelfie_controller.*;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
+import myshelfie_view.View;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -23,13 +22,13 @@ public class Client {
             throw new RuntimeException(e);
         }
         //init()
-        EventDispatcher.getInstance().setPlayerCredentials("player");
-        EventDispatcher.getInstance().setConnectionType(ConnectionType.SOCKET);
 
-        EventDispatcher.getInstance().connect(4);
+        Settings.getInstance().setViewType(ViewType.CLI);
+        View.getInstance();
 
-        EventDispatcher.getInstance().chat(null, "Hello World!");
-        EventDispatcher.getInstance().chat("player2", "Hello Player 2!");
+
+        EventDispatcher.getInstance();
+
     }
 
 }

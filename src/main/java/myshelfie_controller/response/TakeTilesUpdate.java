@@ -15,7 +15,7 @@ public class TakeTilesUpdate extends Response{
         this.updatePlayer = updatePlayer;
     }
 
-    public GameState getGameUpdate() {
+    public GameState getGameState() {
         return gameState;
     }
 

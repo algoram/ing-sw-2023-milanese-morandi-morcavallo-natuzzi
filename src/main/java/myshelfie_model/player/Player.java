@@ -1,6 +1,5 @@
 package myshelfie_model.player;
 
-import myshelfie_model.Score;
 import myshelfie_model.goal.PersonalGoal;
 import myshelfie_model.goal.Token;
 

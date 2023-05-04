@@ -1,12 +1,14 @@
 package myshelfie_controller;
 
+//this class is used to store the global settings of the user
+//Each class saving settings must use this class to save and load settings
 public class Settings {
     //must be effectively final
     private String username;
 
-    private String wiewType;
+    private ViewType viewType;
 
-    private String ConnectionType;
+    private ConnectionType connectionType;
 
     private static Settings instance = null;
 
@@ -24,24 +26,24 @@ public class Settings {
         this.username = username;
     }
 
-    public void setWiewType(String wiewType) {
-        this.wiewType = wiewType;
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
     }
 
-    public void setConnectionType(String ConnectionType) {
-        this.ConnectionType = ConnectionType;
+    public void setConnectionType(ConnectionType connectionType) {
+        this.connectionType = connectionType;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getViewType() {
-        return wiewType;
+    public ViewType getViewType() {
+        return viewType;
     }
 
-    public String getConnectionType() {
-        return ConnectionType;
+    public ConnectionType getConnectionType() {
+        return connectionType;
     }
 
 }
