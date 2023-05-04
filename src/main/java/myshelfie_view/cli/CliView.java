@@ -85,22 +85,7 @@ public class CliView extends View {
         out.println("Game is starting!");
         this.gameState = gameState;
 
-        new Thread(() -> {
-            while (gameIsRunning) {
-                synchronized (gameState){
-                    //todo create a class display that memorize a gameState and the last messages
-                    Printer.getInstance().DisplayAllSetup(this.gameState);
-                }
-
-                try{
-                    Thread.sleep(this.refreshRate.longValue());
-                    new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-                }catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println("Error in the refresh rate");
-                }
-            }
-        }).start();
+        Printer.getInstance().DisplayAllSetup(this.gameState);
     }
 
     @Override

@@ -81,7 +81,8 @@ public class PlotBookshelf {
     private void setTileBookshelf(Tile[][] tiles) {
         for (int i= 0; i < tiles.length; i++) {
             for (int j=0; j < tiles[i].length; j++) {
-                this.bookshelf[bookshelfColModel2CLI.get(i)][bookshelfRowModel2CLI.get(j)] = Tile2Char(tiles[i][j]);;
+                char c = Tile2Char(tiles[i][j]);
+                this.bookshelf[bookshelfRowModel2CLI.get(i)][bookshelfColModel2CLI.get(j)] = c;
             }
         }
     }

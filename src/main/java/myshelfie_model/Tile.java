@@ -1,6 +1,8 @@
 package myshelfie_model;
 
-public class Tile {
+import java.io.Serializable;
+
+public class Tile implements Serializable {
     private final Type type;
 
     public Tile(Type t){

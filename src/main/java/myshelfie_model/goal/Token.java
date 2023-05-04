@@ -1,6 +1,8 @@
 package myshelfie_model.goal;
 
-public class Token {
+import java.io.Serializable;
+
+public class Token implements Serializable {
     private final int points;
 
     public Token(int points){

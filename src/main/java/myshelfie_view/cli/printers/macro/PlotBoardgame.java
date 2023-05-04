@@ -13,7 +13,7 @@ public class PlotBoardgame {
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model
      * into the CORDINATES of the board3Player (and board4Player) in the view
      */
-    private final HashMap<Integer, Integer> boardColModel2CLI = new HashMap<>() {{
+    private final HashMap<Integer, Integer> boardRowModel2CLI = new HashMap<>() {{
         put(0, 2);
         put(1, 4);
         put(2, 6);
@@ -28,7 +28,7 @@ public class PlotBoardgame {
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model
      * into the CORDINATES of the board3Player (and board4Player) in the view
      */
-    private final HashMap<Integer, Integer> boardRowModel2CLI = new HashMap<>() {{
+    private final HashMap<Integer, Integer> boardColModel2CLI = new HashMap<>() {{
         put(0, 5);
         put(1, 9);
         put(2, 13);
@@ -259,7 +259,7 @@ public class PlotBoardgame {
     private void setTileBoard(char[][] board, Tile[][] tiles) {
         for (int i= 0; i < tiles.length; i++) {
             for (int j=0; j < tiles[i].length; j++) {
-                board[boardColModel2CLI.get(i)][boardRowModel2CLI.get(j)] = Tile2Char(tiles[i][j]);;
+                board[boardRowModel2CLI.get(i)][boardColModel2CLI.get(j)] = Tile2Char(tiles[i][j]);
             }
         }
     }

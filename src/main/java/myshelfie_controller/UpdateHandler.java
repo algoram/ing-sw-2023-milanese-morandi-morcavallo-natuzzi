@@ -44,7 +44,8 @@ public class UpdateHandler {
     }
 
     public void handle(Response response) {
-        System.out.println("Received response " + response.getClass().getSimpleName());
+        // TODO: verificare disconnessioni
+        // System.out.println("Received response " + response.getClass().getSimpleName());
 
         if (response instanceof PlayerConnectSuccess) {
             // start pinging server

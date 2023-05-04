@@ -2,6 +2,7 @@ package myshelfie_model.board;
 import myshelfie_model.Position;
 import myshelfie_model.Tile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
  *    8  null | null | null | null | IV  | III  | null | null | null
  * */
 //TODO: MODIFICARE UML CON ABSTRACT
-public abstract class Board {
+public abstract class Board implements Serializable {
     //TODO: Modificare uml protected
     protected Tile[][] board;
     //private final Tile emptyTile= new Tile(Type.EMPTY);

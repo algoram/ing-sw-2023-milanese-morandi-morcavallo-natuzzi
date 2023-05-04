@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.DoubleToIntFunction;
 
 public class GameManager {
 
@@ -149,9 +150,16 @@ public class GameManager {
         String playerTurn = GameManager.getInstance().getTurn(player);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
 
-        // TODO: fixare costruttore GameState
-        // new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players).deepClone();
-        return null;
+        Token[] topCommonGoals = new Token[2];
+
+        topCommonGoals[0] = commonGoals[0].peekTokens();
+        topCommonGoals[1] = commonGoals[1].peekTokens();
+
+        GameState gameState = new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals);
+
+        System.out.println(gameState);
+
+        return gameState;
     }
 
 

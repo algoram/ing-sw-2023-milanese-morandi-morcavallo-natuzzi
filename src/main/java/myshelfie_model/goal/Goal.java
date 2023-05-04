@@ -1,4 +1,6 @@
 package myshelfie_model.goal;
 
-public abstract class Goal {
+import java.io.Serializable;
+
+public abstract class Goal implements Serializable {
 }

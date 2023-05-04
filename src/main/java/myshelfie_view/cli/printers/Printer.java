@@ -19,6 +19,12 @@ public class Printer {
     private char[][] allSetup = new char[40][100];
 
     private static Printer instance = null;
+
+    private static final int BOOKSHELF_ROW = 13;
+    private static final int BOOKSHELF_COL = 21;
+    private static final int BOARDGAME_COL = 41;
+    private static final int BOARDGAME_ROW = 20;
+
     private Printer() {}
 
     public static Printer getInstance(){
@@ -107,7 +113,9 @@ public class Printer {
      * */
     public void DisplayAllSetup(GameState gameState) {
        BuildSetup(gameState); //build the matrix setup from gameState
-       out.println(allSetup);
+       for (int i = 0; i < allSetup.length; i++) {
+           out.println(allSetup[i]);
+       }
     }
 
     private void BuildSetup(GameState gameState){
@@ -115,14 +123,14 @@ public class Printer {
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
 
         char[][] background = new char[40][100];
-        PlotBoardgame boardgame = new PlotBoardgame(new char[20][20]);
-        PlotBookshelf personalGoal = new PlotBookshelf(new char[13][21]);
-        PlotBookshelf bookshelf = new PlotBookshelf(new char[13][21]);
+        PlotBoardgame boardgame = new PlotBoardgame(new char[BOARDGAME_ROW][BOARDGAME_COL]);
+        PlotBookshelf personalGoal = new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]);
+        PlotBookshelf bookshelf = new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]);
         List<PlotBookshelf> otherBookshelf = new ArrayList<>();
 
 
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new PlotBookshelf(new char[13][21]));
+            otherBookshelf.add(new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]));
         }
 
         //Background
@@ -151,9 +159,9 @@ public class Printer {
 
         //otherBookshelf
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new PlotBookshelf(new char[13][21]));
+            otherBookshelf.add(new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]));
         }
-        for (int i=0; i< otherBookshelf.size(); i++){
+        for (int i=0; i< otherPlayers.size(); i++){
             otherBookshelf.get(i).buildBookshelf(otherPlayers.get(i).getBookshelf());
             switch (i){
                 case 0 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 31);
@@ -313,6 +321,11 @@ public class Printer {
     }
     public static char Tile2Char(Tile tile) {
         char tileChar = ' ';
+
+        if (tile == null) {
+            return tileChar;
+        }
+
         switch (tile.getType())
         {
             case CATS -> tileChar = '¥';
@@ -320,6 +333,7 @@ public class Printer {
             case FRAMES -> tileChar = '¶';
             case TROPHIES -> tileChar = '©';
             case PLANTS -> tileChar = '§';
+            case GAMES -> tileChar = 'G';
         }
         return tileChar;
     }

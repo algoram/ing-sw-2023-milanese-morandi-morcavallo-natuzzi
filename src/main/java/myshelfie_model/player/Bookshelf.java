@@ -2,9 +2,10 @@ package myshelfie_model.player;
 
 import myshelfie_model.Tile;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Bookshelf {
+public class Bookshelf implements Serializable {
 
     private Tile[][] tiles;
     private final int rows = 6;

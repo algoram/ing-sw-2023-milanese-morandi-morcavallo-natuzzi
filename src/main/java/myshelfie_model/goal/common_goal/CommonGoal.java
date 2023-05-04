@@ -37,4 +37,8 @@ public abstract class CommonGoal extends Goal {
             return null;
         }
     }
+
+    public Token peekTokens() {
+        return this.scoringTokens.peek();
+    }
 }

@@ -3,7 +3,9 @@ package myshelfie_model.player;
 import myshelfie_model.goal.PersonalGoal;
 import myshelfie_model.goal.Token;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
 
     private Bookshelf bookshelf;
     private PersonalGoal personalGoal;
@@ -62,7 +64,7 @@ public class Player {
     public int getCommonGoalPoints() {
         int points = 0;
         for (Token token : commonGoalsToken) {
-            points += token.getPoints();
+            points += token != null ? token.getPoints() : 0;
         }
         return points;
     }
