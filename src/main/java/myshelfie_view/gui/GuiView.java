@@ -2,11 +2,14 @@ package myshelfie_view.gui;
 
 import myshelfie_controller.EventDispatcher;
 import myshelfie_model.GameState;
+import myshelfie_model.Position;
 import myshelfie_view.View;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class GuiView extends View {
     private GuiView() {
@@ -35,6 +38,11 @@ public class GuiView extends View {
 
     @Override
     public void chatIn(String sender, String Message, boolean isPublic) {
+
+    }
+
+    @Override
+    public void chatOut(String to, String message) {
 
     }
 
@@ -68,6 +76,20 @@ public class GuiView extends View {
 
     }
 
+    @Override
+    public void takeTile(List<Position> tiles, int column) {
+
+    }
+
+    @Override
+    public void closeCliView() {
+
+    }
+
+    @Override
+    public void displayNewSetup(GameState gameState) {
+
+    }
 
 
     public static GuiView getInstance() {

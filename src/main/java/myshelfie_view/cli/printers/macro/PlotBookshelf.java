@@ -1,17 +1,16 @@
-package myshelfie_view.cli.printers.Basic.macro;
+package myshelfie_view.cli.printers.macro;
 
 import myshelfie_model.Tile;
 import myshelfie_model.player.Bookshelf;
 
 import java.util.HashMap;
-import java.util.List;
 
-import static myshelfie_view.cli.printers.Basic.Basic.String2CharMatrix;
-import static myshelfie_view.cli.printers.Basic.Basic.Tile2Char;
+import static myshelfie_view.cli.printers.Printer.String2CharMatrix;
+import static myshelfie_view.cli.printers.Printer.Tile2Char;
 
-public class BasicBookshelf {
+public class PlotBookshelf {
     char[][] bookshelf;
-    public BasicBookshelf(char[][] bookshelf) {
+    public PlotBookshelf(char[][] bookshelf) {
         this.bookshelf = bookshelf;
     }
     private final HashMap<Integer,Integer> bookshelfRowModel2CLI = new HashMap<>(){{
@@ -30,9 +29,6 @@ public class BasicBookshelf {
         put(3,14);
         put(4,18);
     }};
-
-
-
 
     /**
      * Versione Basic B&W-> tiles char

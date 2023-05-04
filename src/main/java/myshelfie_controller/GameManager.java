@@ -149,7 +149,7 @@ public class GameManager {
         String playerTurn = GameManager.getInstance().getTurn(player);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
 
-        return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players).deepClone();
+        return null;// new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players).deepClone();
     }
 
 

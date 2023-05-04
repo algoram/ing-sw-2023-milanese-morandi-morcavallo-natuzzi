@@ -1,29 +1,28 @@
-package myshelfie_view.cli.printers.Basic;
+package myshelfie_view.cli.printers;
 
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
 import myshelfie_model.Tile;
 import myshelfie_model.player.Player;
-import myshelfie_view.cli.printers.Basic.macro.BasicBoardgame;
-import myshelfie_view.cli.printers.Basic.macro.BasicBookshelf;
+import myshelfie_view.cli.printers.macro.PlotBoardgame;
+import myshelfie_view.cli.printers.macro.PlotBookshelf;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 
-public class Basic {
+public class Printer {
     private final PrintStream out = System.out;
 
     private char[][] allSetup = new char[40][100];
 
-    private static Basic instance = null;
-    private Basic() {}
+    private static Printer instance = null;
+    private Printer() {}
 
-    public static Basic getInstance(){
-        return Objects.requireNonNullElseGet(instance, Basic::new);
+    public static Printer getInstance(){
+        return Objects.requireNonNullElseGet(instance, Printer::new);
     }
 
     public void Logo() {
@@ -116,14 +115,14 @@ public class Basic {
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
 
         char[][] background = new char[40][100];
-        BasicBoardgame boardgame = new BasicBoardgame(new char[20][20]);
-        BasicBookshelf personalGoal = new BasicBookshelf(new char[13][21]);
-        BasicBookshelf bookshelf = new BasicBookshelf(new char[13][21]);
-        List<BasicBookshelf> otherBookshelf = new ArrayList<>();
+        PlotBoardgame boardgame = new PlotBoardgame(new char[20][20]);
+        PlotBookshelf personalGoal = new PlotBookshelf(new char[13][21]);
+        PlotBookshelf bookshelf = new PlotBookshelf(new char[13][21]);
+        List<PlotBookshelf> otherBookshelf = new ArrayList<>();
 
 
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new BasicBookshelf(new char[13][21]));
+            otherBookshelf.add(new PlotBookshelf(new char[13][21]));
         }
 
         //Background
@@ -152,7 +151,7 @@ public class Basic {
 
         //otherBookshelf
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new BasicBookshelf(new char[13][21]));
+            otherBookshelf.add(new PlotBookshelf(new char[13][21]));
         }
         for (int i=0; i< otherBookshelf.size(); i++){
             otherBookshelf.get(i).buildBookshelf(otherPlayers.get(i).getBookshelf());

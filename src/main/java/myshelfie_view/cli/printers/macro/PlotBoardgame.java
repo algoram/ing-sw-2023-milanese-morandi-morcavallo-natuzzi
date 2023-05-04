@@ -1,13 +1,13 @@
-package myshelfie_view.cli.printers.Basic.macro;
+package myshelfie_view.cli.printers.macro;
 
 import myshelfie_model.Tile;
 import myshelfie_model.board.Board;
 import java.util.HashMap;
 
-import static myshelfie_view.cli.printers.Basic.Basic.String2CharMatrix;
-import static myshelfie_view.cli.printers.Basic.Basic.Tile2Char;
+import static myshelfie_view.cli.printers.Printer.String2CharMatrix;
+import static myshelfie_view.cli.printers.Printer.Tile2Char;
 
-public class BasicBoardgame {
+public class PlotBoardgame {
     private char[][] boardgame;
     /**
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model
@@ -75,7 +75,7 @@ public class BasicBoardgame {
         put('H', 7);
         put('I', 8);
     }};
-    public BasicBoardgame(char[][] chars) {
+    public PlotBoardgame(char[][] chars) {
         this.boardgame = boardgame;
     }
     public char[][] getBoardCharMatrix() {

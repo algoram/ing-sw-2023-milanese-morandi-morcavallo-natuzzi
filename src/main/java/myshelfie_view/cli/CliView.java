@@ -4,10 +4,12 @@ import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
+import myshelfie_model.Position;
 import myshelfie_view.View;
-import myshelfie_view.cli.printers.Basic.Basic;
+import myshelfie_view.cli.printers.Printer;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 
 public class CliView extends View {
@@ -27,7 +29,7 @@ public class CliView extends View {
         int theme = askTheme();
         switch (theme){
             case 0:
-                init(Basic.getInstance());
+                init(Printer.getInstance());
                 break;
             case 1: //init(new Colored(out));
         }
@@ -43,9 +45,9 @@ public class CliView extends View {
         }
         return instance;
     }
-    private void init(Basic basic) {
-        basic.Logo(); //print MyShelfie
-        basic.Commands(); //print available Commands
+    private void init(Printer printer) {
+        printer.Logo(); //print MyShelfie
+        printer.Commands(); //print available Commands
 
         askConnection();
         askLogin();
@@ -80,7 +82,7 @@ public class CliView extends View {
             while (gameIsRunning) {
                 synchronized (gameState){
                     //todo create a class display that memorize a gameState and the last messages
-                    Basic.getInstance().DisplayAllSetup(this.gameState);
+                    Printer.getInstance().DisplayAllSetup(this.gameState);
                 }
 
                 try{
@@ -100,6 +102,11 @@ public class CliView extends View {
             out.println(sender + ": " + message);
         else
             out.println("(" + sender+ " )" + " to you: " + message);
+    }
+
+    @Override
+    public void chatOut(String to, String message) {
+
     }
 
     @Override
@@ -130,6 +137,11 @@ public class CliView extends View {
     @Override
     public void turnOf(String playerTurn) {
         System.out.println("It's " + playerTurn + "'s turn!");
+    }
+
+    @Override
+    public void takeTile(List<Position> tiles, int column) {
+
     }
 
     @Override

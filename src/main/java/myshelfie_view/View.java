@@ -1,13 +1,13 @@
 package myshelfie_view;
 
-import myshelfie_controller.ConnectionType;
 import myshelfie_controller.Settings;
 import myshelfie_controller.ViewType;
 import myshelfie_model.GameState;
-import myshelfie_model.GameUpdate;
+import myshelfie_model.Position;
 import myshelfie_view.cli.CliView;
-import myshelfie_view.cli.printers.Basic.Basic;
 import myshelfie_view.gui.GuiView;
+
+import java.util.List;
 
 public abstract class View {
 
@@ -24,12 +24,16 @@ public abstract class View {
     public abstract void initGameState(GameState gameState);//this function is called when all
        //players join the game and it starts
     public abstract void chatIn(String sender, String Message, boolean isPublic);
+
+    public abstract void chatOut(String to,String message);
     public abstract void messageSentSuccessfully();
     public abstract void messageSentFailure(String errorMessage);
     public abstract void playerDisconnected(String playerOut);
     public abstract void yourTurn();
     public abstract void takeFailed(String reason);
     public abstract void turnOf(String playerTurn);
+
+    public abstract void takeTile(List<Position> tiles, int column);
     public abstract void closeCliView();
 
     public abstract void displayNewSetup(GameState gameState);
