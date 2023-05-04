@@ -1,6 +1,7 @@
 package myshelfie_model;
 
 import myshelfie_model.board.Board;
+import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Player;
 
@@ -19,10 +20,18 @@ public class GameState implements Serializable {
 
     private final int finishedFirst;
     private final String playerTurn;
+    private final Token[] topCommonGoal;
 
     private final ArrayList<Player> players;
 
-    public GameState(Integer gameNumber, Board board, CommonGoal[] commonGoals, int playerSeat, String playerTurn, int finishedFirst, ArrayList<Player> players) {
+    public GameState(Integer gameNumber,
+                     Board board,
+                     CommonGoal[] commonGoals,
+                     int playerSeat,
+                     String playerTurn,
+                     int finishedFirst,
+                     ArrayList<Player> players,
+                     Token[] topCommonGoal) {
         //TODO deep clone objects by serializing and deserializing
         this.gameNumber = gameNumber;
         this.board = board;
@@ -31,6 +40,7 @@ public class GameState implements Serializable {
         this.finishedFirst = finishedFirst;
         this.players = players;
         this.playerTurn = playerTurn;
+        this.topCommonGoal = topCommonGoal;
     }
 
     public Integer getGameNumber() {
@@ -52,6 +62,8 @@ public class GameState implements Serializable {
     public String getPlayerTurn() {
         return playerTurn;
     }
+
+    public Token[] getTopCommonGoal() { return topCommonGoal; }
     public int getFinishedFirst() {
         return finishedFirst;
     }

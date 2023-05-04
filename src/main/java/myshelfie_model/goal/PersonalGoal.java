@@ -219,7 +219,6 @@ public class PersonalGoal extends Goal{
      * @return an integer: the points of the personal Goal
      */
     public int getPersonalGoalPoints(Bookshelf b){
-
         int match = 0; //saves the number of tile in the position of the personal goal
         Tile[][] tiles = b.getTiles();
         Position position;
@@ -247,5 +246,18 @@ public class PersonalGoal extends Goal{
         else {
             return 12;
         }
+    }
+
+    public Bookshelf map_PGoalToBookshelf(){
+        Bookshelf b = new Bookshelf();
+        Tile[][] tiles = new Tile[6][5];
+
+        for (Map.Entry<Position, Type> entry : positions.entrySet()){
+            tiles = b.getTiles();
+            tiles[entry.getKey().getRow()][entry.getKey().getColumn()] = new Tile(entry.getValue());
+        }
+
+        b.setTiles(tiles);
+        return b;
     }
 }

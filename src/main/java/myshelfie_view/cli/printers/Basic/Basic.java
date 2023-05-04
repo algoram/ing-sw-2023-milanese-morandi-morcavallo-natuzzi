@@ -1,6 +1,5 @@
 package myshelfie_view.cli.printers.Basic;
 
-import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
 import myshelfie_model.Tile;
@@ -10,7 +9,9 @@ import myshelfie_view.cli.printers.Basic.macro.BasicBookshelf;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Basic {
@@ -22,10 +23,7 @@ public class Basic {
     private Basic() {}
 
     public static Basic getInstance(){
-        if(instance == null){
-            return new Basic();
-        }
-        else return instance;
+        return Objects.requireNonNullElseGet(instance, Basic::new);
     }
 
     public void Logo() {
@@ -48,8 +46,6 @@ public class Basic {
 
     }
     /***
-     *
-     *
      * Coordinate system of the Game displayed on the CLI
      *           1         2         3         4         5         6         7         8         9
      * 0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -124,6 +120,8 @@ public class Basic {
         BasicBookshelf personalGoal = new BasicBookshelf(new char[13][21]);
         BasicBookshelf bookshelf = new BasicBookshelf(new char[13][21]);
         List<BasicBookshelf> otherBookshelf = new ArrayList<>();
+
+
         for (int i = 0; i < otherPlayers.size(); i++) {
             otherBookshelf.add(new BasicBookshelf(new char[13][21]));
         }
@@ -131,20 +129,22 @@ public class Basic {
         //Background
         buildBackground(background, otherPlayers);
         setOnSetup(background, 0, 0);
+
         //Board
         //TODO: verificare che getPlayers().size() rimanga costante per tutta la partita
         boardgame.buildBoard(gameState.getBoard(), gameState.getPlayers().size());
         setOnSetup(boardgame.getBoardCharMatrix(), 1, 2);
+
         //CommonGoal
-        //TODO: mi serve il top della pila dei due common goal
-        updateCommongoalStacks(top commongoal1, top commongoal2);
+        updateCommongoalStacks(gameState.getTopCommonGoal()[0].getPoints(),
+                                gameState.getTopCommonGoal()[1].getPoints());
+
         //Your Points
-        //TODO: mi serve il totale dei punti del giocatore
-        updateYourPoints(thisPlayer.getPoints());
+        updateYourPoints(getPoints(thisPlayer,gameState));
 
         //PersonalGoal
         //TODO: getPersonalGoal() deve ritornare una bookshelf con dentro il personal goal associato al player
-        personalGoal.buildBookshelf(thisPlayer.getPersonalGoal());
+        personalGoal.buildBookshelf(thisPlayer.getPersonalGoal().map_PGoalToBookshelf());
         setOnSetup(personalGoal.getBookshelfCharMatrix(), 8, 49);
         //your Bookshelf
         bookshelf.buildBookshelf(thisPlayer.getBookshelf());
@@ -285,6 +285,21 @@ public class Basic {
         for(int i= 0; i<string.length; i++){
             allSetup[x][y+i] = string[i];
         }
+    }
+
+    private int getPoints(Player player, GameState gameState){
+
+        int sumOfPoints = 0;
+
+        sumOfPoints += player.getCommonGoalPoints();
+
+        sumOfPoints += player.getPersonalGoalPoints();
+
+        if(player.getFinishedFirst()) { sumOfPoints += 1;}
+
+        sumOfPoints += player.getAdjacentPoints();
+
+        return sumOfPoints;
     }
 
     /********************************* Util Functions **********+***************************/
