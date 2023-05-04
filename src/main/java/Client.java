@@ -6,29 +6,26 @@ import myshelfie_view.View;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Scanner;
 
 public class Client {
 
     public static void main(String[] args) {
-        try {
-            RMIClient.getInstance().connect("localhost");
-        } catch (RemoteException | NotBoundException e) {
-            throw new RuntimeException(e);
+        Scanner in = new Scanner(System.in);
+
+        System.out.println("GUI (g) or CLI (c)? [g/c]");
+
+        String viewMode = in.nextLine();
+        while (!viewMode.equals("g") && !viewMode.equals("c")) {
+            viewMode = in.nextLine();
         }
 
-        try {
-            SocketClient.getInstance().start("localhost", 19736);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        switch (viewMode) {
+            case "g" -> Settings.getInstance().setViewType(ViewType.GUI);
+            case "c" -> Settings.getInstance().setViewType(ViewType.CLI);
         }
-        //init()
 
-        Settings.getInstance().setViewType(ViewType.CLI);
-        View.getInstance();
-
-
-        EventDispatcher.getInstance();
-
+        View.getInstance().start();
     }
 
 }

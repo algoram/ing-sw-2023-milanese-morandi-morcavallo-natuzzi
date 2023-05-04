@@ -6,6 +6,7 @@ import myshelfie_model.GameState;
 import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
 import myshelfie_network.rmi.RMIServer;
+import myshelfie_network.socket.SocketServer;
 
 import java.util.*;
 
@@ -111,6 +112,8 @@ public class EventHandler {
 
                 if ( RMIServer.getInstance().hasTempClient(uuid) ) {
                     RMIServer.getInstance().addClient(uuid, player);
+                } else if (SocketServer.getInstance().hasTempClient(uuid)) {
+                    SocketServer.getInstance().addClient(uuid, player);
                 }
 
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));

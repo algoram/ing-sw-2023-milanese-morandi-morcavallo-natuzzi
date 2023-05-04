@@ -1,4 +1,5 @@
 package myshelfie_network.socket;
+import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.event.Event;
 import myshelfie_network.Client;
@@ -47,7 +48,7 @@ public class SocketClient implements Client {
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         outputStream.flush();
         try {
-            outputStream.writeObject(username);
+            outputStream.writeObject(EventDispatcher.getInstance().getUuid());
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();

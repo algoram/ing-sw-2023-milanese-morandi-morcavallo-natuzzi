@@ -95,4 +95,9 @@ public class GuiView extends View {
     public static GuiView getInstance() {
         return new GuiView();
     }
+
+    @Override
+    public void start() {
+
+    }
 }

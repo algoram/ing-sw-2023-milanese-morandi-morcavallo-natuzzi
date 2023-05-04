@@ -1,14 +1,20 @@
 package myshelfie_view.cli;
 
+import jdk.jshell.spi.ExecutionControl;
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
+import myshelfie_network.rmi.RMIClient;
+import myshelfie_network.socket.SocketClient;
 import myshelfie_view.View;
 import myshelfie_view.cli.printers.Printer;
 
+import java.io.IOException;
 import java.io.PrintStream;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,31 +32,32 @@ public class CliView extends View {
         out = System.out;
         this.scanner = new Scanner(System.in);
         this.gameIsRunning = true;
-        int theme = askTheme();
-        switch (theme){
-            case 0:
-                init(Printer.getInstance());
-                break;
-            case 1: //init(new Colored(out));
+    }
+
+    public void start() {
+        Printer.getInstance().Logo(); //print MyShelfie
+        Printer.getInstance().Commands(); //print available Commands
+
+        askConnection();
+
+        try {
+            askHostname();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        askLogin();
     }
 
     //******************************************************************************************************************
     //*********************************************** PUBLIC METHODS **************************************************
 
 
-    public static CliView getInstanceCli() {
+    public static CliView getInstance() {
         if (instance == null) {
             instance = new CliView();
         }
         return instance;
-    }
-    private void init(Printer printer) {
-        printer.Logo(); //print MyShelfie
-        printer.Commands(); //print available Commands
-
-        askConnection();
-        askLogin();
     }
 
     @Override
@@ -158,32 +165,6 @@ public class CliView extends View {
 
     //******************************************************************************************************************
     //**************************************************PRIVATE METHODS*************************************************
-
-    private int askTheme(){
-
-        String input;
-        int theme = 0; //0 is default theme B&W, 1 is color theme
-        while(gameIsRunning) {
-            out.println("Digit 'b' to B&W Theme 'c' to Color Theme");
-            input = readSafe();
-
-            if (input.startsWith("/") && commandAvailable(input) ){
-                out.println("command not valid");
-            }
-            else if (input.equals("b")) {
-                // do nothing is already default
-                break;
-            }
-            /*else if (input.equals("c")) {
-                theme = 1;
-                break;
-            }*/
-            else {
-                out.println("input not valid");
-            }
-        }
-        return theme;
-    }
     private void askConnection(){
         String input;
         while(gameIsRunning) {
@@ -206,6 +187,38 @@ public class CliView extends View {
             }
         }
     }
+
+    private void askHostname() throws Exception {
+        String input = null;
+
+        while (gameIsRunning) {
+            out.println("Insert the server address:");
+            input = readSafe();
+
+            if (input.startsWith("/") && commandAvailable(input)) {
+                out.println("Command not valid");
+            } else {
+                break;
+            }
+        }
+
+        if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
+            try {
+                RMIClient.getInstance().connect("localhost");
+            } catch (RemoteException | NotBoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
+            try {
+                SocketClient.getInstance().start("localhost", 19736);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new Exception("Unknown connection type");
+        }
+    }
+
     /***
      * restart the init method from the user setup
      *param startIsRunning flag to decide if the start phase is running or not
@@ -219,9 +232,6 @@ public class CliView extends View {
 
             if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("command not valid");
-            }
-            else if (input.equals("all") || input.equals("") || input.startsWith("/") || input.contains(" ")) {
-                out.println("input not valid");
             } else if (input.length()>17) {
                 //17 is the max length of a nickname for the right print on CLI view
                 out.println("nickname too long");

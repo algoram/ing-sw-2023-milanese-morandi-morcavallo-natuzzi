@@ -13,11 +13,14 @@ public abstract class View {
 
     public static View getInstance() {
         if (Settings.getInstance().getViewType().equals(ViewType.CLI)) {
-            return CliView.getInstanceCli();
+            return CliView.getInstance();
         } else {
             return GuiView.getInstance();
         }
     }
+
+    public abstract void start();
+
     public abstract void showLogMessage(String message);
     public abstract void connectionSuccessful();
     public abstract void connectionFailed(String reason);
