@@ -16,15 +16,15 @@ public class PlotBoardgame {
      * into the CORDINATES of the board3Player (and board4Player) in the view
      */
     private final HashMap<Integer, Integer> boardRowModel2CLI = new HashMap<>() {{
-        put(0, 2);
-        put(1, 4);
-        put(2, 6);
-        put(3, 8);
+        put(8, 2);
+        put(7, 4);
+        put(6, 6);
+        put(5, 8);
         put(4, 10);
-        put(5, 12);
-        put(6, 14);
-        put(7, 16);
-        put(8, 18);
+        put(3, 12);
+        put(2, 14);
+        put(1, 16);
+        put(0, 18);
     }};
     /**
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model
@@ -42,41 +42,6 @@ public class PlotBoardgame {
         put(8,37);
     }};
 
-    private final HashMap<Character, Integer> board2PCLI2Model = new HashMap<>() {{
-        put('1', 1);
-        put('2', 2);
-        put('3', 3);
-        put('4', 4);
-        put('5', 5);
-        put('6', 6);
-        put('7', 7);
-        put('A', 1);
-        put('B', 2);
-        put('C', 3);
-        put('D', 4);
-        put('E', 5);
-        put('F', 6);
-        put('G', 7);
-    }};
-    private final HashMap<Character, Integer> board34PCLI2Model = new HashMap<>() {{
-        put('1', 0);
-        put('2', 1);
-        put('3', 2);
-        put('4', 3);
-        put('5', 4);
-        put('6', 5);
-        put('7', 6);
-        put('8', 7);
-        put('A', 0);
-        put('B', 1);
-        put('C', 2);
-        put('D', 3);
-        put('E', 4);
-        put('F', 5);
-        put('G', 6);
-        put('H', 7);
-        put('I', 8);
-    }};
     public PlotBoardgame() {
         this.boardgame = new char[BOARDGAME_ROW][BOARDGAME_COL];
         this.boardgame = boardgame;
@@ -98,47 +63,47 @@ public class PlotBoardgame {
         }
     }
     /***
-     * ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░
-     * ░░
-     * ░░
-     * ░░             ╔═══╦═══╗
-     *  A             ║   ║   ║
-     * ░░         ╔═══╬═══╬═══╬═══╗
-     *  B         ║   ║   ║   ║   ║
-     * ░░         ╠═══╬═══╬═══╬═══╬═══╦═══╗
-     *  C         ║   ║   ║   ║   ║   ║   ║
-     * ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣
-     *  D     ║   ║   ║   ║   ║   ║   ║   ║
-     * ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝
-     *  E     ║   ║   ║   ║   ║   ║   ║
-     * ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝
-     *  F             ║   ║   ║   ║
-     * ░░             ╚═══╬═══╬═══╣
-     *  G                 ║   ║   ║
-     * ░░                 ╚═══╩═══╝
-     * ░░
-     * ░░
+     ░░░░░░░░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░░░
+     ░░
+     ░░
+     ░░             ╔═══╦═══╗
+     B              ║   ║   ║
+     ░░             ╠═══╬═══╬═══╗
+     C              ║   ║   ║   ║
+     ░░         ╔═══╬═══╬═══╬═══╬═══╦═══╗
+     D          ║   ║   ║   ║   ║   ║   ║
+     ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣
+     E      ║   ║   ║   ║   ║   ║   ║   ║
+     ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝
+     F      ║   ║   ║   ║   ║   ║   ║
+     ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝
+     G              ║   ║   ║   ║
+     ░░             ╚═══╬═══╬═══╣
+     H                  ║   ║   ║
+     ░░                 ╚═══╩═══╝
+     ░░
+     ░░
      *
      * */
     private void Board2Players(Board modelBoard) {
         String boardImage = """
-                ░░░░░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░░░░░░░
+                ░░░░░░░░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░░░
                 ░░                                       \s
                 ░░                                       \s
                 ░░             ╔═══╦═══╗                 \s
-                 A             ║   ║   ║                 \s
-                ░░         ╔═══╬═══╬═══╬═══╗             \s
-                 B         ║   ║   ║   ║   ║             \s
-                ░░         ╠═══╬═══╬═══╬═══╬═══╦═══╗     \s
-                 C         ║   ║   ║   ║   ║   ║   ║     \s
+                 B             ║   ║   ║                 \s
+                ░░             ╠═══╬═══╬═══╗             \s
+                 C             ║   ║   ║   ║             \s
+                ░░         ╔═══╬═══╬═══╬═══╬═══╦═══╗     \s
+                 D         ║   ║   ║   ║   ║   ║   ║     \s
                 ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣     \s
-                 D     ║   ║   ║   ║   ║   ║   ║   ║     \s
+                 E     ║   ║   ║   ║   ║   ║   ║   ║     \s
                 ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝     \s
-                 E     ║   ║   ║   ║   ║   ║   ║         \s
+                 F     ║   ║   ║   ║   ║   ║   ║         \s
                 ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝         \s
-                 F             ║   ║   ║   ║             \s
+                 G             ║   ║   ║   ║             \s
                 ░░             ╚═══╬═══╬═══╣             \s
-                 G                 ║   ║   ║             \s
+                 H                 ║   ║   ║             \s
                 ░░                 ╚═══╩═══╝             \s
                 ░░                                       \s
                 ░░                                       \s
@@ -266,4 +231,5 @@ public class PlotBoardgame {
             }
         }
     }
+
 }

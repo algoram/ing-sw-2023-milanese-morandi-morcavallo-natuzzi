@@ -58,7 +58,6 @@ public class UpdateHandler {
             Settings.getInstance().setUsername(null);
             View.getInstance().connectionFailed(message);
 
-
         } else if (response instanceof PlayerDisconnectSuccess) {
 
             String playerout = ((PlayerDisconnectSuccess) response).getDisconnectedPlayer();

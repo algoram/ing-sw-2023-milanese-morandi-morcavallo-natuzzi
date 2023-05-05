@@ -1,6 +1,5 @@
 package myshelfie_view.cli;
 
-import jdk.jshell.spi.ExecutionControl;
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
@@ -15,12 +14,15 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class CliView extends View {
     private boolean gameIsRunning; //the loop
     private boolean chatIsRunning = false; //the moment in which the chat is available
+    private boolean isYourTurn = false; //the moment in which is my turn
     private static CliView instance = null;
     private Scanner scanner;
     private GameState gameState; //is the actual state of the game
@@ -71,17 +73,14 @@ public class CliView extends View {
         this.chatIsRunning = true;
         out.println("Waiting for other players to enter!");
     }
-
     @Override
     public void connectionFailed(String reason) {
         out.println(reason);
         out.println("Try again!");
         askLogin();
     }
-
     @Override
     public void initGameState(GameState gameState){
-
         out.println("Game is starting!");
         this.gameState = gameState;
 
@@ -118,7 +117,9 @@ public class CliView extends View {
 
     @Override
     public void yourTurn() {
+
         System.out.println("It's your turn!");
+        askTiles();
     }
 
     @Override
@@ -212,22 +213,26 @@ public class CliView extends View {
         String input = null;
         //choose nickname
         while(gameIsRunning ) {
-            out.println("digit your nicknmame:");
+            out.println("Digit your nicknmame:");
             input = readSafe();
 
             if (input.startsWith("/") && commandAvailable(input) ){
-                out.println("command not valid");
+                out.println("Command not valid");
             } else if (input.length()>17) {
                 //17 is the max length of a nickname for the right print on CLI view
-                out.println("nickname too long");
-            } else {
+                out.println("Nickname too long");
+            } else if (notAvailableUsername(input)) {
+               //not available username are: empty string, string with only spaces, string with only spaces and tabs and "ALL" or "all"
+                // we could use this method to check if the username is already taken
+                out.println("Nickname not available");
+            }else {
                 Settings.getInstance().setUsername(input);
                 break;
             }
         }
         //choose number of players
         while(gameIsRunning) {
-            out.println("digit the number of players");
+            out.println("Digit the number of players [2/3/4]");
             input = readSafe();
 
             if (input.startsWith("/") && commandAvailable(input) ){
@@ -243,7 +248,55 @@ public class CliView extends View {
         }
     }
 
+    private boolean notAvailableUsername(String input) {
+        if(input.equals("") || input.trim().equals(" ") || input.trim().equalsIgnoreCase("ALL")){
+            return true;
+        }
+        return false;
+    }
 
+    private void askTiles(){
+        String input;
+        List<Position> modelPositions = new ArrayList<>();
+        int columnChoosen = 0;
+        //choose positions
+        while(gameIsRunning ) {
+            out.println("Choose tiles positions (1 to 3) from the board: [ex: A1 B2 C3, ex: A1 B2, ex: A1]");
+            input = readSafe();
+            String[] positions = input.trim().toUpperCase().split("\\s+"); //split the input in an array of strings withouth spaces ex:"    a3 A4 a6    " -> ["A3", "A4", "A6"]
+            if (input.startsWith("/") && commandAvailable(input) ){
+                out.println("command not valid");
+
+            } else if(input.length() > 12){
+                out.println("Too long input for a move");
+            } else if (checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
+                out.println("Try another tiles!");
+            } else {
+                //convert string to the positions in the list modelPositions for the server
+                buildPositionList(positions, modelPositions);
+                break;
+            }
+
+        }
+        //choose column
+        while(gameIsRunning ) {
+            out.println("Choose column number (1 to 5) from the board: [1/2/3/4/5]");
+            input = readSafe();
+
+            if (input.startsWith("/") && commandAvailable(input) ) {
+                out.println("command not valid");
+            }
+            else if (!input.equals("1") && !input.equals("2") && !input.equals("3") && !input.equals("4") && !input.equals("5")) {
+                    out.println("input not valid");
+            } else {
+                columnChoosen = Integer.parseInt(input);
+                //Send the move to the server
+                EventDispatcher.getInstance().takeTiles(modelPositions,columnChoosen);
+                break;
+            }
+        }
+
+    }
     /***
      * Check if the command is available, if it is, it will execute it
      * If the commando corresponds to exit, it will set the gameIsRunning flag to false
@@ -287,17 +340,16 @@ public class CliView extends View {
         do {
             input = scanner.nextLine();
         } while (input.equals(""));
-
         return input;
     }
     /***
      * Ask the user to digit the receiver and the message, then it will send the message to the server
      */
     private void chatOut(){
-        out.println("digit the receiver, digit 'all' to send to all");
+        out.println("Digit the receiver, digit 'all' to send to all");
         String receiver = readSafe();
 
-        out.println("digit the message");
+        out.println("Digit the message");
         String message = readSafe();
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
     }
@@ -313,6 +365,153 @@ public class CliView extends View {
         EventDispatcher.getInstance().playerDisconnect();
         //todo notify to server client the disconnection
     }
+    /***
+     * This function check if the input is a valid coordinate for all the possible implemented Board sizes.
+     * @param positions the preprocessed input String of coordinates to check
+     * @param numPlayers the number of players in the game : MUST BE 2,3 or 4
+     * @return true if the input is a valid coordinate for a move, false otherwise
+     * */
+    private boolean checkCoordinates(String[] positions, int numPlayers){
+        HashMap<String,Integer> possibleCoordinate = new HashMap<>(){{
+            //A
+            put("A4",3);
+            put("A5",4);
+            //B
+            put("B4",2);
+            put("B5",2);
+            put("B6",4);
+            //C
+            put("C3",2);
+            put("C4",2);
+            put("C5",2);
+            put("C6",2);
+            put("C7",3);
+            //D
+            put("D2",4);
+            put("D3",2);
+            put("D4",2);
+            put("D5",2);
+            put("D6",2);
+            put("D7",2);
+            put("D8",2);
+            put("D9",3);
+            //E
+            put("E1",4);
+            put("E2",2);
+            put("E3",2);
+            put("E4",2);
+            put("E5",2);
+            put("E6",2);
+            put("E7",2);
+            put("E8",2);
+            put("E9",4);
+            //F
+            put("F1",3);
+            put("F2",2);
+            put("F3",2);
+            put("F4",2);
+            put("F5",2);
+            put("F6",2);
+            put("F7",2);
+            put("F8",4);
+            //G
+            put("G3",4);
+            put("G4",2);
+            put("G5",2);
+            put("G6",2);
+            put("G7",3);
+            //H
+            put("H4",4);
+            put("H5",2);
+            put("H6",2);
+            //I
+            put("I5",4);
+            put("I6",3);
+        }};
 
+        if(positions.length > 3){
+            out.println("Too many tiles selected");
+            return false;
+        }
+        for (String coordinate : positions) {
+            //check  if the input has a valid length for a coordinate
+            if(coordinate == null || coordinate.length() != 2){
+                out.println("Wrong input: coordinate is null or has a wrong length...");
+                return false;
+            }
+            //check if the input is a valid coordinate
+            switch (numPlayers){
+                case 2 -> {
+                    if(possibleCoordinate.get(coordinate) <= 2){
+                        return true;
+                    }
+                    else{
+                        out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                        return false;
+                    }
+                }
+                case 3 -> {
+                    if(possibleCoordinate.get(coordinate) <= 3){
+                        return true;
+                    }
+                    else{
+                        out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                        return false;
+                    }
+                }
+                case 4 -> {
+                    if(possibleCoordinate.get(coordinate) <= 4){
+                        return true;
+                    }
+                    else{
+                        out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                        return false;
+                    }
+                }
+                default -> {
+                    out.println("Wrong input: " + numPlayers + " is not a valid number of players...");
+                    return false;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    /***
+     * This function build a list of Position from a list of String coordinates
+     * @param positions the preprocessed input String of coordinates to use
+     * @param modelPositions the list of Position that will be sent to the server
+     */
+    private void buildPositionList(String[] positions, List<Position> modelPositions){
+
+        // Map for the row CORDINATES of the board in the view
+            //into the CORDINATES of the board in the model
+         final HashMap<Character, Integer> boardCLI2Model;
+        boardCLI2Model = new HashMap<>() {{
+           put('1', 0);
+           put('2', 1);
+           put('3', 2);
+           put('4', 3);
+           put('5', 4);
+           put('6', 5);
+           put('7', 6);
+           put('8', 7);
+           put('A', 8);
+           put('B', 7);
+           put('C', 6);
+           put('D', 5);
+           put('E', 4);
+           put('F', 3);
+           put('G', 2);
+           put('H', 1);
+           put('I', 0);
+       }};
+
+        for (String coordinate : positions) {
+            modelPositions.add(new Position(boardCLI2Model.get(coordinate.charAt(0)), boardCLI2Model.get(coordinate.charAt(1)) ));
+        }
+
+    }
 
 }

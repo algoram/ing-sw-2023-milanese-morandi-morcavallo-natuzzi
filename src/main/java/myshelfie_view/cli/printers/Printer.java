@@ -3,9 +3,11 @@ package myshelfie_view.cli.printers;
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
 import myshelfie_model.Tile;
+import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Player;
 import myshelfie_view.cli.printers.macro.PlotBoardgame;
 import myshelfie_view.cli.printers.macro.PlotBookshelf;
+import myshelfie_view.cli.printers.macro.PlotCommonGoals;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -29,19 +31,19 @@ public class Printer {
         return Objects.requireNonNullElseGet(instance, Printer::new);
     }
 
+    /******************************* Game Functions ********************************/
     public void Logo() {
         out.println("Welcome to MyShelfie!");
-        out.print("""
-                                
-                                
-                                
-                                
-                                
+        out.print("""  
+                        ███╗░░░███╗██╗░░░██╗  ░██████╗██╗░░██╗███████╗██╗░░░░░███████╗██╗███████╗
+                        ████╗░████║╚██╗░██╔╝  ██╔════╝██║░░██║██╔════╝██║░░░░░██╔════╝██║██╔════╝
+                        ██╔████╔██║░╚████╔╝░  ╚█████╗░███████║█████╗░░██║░░░░░█████╗░░██║█████╗░░
+                        ██║╚██╔╝██║░░╚██╔╝░░  ░╚═══██╗██╔══██║██╔══╝░░██║░░░░░██╔══╝░░██║██╔══╝░░
+                        ██║░╚═╝░██║░░░██║░░░  ██████╔╝██║░░██║███████╗███████╗██║░░░░░██║███████╗
+                        ╚═╝░░░░░╚═╝░░░╚═╝░░░  ╚═════╝░╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░░░░╚═╝╚══════╝               
                 """
         );
-
     }
-
     public void Commands() {
 
         out.println("Digit '/help' to see the list of available commands.");
@@ -115,7 +117,15 @@ public class Printer {
            out.println(allSetup[i]);
        }
     }
+    public void DisplayCommonGoal(CommonGoal modelCommonGoal){
+        PlotCommonGoals commonGoal = new PlotCommonGoals(modelCommonGoal);
+        setOnSetup(commonGoal.getCommongoalCharMatrix(),23,30);
+        for (int i = 0; i < allSetup.length; i++) {
+            out.println(allSetup[i]);
+        }
+    }
 
+    /************************ Build Functions **************************************************+**********/
     private void BuildSetup(GameState gameState){
         Player thisPlayer = getThisPlayer(gameState.getPlayers());
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
@@ -273,23 +283,6 @@ public class Printer {
         setOnSetup(commonStack1Char,4,55);
         setOnSetup(commonStack2Char,4,67);
     }
-    private List<Player> otherPlayer(List<Player> players, Player thisPlayer) {
-        List<Player> otherPlayers = new ArrayList<>();
-        for (Player player : players) {
-            if (!player.equals(thisPlayer)){
-                otherPlayers.add(player);
-            }
-        }
-        return otherPlayers;
-    }
-    private Player getThisPlayer(List<Player> players){
-        for(Player player : players){
-            if(player.getUsername().equals(Settings.getInstance().getUsername())){
-                return player;
-            }
-        }
-        return null;
-    }
     private void setOnSetup(char [][] image, int x , int y){
         for(int i= 0; i<image.length; i++){
             for(int j=0; j<image[i].length; j++){
@@ -302,7 +295,6 @@ public class Printer {
             allSetup[x][y+i] = string[i];
         }
     }
-
 
 
     /********************************* Util Functions **********+***************************/
@@ -332,6 +324,23 @@ public class Printer {
             case GAMES -> tileChar = 'G';
         }
         return tileChar;
+    }
+    private List<Player> otherPlayer(List<Player> players, Player thisPlayer) {
+        List<Player> otherPlayers = new ArrayList<>();
+        for (Player player : players) {
+            if (!player.equals(thisPlayer)){
+                otherPlayers.add(player);
+            }
+        }
+        return otherPlayers;
+    }
+    private Player getThisPlayer(List<Player> players){
+        for(Player player : players){
+            if(player.getUsername().equals(Settings.getInstance().getUsername())){
+                return player;
+            }
+        }
+        return null;
     }
 
 }
