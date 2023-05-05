@@ -1,14 +1,7 @@
 package myshelfie_view.gui;
-
-import myshelfie_controller.EventDispatcher;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
 import myshelfie_view.View;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
 import java.util.List;
 
 public class GuiView extends View {
@@ -77,7 +70,7 @@ public class GuiView extends View {
     }
 
     @Override
-    public void takeTile(List<Position> tiles, int column) {
+    public void takeTiles(List<Position> tiles, int column) {
 
     }
 

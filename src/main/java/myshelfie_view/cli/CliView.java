@@ -97,44 +97,49 @@ public class CliView extends View {
 
     @Override
     public void chatOut(String to, String message) {
-
+        //todo implements chatOut
     }
 
     @Override
     public void messageSentSuccessfully() {
-        System.out.println("Message sent successfully");
+        out.println("Message sent successfully");
     }
 
     @Override
     public void messageSentFailure(String errorMessage) {
-        System.out.println("Message sent failure: " + errorMessage);
+        out.println("Message sent failure: " + errorMessage);
     }
 
     @Override
     public void playerDisconnected(String playerOut) {
-        System.out.println(playerOut + " disconnected");
+        out.println(playerOut + " disconnected");
     }
 
     @Override
     public void yourTurn() {
-
-        System.out.println("It's your turn!");
+        out.println("It's your turn!");
         askTiles();
     }
 
     @Override
     public void takeFailed(String reason) {
-        System.out.println("Take failed: " + reason);
+        out.println("Take failed: " + reason);
+        yourTurn();
     }
 
     @Override
     public void turnOf(String playerTurn) {
-        System.out.println("It's " + playerTurn + "'s turn!");
+        out.println("It's " + playerTurn + "'s turn!");
     }
 
     @Override
-    public void takeTile(List<Position> tiles, int column) {
-
+    public void takeTiles(List<Position> tiles, int column) {
+        out.println("Sending your move to the server...");
+        try {
+            EventDispatcher.getInstance().takeTiles(tiles, column);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -291,7 +296,7 @@ public class CliView extends View {
             } else {
                 columnChoosen = Integer.parseInt(input);
                 //Send the move to the server
-                EventDispatcher.getInstance().takeTiles(modelPositions,columnChoosen);
+                takeTiles(modelPositions, columnChoosen);
                 break;
             }
         }
@@ -307,28 +312,36 @@ public class CliView extends View {
     private boolean commandAvailable(String command){
         if(chatIsRunning){
             switch (command) {
-                case "/help":
+                case "/help" -> {
                     help();
                     return true;
-                case "/chat":
+                }
+                case "/chat" -> {
                     chatOut();
                     return true;
-                case "/exit":
+                }
+                case "/exit" -> {
                     exit();
                     return true;
-                default:
+                }
+                default -> {
                     return false;
-            }}
+                }
+            }
+        }
         else{
             switch (command) {
-                case "/help":
+                case "/help" -> {
                     help();
                     return true;
-                case "/exit":
+                }
+                case "/exit" -> {
                     exit();
                     return true;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
     }
@@ -336,7 +349,7 @@ public class CliView extends View {
      * Read a string from the console, if the string is empty or null, it will ask again
     */
     private String readSafe() {
-        String input = null;
+        String input;
         do {
             input = scanner.nextLine();
         } while (input.equals(""));

@@ -36,7 +36,7 @@ public abstract class View {
     public abstract void takeFailed(String reason);
     public abstract void turnOf(String playerTurn);
 
-    public abstract void takeTile(List<Position> tiles, int column);
+    public abstract void takeTiles(List<Position> tiles, int column);
     public abstract void closeCliView();
 
     public abstract void displayNewSetup(GameState gameState);
