@@ -97,7 +97,8 @@ public class CliView extends View {
 
     @Override
     public void chatOut(String to, String message) {
-        //todo implements chatOut
+        out.println("You to " + to + ": " + message);
+        EventDispatcher.getInstance().chat(to, message);
     }
 
     @Override
