@@ -105,6 +105,16 @@ public class UpdateHandler {
             View.getInstance().takeFailed(reason);
             View.getInstance().yourTurn();
 
+        } else if (response instanceof GameFinished) {
+            String winner = ((GameFinished) response).getWinner();
+            //todo
+            View.getInstance().gameFinished(winner);
+
+        } else if (response instanceof GameFinishedForYou){
+            //todo
+            View.getInstance().gameFinishedForYou();
+        } else {
+            System.out.println("response still not implemented in update handler");
         }
     }
 

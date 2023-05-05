@@ -183,4 +183,56 @@ public class GameManager {
         return (games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
     }
 
+    public boolean hasStartedLast(String player){
+        int startedFirst = games.get(playerToGame.get(player)).getPlayerSeatIndex();
+        ArrayList<Player> players = games.get(playerToGame.get(player)).getPlayers();
+
+        int playerIndex = games.get(playerToGame.get(player)).findPlayer(player);
+
+        if (playerIndex == (startedFirst + (players.size()-1) % players.size())){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean someoneElseFinished(String player){
+        return (games.get(playerToGame.get(player)).getFinishedFirst() != null &&
+                !games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
+    }
+
+    public boolean someoneStillHasToPlay(String player){
+        //todo
+        //check no error like calling this function but none of the players have finished
+        return false;
+    }
+
+    public String getWinner(String player) {
+        if (games.get(playerToGame.get(player)).getFinishedFirst() == null) {
+            System.out.println("No one has finished yet: ERROR IN LOGIC");
+            return null;
+        }
+        //todo end this
+        return null;
+    }
+
+    public void closeGame(String player) {
+        int game = playerToGame.get(player);
+        //todo
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

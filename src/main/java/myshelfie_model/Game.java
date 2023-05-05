@@ -364,11 +364,16 @@ public class Game {
     }
 
     public String getFinishedFirst() {
+        if (finishedFirst == -1) return null; //if no one has finished yet
         return players.get(finishedFirst).getUsername();
     }
 
     public String getPlayerSeat() {
         return players.get(playerSeat).getUsername();
+    }
+
+    public int getPlayerSeatIndex() {
+        return playerSeat;
     }
 
     public ArrayList<Player> getPlayers() {
@@ -392,6 +397,11 @@ public class Game {
         return true;
     }
 
+    /**
+     * returns the index of the player in the players arraylist
+     * @param player
+     * @return
+     */
     public int findPlayer(String player) {
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getUsername().equals(player)) {
