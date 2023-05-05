@@ -7,15 +7,14 @@ import myshelfie_model.Position;
 import myshelfie_model.board.Board;
 import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.CommonGoal;
-import myshelfie_model.player.Bookshelf;
+
 import myshelfie_model.player.Player;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.DoubleToIntFunction;
+
 
 public class GameManager {
 
@@ -145,8 +144,8 @@ public class GameManager {
         Integer game = playerToGame.get(player);
         Board board = GameManager.getInstance().getBoard(game);
         CommonGoal[] commonGoals = GameManager.getInstance().getCommonGoals(game);
-        int playerSeat = GameManager.getInstance().getPlayerSeat(game);
-        int finishedFirst = GameManager.getInstance().getFinishedFirst(game);
+        String playerSeat = games.get(game).getPlayerSeat();
+        String finishedFirst = games.get(game).getFinishedFirst();
         String playerTurn = GameManager.getInstance().getTurn(player);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
 
@@ -170,14 +169,6 @@ public class GameManager {
 
     private CommonGoal[] getCommonGoals(Integer game) {
         return games.get(game).getCommonGoals();
-    }
-
-    private int getPlayerSeat(Integer game) {
-        return games.get(game).getPlayerSeat();
-    }
-
-    private int getFinishedFirst(Integer game) {
-        return games.get(game).getFinishedFirst();
     }
 
     private ArrayList<Player> getObjectPlayers(Integer game) {

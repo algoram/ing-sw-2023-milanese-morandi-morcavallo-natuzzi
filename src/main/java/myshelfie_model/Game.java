@@ -363,12 +363,12 @@ public class Game {
         return commonGoals;
     }
 
-    public int getFinishedFirst() {
-        return finishedFirst;
+    public String getFinishedFirst() {
+        return players.get(finishedFirst).getUsername();
     }
 
-    public int getPlayerSeat() {
-        return playerSeat;
+    public String getPlayerSeat() {
+        return players.get(playerSeat).getUsername();
     }
 
     public ArrayList<Player> getPlayers() {
