@@ -178,10 +178,31 @@ public class EventHandler {
 
                     UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
 
-
                     for (String p : players) {
                         if (!p.equals(player)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
+                        }
+                    }
+
+                    //if the player has finished the game
+                    if (GameManager.getInstance().hasFinishedFirst(player)) {
+
+                        //the player who finished first will not be able anymore to do the takeTiles
+                        //so this part of the code will not be entered anymore from anyone
+
+                        //let's see which one of the players has finished the game
+                        //if he has started last the game must end
+                        if (GameManager.getInstance().hasStartedLast(player)) {
+                            for (String p : players) {
+                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p));
+                            }
+                        }
+                        else {
+                            //if the player who finished didn't start last
+                            UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(player));
+
+                            //the players that didn't do the last turn must do it
+
                         }
                     }
 

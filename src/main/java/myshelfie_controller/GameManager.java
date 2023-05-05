@@ -179,6 +179,8 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getTurn();
     }
 
-
+    public boolean hasFinishedFirst(String player){
+        return (games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
+    }
 
 }
