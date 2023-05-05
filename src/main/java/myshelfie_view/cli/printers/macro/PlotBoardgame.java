@@ -9,6 +9,8 @@ import static myshelfie_view.cli.printers.Printer.Tile2Char;
 
 public class PlotBoardgame {
     private char[][] boardgame;
+    private static final int BOARDGAME_COL = 41;
+    private static final int BOARDGAME_ROW = 20;
     /**
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model
      * into the CORDINATES of the board3Player (and board4Player) in the view
@@ -75,7 +77,8 @@ public class PlotBoardgame {
         put('H', 7);
         put('I', 8);
     }};
-    public PlotBoardgame(char[][] chars) {
+    public PlotBoardgame() {
+        this.boardgame = new char[BOARDGAME_ROW][BOARDGAME_COL];
         this.boardgame = boardgame;
     }
     public char[][] getBoardCharMatrix() {

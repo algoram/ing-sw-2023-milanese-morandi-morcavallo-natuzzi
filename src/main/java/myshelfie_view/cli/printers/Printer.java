@@ -20,10 +20,8 @@ public class Printer {
 
     private static Printer instance = null;
 
-    private static final int BOOKSHELF_ROW = 13;
-    private static final int BOOKSHELF_COL = 21;
-    private static final int BOARDGAME_COL = 41;
-    private static final int BOARDGAME_ROW = 20;
+
+
 
     private Printer() {}
 
@@ -123,14 +121,12 @@ public class Printer {
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
 
         char[][] background = new char[40][100];
-        PlotBoardgame boardgame = new PlotBoardgame(new char[BOARDGAME_ROW][BOARDGAME_COL]);
-        PlotBookshelf personalGoal = new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]);
-        PlotBookshelf bookshelf = new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]);
+        PlotBoardgame boardgame = new PlotBoardgame();
+        PlotBookshelf personalGoal = new PlotBookshelf();
+        PlotBookshelf bookshelf = new PlotBookshelf();
         List<PlotBookshelf> otherBookshelf = new ArrayList<>();
-
-
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]));
+            otherBookshelf.add(new PlotBookshelf());
         }
 
         //Background
@@ -150,7 +146,6 @@ public class Printer {
         updateYourPoints(getPoints(thisPlayer,gameState));
 
         //PersonalGoal
-        //TODO: getPersonalGoal() deve ritornare una bookshelf con dentro il personal goal associato al player
         personalGoal.buildBookshelf(thisPlayer.getPersonalGoal().map_PGoalToBookshelf());
         setOnSetup(personalGoal.getBookshelfCharMatrix(), 8, 49);
         //your Bookshelf
@@ -159,7 +154,7 @@ public class Printer {
 
         //otherBookshelf
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new PlotBookshelf(new char[BOOKSHELF_ROW][BOOKSHELF_COL]));
+            otherBookshelf.add(new PlotBookshelf());
         }
         for (int i=0; i< otherPlayers.size(); i++){
             otherBookshelf.get(i).buildBookshelf(otherPlayers.get(i).getBookshelf());
@@ -251,6 +246,20 @@ public class Printer {
        yourPointsChar = (String.valueOf(yourPoints)).toCharArray();
        setOnSetup(yourPointsChar,4,82);
     }
+    private int getPoints(Player player, GameState gameState){
+
+        int sumOfPoints = 0;
+
+        sumOfPoints += player.getCommonGoalPoints();
+
+        sumOfPoints += player.getPersonalGoalPoints();
+
+        if(player.getFinishedFirst()) { sumOfPoints += 1;}
+
+        sumOfPoints += player.getAdjacentPoints();
+
+        return sumOfPoints;
+    }
     /***
      * this method update the stack of the common goals directly in the allSetup matrix
      * @param commonStack1 has to be a number between 0 and 9 {0,2,4,8}
@@ -294,20 +303,7 @@ public class Printer {
         }
     }
 
-    private int getPoints(Player player, GameState gameState){
 
-        int sumOfPoints = 0;
-
-        sumOfPoints += player.getCommonGoalPoints();
-
-        sumOfPoints += player.getPersonalGoalPoints();
-
-        if(player.getFinishedFirst()) { sumOfPoints += 1;}
-
-        sumOfPoints += player.getAdjacentPoints();
-
-        return sumOfPoints;
-    }
 
     /********************************* Util Functions **********+***************************/
     public static char[][] String2CharMatrix(String multilineString) {

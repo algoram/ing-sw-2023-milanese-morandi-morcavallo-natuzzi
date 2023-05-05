@@ -9,8 +9,13 @@ import static myshelfie_view.cli.printers.Printer.String2CharMatrix;
 import static myshelfie_view.cli.printers.Printer.Tile2Char;
 
 public class PlotBookshelf {
+
+    private static final int BOOKSHELF_ROW = 13;
+    private static final int BOOKSHELF_COL = 21;
     char[][] bookshelf;
-    public PlotBookshelf(char[][] bookshelf) {
+
+    public PlotBookshelf() {
+        this.bookshelf = new char[BOOKSHELF_ROW][BOOKSHELF_COL];
         this.bookshelf = bookshelf;
     }
     private final HashMap<Integer,Integer> bookshelfRowModel2CLI = new HashMap<>(){{
