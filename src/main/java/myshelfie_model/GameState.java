@@ -16,9 +16,9 @@ public class GameState implements Serializable {
     private final Board board;
     private final CommonGoal[] commonGoals;
 
-    private final int playerSeat; //the number of the player who started first
+    private final String playerSeat; //the number of the player who started first
 
-    private final int finishedFirst;
+    private final String finishedFirst;
     private final String playerTurn;
     private final Token[] topCommonGoal;
 
@@ -27,9 +27,9 @@ public class GameState implements Serializable {
     public GameState(Integer gameNumber,
                      Board board,
                      CommonGoal[] commonGoals,
-                     int playerSeat,
+                     String playerSeat,
                      String playerTurn,
-                     int finishedFirst,
+                     String finishedFirst,
                      ArrayList<Player> players,
                      Token[] topCommonGoal) {
         //TODO deep clone objects by serializing and deserializing
@@ -55,7 +55,7 @@ public class GameState implements Serializable {
         return commonGoals;
     }
 
-    public int getPlayerSeat() {
+    public String getPlayerSeat() {
         return playerSeat;
     }
 
@@ -64,7 +64,7 @@ public class GameState implements Serializable {
     }
 
     public Token[] getTopCommonGoal() { return topCommonGoal; }
-    public int getFinishedFirst() {
+    public String getFinishedFirst() {
         return finishedFirst;
     }
     public ArrayList<Player> getPlayers() {
