@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GameState implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -8278269528631146325L;
+    private static final long serialVersionUID = 1L;
     private final Integer gameNumber;
     private final Board board;
     private final CommonGoal[] commonGoals;
@@ -32,7 +32,6 @@ public class GameState implements Serializable {
                      String finishedFirst,
                      ArrayList<Player> players,
                      Token[] topCommonGoal) {
-        //TODO deep clone objects by serializing and deserializing
         this.gameNumber = gameNumber;
         this.board = board;
         this.commonGoals = commonGoals;
@@ -70,25 +69,5 @@ public class GameState implements Serializable {
     public ArrayList<Player> getPlayers() {
         return players;
     }
-    public GameState deepClone() {
-        try {
-            // Serialize the original GameState object to a byte array
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.close();
-            byte[] serializedGameState = byteArrayOutputStream.toByteArray();
 
-            // Deserialize the byte array to create a new GameState object (deep clone)
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedGameState);
-            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            GameState clonedGameState = (GameState) objectInputStream.readObject();
-            objectInputStream.close();
-
-            return clonedGameState;
-        } catch ( ClassNotFoundException | IOException e) {
-            // Handle the exception as desired (e.g., log the error, rethrow it, or return null)
-            return null;
-        }
-    }
 }

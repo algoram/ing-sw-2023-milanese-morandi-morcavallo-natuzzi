@@ -180,10 +180,18 @@ public class GameManager {
     }
 
     public boolean hasFinishedFirst(String player){
-        return (games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
+        String finishedFirst = games.get(playerToGame.get(player)).getFinishedFirst();
+        if (player == null || finishedFirst == null) {
+            return false;
+        }
+        else return (games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
     }
 
     public boolean hasStartedLast(String player){
+        if (player == null){
+            System.out.println("player is null in started last function");
+            return false;
+        }
         int startedFirst = games.get(playerToGame.get(player)).getPlayerSeatIndex();
         ArrayList<Player> players = games.get(playerToGame.get(player)).getPlayers();
 

@@ -87,10 +87,12 @@ public class UpdateHandler {
         } else if (response instanceof ConnectUpdate) {
             GameState gameState = ((ConnectUpdate) response).getGameState();
             View.getInstance().initGameState(gameState);
+            playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesSuccess) {
 
             GameState gameState = ((TakeTilesSuccess) response).getGameState();
+            System.out.println("take cacca DEBUG");
             View.getInstance().displayNewSetup(gameState);
 
         } else if (response instanceof TakeTilesUpdate) {
@@ -103,7 +105,7 @@ public class UpdateHandler {
 
             String reason = ((TakeTilesFailure) response).getReason();
             View.getInstance().takeFailed(reason);
-            View.getInstance().yourTurn();
+            //thi cli already runs the take turn again
 
         } else if (response instanceof GameFinished) {
             String winner = ((GameFinished) response).getWinner();

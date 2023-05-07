@@ -378,7 +378,7 @@ public class Game {
         return players;
     }
 
-    public String getTurn() {return players.get(turn).toString();}
+    public String getTurn() {return players.get(turn).getUsername();}
 
 
     /**

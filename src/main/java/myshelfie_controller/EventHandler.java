@@ -65,7 +65,9 @@ public class EventHandler {
      * @param event is the event crated by the client that needs to be handled
      */
     public void handle(Event event) {
-        System.out.printf("Event from %s: ", event.getSource());
+        if (!(event instanceof Ping)) {
+            System.out.printf("Event from %s: \n", event.getSource());
+        }
         String player = event.getSource();
 
         if (event instanceof MessageSend) {
@@ -126,6 +128,9 @@ public class EventHandler {
 
 
                     GameState gameState = GameManager.getInstance().getGameState(player);
+                    String cacca = gameState.getPlayerTurn();
+                    System.out.println("sto mandando questo giocatore come giocatore di turno: " + cacca);
+
 
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for(String p : players){
@@ -151,7 +156,7 @@ public class EventHandler {
         } else if (event instanceof Ping){
             synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
-                    System.out.println("PingFailure player not found: " + player);
+                    //System.out.println("PingFailure player not found: " + player);
                 }
                 lastPingTimes.replace(player, System.currentTimeMillis());
             }
@@ -172,6 +177,8 @@ public class EventHandler {
 
                 if (GameManager.getInstance().takeTiles(player, column, tiles)) {
                     List<String> players = GameManager.getInstance().getPlayers(player);
+
+                    System.out.println("TakeTilesSuccessCACCA");
 
                     //Notify the success of the take tiles and update the view for all players
                     GameState gameState = GameManager.getInstance().getGameState(player);
@@ -249,18 +256,22 @@ public class EventHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            Map<String,Long> lastPingTimescopy;
+            synchronized (lastPingTimes) {
+                lastPingTimescopy = new HashMap<>(lastPingTimes);
+            }
             for (String player : lastPingTimes.keySet()){
-                synchronized (lastPingTimes){
-                    if (System.currentTimeMillis() - lastPingTimes.get(player) > 5000){
 
-                        GameManager.getInstance().lostConnection(player);
+                if (System.currentTimeMillis() - lastPingTimescopy.get(player) > 10000){
 
-                        List<String> players = GameManager.getInstance().getPlayers(player);
-                        for (String p : players) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
-                                                                                                        player,
-                                                                                                        GameManager.getInstance().getTurn(player)));
-                        }
+                    GameManager.getInstance().lostConnection(player);
+
+                    List<String> players = GameManager.getInstance().getPlayers(player);
+                    for (String p : players) {
+                        UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
+                                                                                                    player,
+                                                                                                    GameManager.getInstance().getTurn(player)));
                     }
                 }
             }

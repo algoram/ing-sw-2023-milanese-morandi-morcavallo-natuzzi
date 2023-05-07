@@ -1,5 +1,6 @@
 package myshelfie_controller;
 
+import myshelfie_controller.response.PingAck;
 import myshelfie_network.rmi.RMIServer;
 import myshelfie_network.socket.SocketServer;
 import myshelfie_controller.response.Response;
@@ -19,14 +20,17 @@ public class UpdateDispatcher {
     }
 
     public void dispatchResponse(Response response) {
-        System.out.println("Sending response " + response.getClass().getSimpleName());
+        if (!(response instanceof PingAck)) {
+            System.out.println("Sending response " + response.getClass().getSimpleName());
+        }
+
         String player = response.getTarget();
 
         if (RMIServer.getInstance().hasClient(player)) {
-            System.out.println("Sending via RMI");
+            //System.out.println("Sending via RMI");
             RMIServer.getInstance().sendResponse(response);
         } else if (SocketServer.getInstance().hasClient(player)) {
-            System.out.println("Sending via socket");
+            //System.out.println("Sending via socket");
             SocketServer.getInstance().sendResponse(response);
         } else {
             System.out.println("Did not send");

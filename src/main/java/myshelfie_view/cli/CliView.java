@@ -145,9 +145,9 @@ public class CliView extends View {
 
     @Override
     public void displayNewSetup(GameState gameState){
-        synchronized (gameState) {
-            this.gameState = gameState;
-        }
+        //todo check displayNewSetup
+        this.gameState = gameState;
+        Printer.getInstance().DisplayAllSetup(this.gameState);
     }
 
     @Override
@@ -289,7 +289,7 @@ public class CliView extends View {
 
             } else if(input.length() > 12){
                 out.println("Too long input for a move");
-            } else if (checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
+            } else if (!checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
                 out.println("Try another tiles!");
             } else {
                 //convert string to the positions in the list modelPositions for the server

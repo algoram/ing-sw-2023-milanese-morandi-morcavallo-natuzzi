@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Server" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="Server" />
-    <module name="PSP48" />
+    <module name="ing-sw-2023-milanese-morandi-morcavallo-natuzzi" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
