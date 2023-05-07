@@ -30,6 +30,7 @@ public class EventHandler {
         // I may start this thread after first connection
         new Thread(this::lastPingChecker).start();
 
+
         new Thread(() -> {
             while (threadRun) {
                 Event event;
@@ -39,7 +40,8 @@ public class EventHandler {
                 }
 
                 if (event != null) {
-                    handle(event);
+                    //todo check new thread creation
+                    new Thread(() -> handle(event)).start();
                 }
 
             }
