@@ -151,6 +151,20 @@ public class CliView extends View {
     }
 
     @Override
+    public void gameFinished(String winner) {
+        if( winner.equals(Settings.getInstance().getUsername())) out.println("You won!");
+        else out.println(winner + " won!");
+        out.println("Game is finished!");
+        closeCliView();
+    }
+
+    @Override
+    public void gameFinishedForYou() {
+        out.println("Your Bookshelf is full!");
+        out.println("Please wait for the other players to finish the game!");
+    }
+
+    @Override
     public void closeCliView() {
         gameIsRunning = false;
     }
