@@ -332,16 +332,14 @@ public class Game {
      * @param playerNumber index of the player of which we want the points
      * @return the total number of points achieved by a player
      */
-    /*
     public int getPoints(int playerNumber) {
         // points awarded for achieving the personal goal
         int personalGoalPoints = players.get(playerNumber).getPersonalGoalPoints();
 
         // points awarded for achieving the common goals
         int commonGoalsPoints = 0;
-        for (int i = 0; i < COMMON_GOALS; i++) {
-            commonGoalsPoints += players.get(playerNumber).getCommonGoalPoints(i).getPoints();
-        }
+        commonGoalsPoints += players.get(playerNumber).getCommonGoalPoints();
+
 
         // points awarded for adjacent tiles on the bookshelf
         int bookshelfPoints = players.get(playerNumber).getBookshelf().getPoints();
@@ -351,7 +349,7 @@ public class Game {
                 + bookshelfPoints
                 + (playerNumber == finishedFirst ? 1 : 0); // point awarded for finishing first
     }
-   */
+
 
     // GameSTate Response methods
 

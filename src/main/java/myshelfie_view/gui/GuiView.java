@@ -84,6 +84,16 @@ public class GuiView extends View {
 
     }
 
+    @Override
+    public void gameFinished(String winner) {
+
+    }
+
+    @Override
+    public void gameFinishedForYou() {
+
+    }
+
 
     public static GuiView getInstance() {
         return new GuiView();

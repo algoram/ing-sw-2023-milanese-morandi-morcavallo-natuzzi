@@ -201,8 +201,14 @@ public class GameManager {
     }
 
     public boolean someoneStillHasToPlay(String player){
-        //todo
         //check no error like calling this function but none of the players have finished
+        if (games.get(playerToGame.get(player)).getFinishedFirst() == null) {
+            System.out.println("No one has finished yet: ERROR IN LOGIC");
+            return false;
+        }
+        if (hasStartedLast(player)) {
+            return true;
+        }
         return false;
     }
 
@@ -211,8 +217,18 @@ public class GameManager {
             System.out.println("No one has finished yet: ERROR IN LOGIC");
             return null;
         }
-        //todo end this
-        return null;
+
+        ArrayList<Player> players = games.get(playerToGame.get(player)).getPlayers();
+
+        int maxScore = -1;
+        String winner = null;
+        for (int i=0; i<players.size(); i++) {
+            if (games.get(playerToGame.get(player)).getPoints(i) > maxScore) {
+                maxScore = games.get(playerToGame.get(player)).getPoints(i);
+                winner = players.get(i).getUsername();
+            }
+        }
+        return winner;
     }
 
     public void closeGame(String player) {
