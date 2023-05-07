@@ -16,15 +16,15 @@ public class PlotBoardgame {
      * into the CORDINATES of the board3Player (and board4Player) in the view
      */
     private final HashMap<Integer, Integer> boardRowModel2CLI = new HashMap<>() {{
-        put(8, 2);
-        put(7, 4);
-        put(6, 6);
-        put(5, 8);
-        put(4, 10);
-        put(3, 12);
-        put(2, 14);
-        put(1, 16);
-        put(0, 18);
+        put(8, 2);  //A
+        put(7, 4);  //B
+        put(6, 6);  //C
+        put(5, 8);  //D
+        put(4, 10); //E
+        put(3, 12); //F
+        put(2, 14); //G
+        put(1, 16); //H
+        put(0, 18); //I
     }};
     /**
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model

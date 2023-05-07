@@ -316,11 +316,11 @@ public class Printer {
 
         switch (tile.getType())
         {
-            case CATS -> tileChar = '¥';
-            case BOOKS -> tileChar = '#';
-            case FRAMES -> tileChar = '¶';
-            case TROPHIES -> tileChar = '©';
-            case PLANTS -> tileChar = '§';
+            case CATS -> tileChar = 'C';
+            case BOOKS -> tileChar = 'B';
+            case FRAMES -> tileChar = 'F';
+            case TROPHIES -> tileChar = 'T';
+            case PLANTS -> tileChar = 'P';
             case GAMES -> tileChar = 'G';
         }
         return tileChar;

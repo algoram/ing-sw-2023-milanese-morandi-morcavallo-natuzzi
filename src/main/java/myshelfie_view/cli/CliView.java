@@ -28,8 +28,6 @@ public class CliView extends View {
     private GameState gameState; //is the actual state of the game
     private final PrintStream out;
 
-    private Double refreshRate = 100.0; //refresh rate of the game
-
     private CliView() {
         out = System.out;
         this.scanner = new Scanner(System.in);
@@ -223,6 +221,7 @@ public class CliView extends View {
         } else {
             throw new Exception("Unknown connection type");
         }
+        //todo: add a timer that wait for the connection to be established and then ask the login again (in case server is not running)
     }
 
     /***
@@ -289,7 +288,7 @@ public class CliView extends View {
 
             } else if(input.length() > 12){
                 out.println("Too long input for a move");
-            } else if (!checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
+            } else if (checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
                 out.println("Try another tiles!");
             } else {
                 //convert string to the positions in the list modelPositions for the server
@@ -471,20 +470,20 @@ public class CliView extends View {
             switch (numPlayers){
                 case 2 -> {
                     if(possibleCoordinate.get(coordinate) <= 2){
-                        return true;
+                        return false;
                     }
                     else{
                         out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
-                        return false;
+                        return true;
                     }
                 }
                 case 3 -> {
                     if(possibleCoordinate.get(coordinate) <= 3){
-                        return true;
+                        return false;
                     }
                     else{
                         out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
-                        return false;
+                        return true;
                     }
                 }
                 case 4 -> {
