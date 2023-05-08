@@ -3,7 +3,6 @@ package myshelfie_controller;
 import myshelfie_controller.event.*;
 import myshelfie_controller.response.*;
 import myshelfie_model.GameState;
-import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
 import myshelfie_network.rmi.RMIServer;
 import myshelfie_network.socket.SocketServer;
@@ -177,72 +176,77 @@ public class EventHandler {
                 UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, "Column out of bounds"));
 
             } else {
+                try{
+                    if (GameManager.getInstance().takeTiles(player, column, tiles)) {
+                        List<String> players = GameManager.getInstance().getPlayers(player);
 
-                if (GameManager.getInstance().takeTiles(player, column, tiles)) {
-                    List<String> players = GameManager.getInstance().getPlayers(player);
-
-                    System.out.print("EventHandler-> handle(): TakeTilesSuccess from " + player +": ");
-                    for (Position p : tiles) {
-                        System.out.print(" "+ p.toString() + " ");
-                    }
-                    System.out.println();
-
-                    //Notify the success of the take tiles and update the view for all players
-                    GameState gameState = GameManager.getInstance().getGameState(player);
-                    System.out.println("EventHandler-> handle(): Gamestate has been updated" + gameState.toString());
-
-                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
-
-                    for (String p : players) {
-                        if (!p.equals(player)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
+                        System.out.print("EventHandler-> handle(): TakeTilesSuccess from " + player +": ");
+                        for (Position p : tiles) {
+                            System.out.print(" "+ p.toString() + " ");
                         }
-                    }
+                        System.out.println();
 
-                    //if the player has finished the game
-                    if (GameManager.getInstance().hasFinishedFirst(player)) {
+                        //Notify the success of the take tiles and update the view for all players
+                        GameState gameState = GameManager.getInstance().getGameState(player);
+                        System.out.println("EventHandler-> handle(): Gamestate has been updated" + gameState.toString());
 
-                        //the player who finished first will not be able anymore to do the takeTiles
-                        //so this part of the code will not be entered anymore from anyone
+                        UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
 
-                        //let's see which one of the players has finished the game
-                        //if he has started last the game must end for everyone
-                        if (GameManager.getInstance().hasStartedLast(player)) {
-                            for (String p : players) {
-                                String winner = GameManager.getInstance().getWinner(player);
-                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
+                        for (String p : players) {
+                            if (!p.equals(player)) {
+                                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
                             }
-                            GameManager.getInstance().closeGame(player);
                         }
-                        else {
-                            //only the player and all the ones that already did the last
-                            //turn must receive the game finished update
-                            UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
 
-                            //the players that didn't do the last turn must do it
-                            //todo we could implement a kind of message here -> "wait for the other players to finish"
-                        }
-                    }
-                    //here is the case where the player has finished the game, but he is not the first
-                    else if(GameManager.getInstance().someoneElseFinished(player)){
+                        //if the player has finished the game
+                        if (GameManager.getInstance().hasFinishedFirst(player)) {
 
-                        //if someone else has finished the game
-                        //the player who finished did his last take tiles so:
+                            //the player who finished first will not be able anymore to do the takeTiles
+                            //so this part of the code will not be entered anymore from anyone
 
-                        if (GameManager.getInstance().someoneStillHasToPlay(player)){ //if someone still has to play
-                            UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
-                        }
-                        else { //if everyone has finished
-                            for (String p : players) {
-                                String winner = GameManager.getInstance().getWinner(player);
-                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
+                            //let's see which one of the players has finished the game
+                            //if he has started last the game must end for everyone
+                            if (GameManager.getInstance().hasStartedLast(player)) {
+                                for (String p : players) {
+                                    String winner = GameManager.getInstance().getWinner(player);
+                                    UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
+                                }
+                                GameManager.getInstance().closeGame(player);
                             }
-                            GameManager.getInstance().closeGame(player);
-                        }
-                    }
+                            else {
+                                //only the player and all the ones that already did the last
+                                //turn must receive the game finished update
+                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
 
-                } else {
-                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, "EventHandler-> handle():  Error in taking tiles"));
+                                //the players that didn't do the last turn must do it
+                                //todo we could implement a kind of message here -> "wait for the other players to finish"
+                            }
+                        }
+                        //here is the case where the player has finished the game, but he is not the first
+                        else if(GameManager.getInstance().someoneElseFinished(player)){
+
+                            //if someone else has finished the game
+                            //the player who finished did his last take tiles so:
+
+                            if (GameManager.getInstance().someoneStillHasToPlay(player)){ //if someone still has to play
+                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
+                            }
+                            else { //if everyone has finished
+                                for (String p : players) {
+                                    String winner = GameManager.getInstance().getWinner(player);
+                                    UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
+                                }
+                                GameManager.getInstance().closeGame(player);
+                            }
+                        }
+
+                    } else {
+                        UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, "EventHandler-> handle():  Error in taking tiles"));
+                    }
+                } catch (Exception e){
+                    //todo: far visualizzare l'errore all'utente(client) e non il risultato dell'else qui soprastante
+                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, e.getMessage()));
+                    e.printStackTrace();
                 }
             }
 

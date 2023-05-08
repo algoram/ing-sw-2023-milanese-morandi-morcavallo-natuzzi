@@ -237,7 +237,7 @@ public class Game {
      * @param column the column in which the player wants to store the taken tiles
      * @return a boolean that indicates whether the move was successful or not
      */
-    public boolean takeTiles(String player, List<Position> chosenTiles, int column) {
+    public boolean takeTiles(String player, List<Position> chosenTiles, int column) throws Exception {
         // check if the game has finished
         int playerNumber = findPlayer(player);
         if (hasFinished()) {
@@ -255,17 +255,19 @@ public class Game {
         }
 
         // take the tiles from the board
-        List<Tile> tiles;
+        List<Tile> tiles = null;
 
         try {
             tiles = board.remove(chosenTiles);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return false;
+            //todo inviare il messaggio di errore anche al client
+            e.printStackTrace();
         }
 
         // insert the tiles inside the bookshelf column
-        players.get(playerNumber).getBookshelf().fill(column, tiles);
+        if(tiles != null){
+            players.get(playerNumber).getBookshelf().fill(column, tiles);
+        } else return false;
 
         //SET POINTS
         // check if the player has filled the bookshelf first

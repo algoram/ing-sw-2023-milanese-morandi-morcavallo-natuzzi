@@ -2,7 +2,6 @@ package myshelfie_controller;
 
 import myshelfie_model.Game;
 import myshelfie_model.GameState;
-import myshelfie_model.GameUpdate;
 import myshelfie_model.Position;
 import myshelfie_model.board.Board;
 import myshelfie_model.goal.Token;
@@ -69,20 +68,15 @@ public class GameManager {
 
                 int state = games.get(numGame).getPlayerStates().get(numPlayerInGame);
 
-                switch (state) {
-                    case 1: //the player is already connected
-                        return false;
-
-                    case 0: //the player lost connection
-
-                        return games.get(numGame).addPlayer(newPlayer);
-
-                    case -1: //the player disconnected voluntarily
-                        return false;
-
-                    default:
-                        return false;
-                }
+            return switch (state) {
+                case 1 -> //the player is already connected
+                        false;
+                case 0 -> //the player lost connection
+                        games.get(numGame).addPlayer(newPlayer);
+                case -1 -> //the player disconnected voluntarily
+                        false;
+                default -> false;
+            };
         }
 
 
@@ -112,7 +106,12 @@ public class GameManager {
 
 
     public boolean takeTiles(String player, int column, List<Position> tiles) {
-        return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
+        try {
+            return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public int getNumberOfPlayers(String player) {
@@ -121,7 +120,7 @@ public class GameManager {
 
     /**
      * This function is called from event handler when a player disconnects from a game.
-     * @param player
+     * @param player the player that disconnected
      */
     public void lostConnection(String player) {
         Integer game = playerToGame.get(player);
@@ -153,9 +152,7 @@ public class GameManager {
         topCommonGoals[0] = commonGoals[0].peekTokens();
         topCommonGoals[1] = commonGoals[1].peekTokens();
 
-        GameState gameState = new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals);
-
-        return gameState;
+        return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals);
     }
 
 
@@ -194,10 +191,7 @@ public class GameManager {
 
         int playerIndex = games.get(playerToGame.get(player)).findPlayer(player);
 
-        if (playerIndex == (startedFirst + (players.size()-1) % players.size())){
-            return true;
-        }
-        return false;
+        return playerIndex == (startedFirst + (players.size() - 1) % players.size());
     }
 
     public boolean someoneElseFinished(String player){
@@ -211,10 +205,7 @@ public class GameManager {
             System.out.println("GameManager-> someoneStillHasToPlay():No one has finished yet: ERROR IN LOGIC");
             return false;
         }
-        if (hasStartedLast(player)) {
-            return true;
-        }
-        return false;
+        return hasStartedLast(player);
     }
 
     public String getWinner(String player) {
