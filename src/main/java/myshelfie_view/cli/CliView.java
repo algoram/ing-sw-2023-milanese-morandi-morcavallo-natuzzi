@@ -10,15 +10,13 @@ import myshelfie_network.socket.SocketClient;
 import myshelfie_view.View;
 import myshelfie_view.cli.printers.Printer;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 //import org.apache.commons.io.IOUtils;
 
@@ -28,6 +26,10 @@ public class CliView extends View {
     private final Object lockInOut = new Object();
     private boolean gameIsRunning; //the loop
     private boolean chatIsRunning = false; //the moment in which the chat is available
+    private boolean isMyTurn = false;
+
+    private Queue<Messages> messagesQueue = new LinkedList<Messages>();
+
     private static CliView instance = null;
     private Scanner scanner;
     private GameState gameState; //is the actual state of the game
@@ -126,9 +128,14 @@ public class CliView extends View {
     }
     @Override
     public void initGameState(GameState gameState){
+
         out.println("Game is starting!");
         this.gameState = gameState;
+
         showCommandsAvailable();
+        if (gameState.getPlayerTurn().equals(Settings.getInstance().getUsername())) {
+            isMyTurn = true;
+        }
         Printer.getInstance().DisplayAllSetup(this.gameState);
 
         ListenerThread = new Thread(()->{ commandListenerSync();});
@@ -137,10 +144,16 @@ public class CliView extends View {
 
     @Override
     public void chatIn(String sender, String message, boolean isPublic) {
-        if(isPublic)
-            out.println("(public) from " + sender + ": " + message);
-        else
-            out.println("(private) from " + sender + ": " + message);
+        if (!isMyTurn) {
+            if (isPublic)
+                out.println("(public) from " + sender + ": " + message);
+            else
+                out.println("(private) from " + sender + ": " + message);
+        }
+        else{
+            if(Settings.DEBUG) System.out.println("DEBUG CliView -> chatIn Message received but it's your turn!");
+            messagesQueue.add(new Messages(sender, message, isPublic));
+        }
     }
 
     @Override
@@ -161,7 +174,7 @@ public class CliView extends View {
     @Override
     public void yourTurn() {
 
-        if (Settings.getInstance().DEBUG)System.out.println("lock try");
+        if (Settings.getInstance().DEBUG)System.out.println("CLIVIEW -> YOUTURN lock try");
 
         synchronized (lockInOut) {
             out.println("It's your turn!");
@@ -185,6 +198,7 @@ public class CliView extends View {
     @Override
     public void takeTiles(List<Position> tiles, int column) {
         out.println("Sending your move to the server...");
+        isMyTurn = false;
         try {
             EventDispatcher.getInstance().takeTiles(tiles, column);
         } catch (Exception e) {
@@ -195,7 +209,14 @@ public class CliView extends View {
     @Override
     public void displayNewSetup(GameState gameState){
         this.gameState = gameState;
+
+        if (gameState.getPlayerTurn().equals(Settings.getInstance().getUsername())) {isMyTurn = true;}
         Printer.getInstance().DisplayAllSetup(this.gameState);
+
+        for (int i = 0; i < messagesQueue.size(); i++) {
+            Messages m = messagesQueue.poll();
+            chatIn(m.getSender(), m.getMessage(), m.isPublic());
+        }
     }
 
     @Override
@@ -453,13 +474,6 @@ public class CliView extends View {
     }
 
 
-    private String readSafef(Scanner scanner) throws IllegalStateException{
-        String input;
-        do {
-            input = scanner.nextLine();
-        } while (input.equals(""));
-        return input;
-    }
     private void showCommonGoal(int number){
         switch (number){
             case 1 -> Printer.getInstance().DisplayCommonGoal(gameState.getCommonGoals()[0]);
@@ -481,7 +495,7 @@ public class CliView extends View {
             if (message.length() > 40) out.println("Message too long, max 40 characters");}
         while (message.length() > 40);
 
-        System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
+        if (Settings.DEBUG) System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
     }
     private void help(){
