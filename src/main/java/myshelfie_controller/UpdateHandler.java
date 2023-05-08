@@ -49,7 +49,7 @@ public class UpdateHandler {
 
         if (response instanceof PlayerConnectSuccess) {
             // start pinging server
-            System.out.println("Starting to ping...");
+            System.out.println("UpdateHandler-> handle(): Starting to ping...");
             EventDispatcher.getInstance().startPinging();
             View.getInstance().connectionSuccessful();
 

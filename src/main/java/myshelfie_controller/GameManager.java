@@ -119,7 +119,6 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getNumberOfPlayers();
     }
 
-
     /**
      * This function is called from event handler when a player disconnects from a game.
      * @param player
@@ -156,8 +155,6 @@ public class GameManager {
 
         GameState gameState = new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals);
 
-        System.out.println(gameState);
-
         return gameState;
     }
 
@@ -189,7 +186,7 @@ public class GameManager {
 
     public boolean hasStartedLast(String player){
         if (player == null){
-            System.out.println("player is null in started last function");
+            System.out.println("GameManager-> hasStartedLast(): player is null in started last function");
             return false;
         }
         int startedFirst = games.get(playerToGame.get(player)).getPlayerSeatIndex();
@@ -211,7 +208,7 @@ public class GameManager {
     public boolean someoneStillHasToPlay(String player){
         //check no error like calling this function but none of the players have finished
         if (games.get(playerToGame.get(player)).getFinishedFirst() == null) {
-            System.out.println("No one has finished yet: ERROR IN LOGIC");
+            System.out.println("GameManager-> someoneStillHasToPlay():No one has finished yet: ERROR IN LOGIC");
             return false;
         }
         if (hasStartedLast(player)) {
@@ -222,7 +219,7 @@ public class GameManager {
 
     public String getWinner(String player) {
         if (games.get(playerToGame.get(player)).getFinishedFirst() == null) {
-            System.out.println("No one has finished yet: ERROR IN LOGIC");
+            System.out.println("GameManager-> getWinner(): No one has finished yet: ERROR IN LOGIC");
             return null;
         }
 

@@ -44,7 +44,7 @@ public class SocketServer implements Server {
             // Accept client connections
             Socket clientSocket = serverSocket.accept();
 
-            System.out.println("Client connected " + clientSocket.getInetAddress());
+            System.out.println("SocketServer->start(): Client connected " + clientSocket.getInetAddress());
 
             // Create new thread to handle the client
             new Thread(() -> {
@@ -63,7 +63,7 @@ public class SocketServer implements Server {
                         } else if (data instanceof Event event) {
                             EventHandler.getInstance().addToEventQueue(event);
                         } else {
-                            throw new RuntimeException("Invalid data type from client");
+                            throw new RuntimeException("SocketServer->start(): Invalid data type from client");
                         }
                     }
                 } catch (IOException e) {

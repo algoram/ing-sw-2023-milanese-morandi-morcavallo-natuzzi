@@ -21,7 +21,7 @@ public class UpdateDispatcher {
 
     public void dispatchResponse(Response response) {
         if (!(response instanceof PingAck)) {
-            System.out.println("Sending response " + response.getClass().getSimpleName());
+            System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response " + response.getClass().getSimpleName());
         }
 
         String player = response.getTarget();
@@ -33,7 +33,7 @@ public class UpdateDispatcher {
             //System.out.println("Sending via socket");
             SocketServer.getInstance().sendResponse(response);
         } else {
-            System.out.println("Did not send");
+            System.out.println("UpdateDispatcher -> dispatchResponse(): Did not send");
         }
     }
 

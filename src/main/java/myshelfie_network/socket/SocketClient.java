@@ -44,7 +44,7 @@ public class SocketClient implements Client {
         this.port = port;
 
         socket = new Socket(host, port);
-        System.out.println("Connected to " + host + ":" + port);
+        System.out.println("SocketClient-> start(): Connected to " + host + ":" + port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         outputStream.flush();
         try {
