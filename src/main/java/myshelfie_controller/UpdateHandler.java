@@ -92,7 +92,6 @@ public class UpdateHandler {
         } else if (response instanceof TakeTilesSuccess) {
 
             GameState gameState = ((TakeTilesSuccess) response).getGameState();
-            System.out.println("take cacca DEBUG");
             View.getInstance().displayNewSetup(gameState);
 
         } else if (response instanceof TakeTilesUpdate) {

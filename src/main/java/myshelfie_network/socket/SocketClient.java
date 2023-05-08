@@ -48,7 +48,7 @@ public class SocketClient implements Client {
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         outputStream.flush();
         try {
-            outputStream.writeObject(EventDispatcher.getInstance().getUuid());
+            outputStream.writeUnshared(EventDispatcher.getInstance().getUuid());
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,6 +90,7 @@ public class SocketClient implements Client {
     @Override
     public void dispatchEvent(Event event) {
         try {
+            outputStream.reset();
             outputStream.writeObject(event);
             outputStream.flush();
         } catch (IOException e) {

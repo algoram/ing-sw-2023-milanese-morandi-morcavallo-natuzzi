@@ -115,6 +115,7 @@ public class SocketServer implements Server {
 
         while (tries > 0) {
             try {
+                client.out.reset();
                 client.out.writeObject(response);
                 break;
             } catch (IOException e) {
