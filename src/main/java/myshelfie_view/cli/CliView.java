@@ -177,6 +177,8 @@ public class CliView extends View {
 
             if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("command not valid");
+            } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
+                out.println("input not valid: only letters and numbers are allowed");
             }
             else if (input.equals("s")) {
                 Settings.getInstance().setConnectionType(ConnectionType.SOCKET);
@@ -236,7 +238,9 @@ public class CliView extends View {
             input = readSafe();
 
             if (input.startsWith("/") && commandAvailable(input) ){
-                out.println("Command not valid");
+                out.println("Back to the game...");
+            } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
+                out.println("input not valid: only letters and numbers are allowed");
             } else if (input.length()>17) {
                 //17 is the max length of a nickname for the right print on CLI view
                 out.println("Nickname too long");
@@ -255,7 +259,9 @@ public class CliView extends View {
             input = readSafe();
 
             if (input.startsWith("/") && commandAvailable(input) ){
-                out.println("command not valid");
+                out.println("Back to the game...");
+            } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
+                out.println("input not valid: only letters and numbers are allowed");
             }
             else if (!input.equals("2") && !input.equals("3") && !input.equals("4")) {
                 out.println("input not valid");
@@ -268,10 +274,7 @@ public class CliView extends View {
     }
 
     private boolean notAvailableUsername(String input) {
-        if(input.equals("") || input.trim().equals(" ") || input.trim().equalsIgnoreCase("ALL")){
-            return true;
-        }
-        return false;
+        return input.equals("") || input.trim().equals(" ") || input.trim().equalsIgnoreCase("ALL") || input.startsWith("/");
     }
 
     private void askTiles(){
@@ -283,13 +286,17 @@ public class CliView extends View {
             out.println("Choose tiles positions (1 to 3) from the board: [ex: A1 B2 C3, ex: A1 B2, ex: A1]");
             input = readSafe();
             String[] positions = input.trim().toUpperCase().split("\\s+"); //split the input in an array of strings withouth spaces ex:"    a3 A4 a6    " -> ["A3", "A4", "A6"]
-            if (input.startsWith("/") && commandAvailable(input) ){
-                out.println("command not valid");
-
-            } else if(input.length() > 12){
+            if (input.startsWith("/") && commandAvailable(input) ) {
+                out.println("Back to the game...");
+            } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
+                out.println("input not valid: only letters and numbers are allowed");
+            }
+            else if(input.length() > 12){
                 out.println("Too long input for a move");
             } else if (checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
                 out.println("Try another tiles!");
+            } else if (!(positions.length == 1 || positions.length == 2 || positions.length == 3) ) {
+                out.println("input not valid");
             } else {
                 //convert string to the positions in the list modelPositions for the server
                 buildPositionList(positions, modelPositions);
@@ -304,8 +311,9 @@ public class CliView extends View {
 
             if (input.startsWith("/") && commandAvailable(input) ) {
                 out.println("command not valid");
-            }
-            else if (!input.equals("1") && !input.equals("2") && !input.equals("3") && !input.equals("4") && !input.equals("5")) {
+            } else if ( !input.matches("[a-zA-Z0-9 ]+" )) {
+                out.println("input not valid: only letters and numbers are allowed");
+            } else if (!input.equals("1") && !input.equals("2") && !input.equals("3") && !input.equals("4") && !input.equals("5") ) {
                     out.println("input not valid");
             } else {
                 columnChoosen = Integer.parseInt(input);
