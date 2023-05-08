@@ -79,7 +79,7 @@ public class EventDispatcher {
     }
 
     public void takeTiles(List<Position> tiles, int column){
-        Event e = new TakeTiles(Settings.getInstance().getUsername(), tiles,column);
+        Event e = new TakeTiles(Settings.getInstance().getUsername(), tiles,column-1); //column-1 because the column start from 0
         sendEvent(e);
     }
 
