@@ -74,13 +74,26 @@ public class EventHandler {
         if (event instanceof MessageSend) {
             if (((MessageSend) event).getMessage() != null) {
 
+                String message = ((MessageSend) event).getMessage();
+                String to = ((MessageSend) event).getRecipient();
+
                 if(Settings.getInstance().DEBUG) {System.out.println("EventHandler-> handle(): MessageSend");}
+
+                if (to != null) {
+                    if(!GameManager.getInstance().getPlayers(player).contains(to)) {
+                        String errorMessage = "there is no player with the name " + to + "\nThe available players are: ";
+                        for(String p : GameManager.getInstance().getPlayers(player)) {
+                            if (!p.equals(event.getSource()))errorMessage += p + " ";
+                        }
+                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, errorMessage));
+                        return;
+                    }
+                }
 
                 //Notify the success of the message send
                 UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player));
 
-                String message = ((MessageSend) event).getMessage();
-                String to = ((MessageSend) event).getRecipient();
+
 
                 if (to != null) {
                     //if to is not null send the message to the recipient
