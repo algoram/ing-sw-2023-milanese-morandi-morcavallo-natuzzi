@@ -88,9 +88,9 @@ public class CliView extends View {
     @Override
     public void chatIn(String sender, String message, boolean isPublic) {
         if(isPublic)
-            out.println(sender + ": " + message);
+            out.println("(public: " + sender + "): " + message);
         else
-            out.println("(" + sender+ " )" + " to you: " + message);
+            out.println("(private: " + sender+ "): " + message);
     }
 
     @Override

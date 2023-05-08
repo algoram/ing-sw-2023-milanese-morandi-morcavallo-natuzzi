@@ -20,11 +20,14 @@ public class UpdateDispatcher {
     }
 
     public void dispatchResponse(Response response) {
-        if (!(response instanceof PingAck)) {
-            System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response " + response.getClass().getSimpleName());
-        }
 
         String player = response.getTarget();
+
+        if (Settings.getInstance().DEBUG && !(response instanceof PingAck)) {
+            System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response " + response.getClass().getSimpleName());
+            System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response to " + player);
+        }
+
 
         if (RMIServer.getInstance().hasClient(player)) {
             //System.out.println("Sending via RMI");

@@ -85,12 +85,12 @@ public class EventHandler {
 
                 if (to != null) {
                     //if to is not null send the message to the recipient
-                    UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, false));
+                    UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(to, message, player, false));
                 } else {
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {
                         if (!p.equals(player)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(player, message, player, true));
+                            UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(p, message, player, true));
                         }
                     }
                 }
