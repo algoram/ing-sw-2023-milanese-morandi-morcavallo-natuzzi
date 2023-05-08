@@ -42,7 +42,7 @@ public class FourGroups4Tiles extends CommonGoal {
     }
 
     private void findGroup(Tile[][] matrix, boolean[][] visited, int i, int j,Type type , List<Tile> group) {
-        if (i < 0 || i >= matrix.length || j < 0 || j >= matrix[0].length || visited[i][j] || !matrix[i][j].getType().equals(type)) {
+        if (i < 0 || i >= matrix.length || j < 0 || j >= matrix[0].length || visited[i][j] || matrix[i][j]==null || !matrix[i][j].getType().equals(type)) {
             return;
         }
         visited[i][j] = true;
