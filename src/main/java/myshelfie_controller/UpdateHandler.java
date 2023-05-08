@@ -25,21 +25,6 @@ public class UpdateHandler {
                 }
 
                 if (response != null) {
-                    //todo check why doeasn't work -> it should be the ping ack
-                    if (response instanceof MessageSendResponse){
-                        if (responseQueue.peek() != null && responseQueue.peek() instanceof TakeTilesUpdate ||  responseQueue.peek() instanceof TakeTilesSuccess){
-                            synchronized (responseQueue) {
-                                Response response1 = responseQueue.poll();
-                                needsToWait = new Thread(() -> handle(response1));
-                                needsToWait.start();
-                                try{
-                                    needsToWait.join();
-                                }catch (InterruptedException e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
                     new Thread(() -> handle(response)).start();
                 }
             }
