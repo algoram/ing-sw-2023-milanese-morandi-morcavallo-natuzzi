@@ -292,7 +292,7 @@ public class CliView extends View {
             }
             else if(input.length() > 12){
                 out.println("Too long input for a move");
-            } else if (checkCoordinates(positions,2)) { //TODO: where is NUMPLAYER??? now is 2 for debug
+            } else if (checkCoordinates(positions,gameState.getPlayers().size())) {
                 out.println("Try another tiles!");
             } else if (!(positions.length == 1 || positions.length == 2 || positions.length == 3) ) {
                 out.println("input not valid");
