@@ -6,7 +6,7 @@ import java.util.List;
 
 public class GuiView extends View {
     private GuiView() {
-
+        FXApp.initApplication();
     }
 
     @Override
