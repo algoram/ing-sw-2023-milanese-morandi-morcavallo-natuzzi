@@ -385,6 +385,7 @@ public class CliView extends View {
 
         out.println("Digit the message");
         String message = readSafe();
+        System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
     }
     private void help(){
