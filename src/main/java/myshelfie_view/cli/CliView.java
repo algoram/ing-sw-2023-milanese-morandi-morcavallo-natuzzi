@@ -36,7 +36,7 @@ public class CliView extends View {
 
     public void start() {
         Printer.getInstance().Logo(); //print MyShelfie
-        Printer.getInstance().Commands(); //print available Commands
+        showCommandsAvailable();
 
         askConnection();
 
@@ -81,7 +81,7 @@ public class CliView extends View {
     public void initGameState(GameState gameState){
         out.println("Game is starting!");
         this.gameState = gameState;
-
+        showCommandsAvailable();
         Printer.getInstance().DisplayAllSetup(this.gameState);
     }
 
@@ -327,6 +327,14 @@ public class CliView extends View {
     private boolean commandAvailable(String command){
         if(chatIsRunning){
             switch (command) {
+                case "/showcommon1" -> {
+                    showCommonGoal(1);
+                    return true;
+                }
+                case "/showcommon2" -> {
+                    showCommonGoal(2);
+                    return true;
+                }
                 case "/help" -> {
                     help();
                     return true;
@@ -360,6 +368,22 @@ public class CliView extends View {
             }
         }
     }
+
+    private void showCommandsAvailable(){
+        if(chatIsRunning){
+            out.println("Commands available: "); // /showcommon1, /showcommon2, /help, /chat, /exit
+            out.println("/showcommon1: show the I common goal");
+            out.println("/showcommon2: show the II common goal");
+            out.println("/help: show the commands available");
+            out.println("/chat: send a message to the other players");
+            out.println("/exit: exit from the game");
+        }
+        else{
+            out.println("Commands available: "); // /help, /exit
+            out.println("/help: show the commands available");
+            out.println("/exit: exit from the game");
+        }
+    }
     /***
      * Read a string from the console, if the string is empty or null, it will ask again
     */
@@ -370,6 +394,13 @@ public class CliView extends View {
         } while (input.equals(""));
         return input;
     }
+    private void showCommonGoal(int number){
+        switch (number){
+            case 1 -> Printer.getInstance().DisplayCommonGoal(gameState.getCommonGoals()[0]);
+            case 2 -> Printer.getInstance().DisplayCommonGoal(gameState.getCommonGoals()[1]);
+        }
+    }
+
     /***
      * Ask the user to digit the receiver and the message, then it will send the message to the server
      */

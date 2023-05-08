@@ -44,12 +44,7 @@ public class Printer {
                 """
         );
     }
-    public void Commands() {
 
-        out.println("Digit '/help' to see the list of available commands.");
-        out.println("Digit '/exit' to exit the game.");
-
-    }
     /***
      * Coordinate system of the Game displayed on the CLI
      *           1         2         3         4         5         6         7         8         9
@@ -117,11 +112,12 @@ public class Printer {
            out.println(allSetup[i]);
        }
     }
+    //todo: add the commongoal to allSetup
     public void DisplayCommonGoal(CommonGoal modelCommonGoal){
         PlotCommonGoals commonGoal = new PlotCommonGoals(modelCommonGoal);
-        setOnSetup(commonGoal.getCommongoalCharMatrix(),23,30);
-        for (int i = 0; i < allSetup.length; i++) {
-            out.println(allSetup[i]);
+        char [][] commonGoalMatrix = commonGoal.getCommongoalCharMatrix();
+        for (int i = 0; i < commonGoalMatrix.length; i++) {
+            out.println(commonGoalMatrix[i]);
         }
     }
 

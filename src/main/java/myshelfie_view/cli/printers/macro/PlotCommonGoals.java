@@ -228,8 +228,8 @@ public class PlotCommonGoals{
     };
 
 
-    public PlotCommonGoals(CommonGoal modelCommonGoal) {
-        this.modelCommongoal = modelCommongoal;
+    public PlotCommonGoals(CommonGoal modelCommonGoal1) {
+        this.modelCommongoal = modelCommonGoal1;
         commongoal = new char[15][67];
         buildCommongoal();
     }
