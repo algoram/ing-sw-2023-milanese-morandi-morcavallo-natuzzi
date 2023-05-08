@@ -27,7 +27,6 @@ public abstract class View {
     public abstract void initGameState(GameState gameState);//this function is called when all
        //players join the game and it starts
     public abstract void chatIn(String sender, String Message, boolean isPublic);
-    public abstract void chatOut(String to,String message);
     public abstract void messageSentSuccessfully();
     public abstract void messageSentFailure(String errorMessage);
     public abstract void playerDisconnected(String playerOut);

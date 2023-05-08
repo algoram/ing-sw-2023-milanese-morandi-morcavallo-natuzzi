@@ -88,15 +88,9 @@ public class CliView extends View {
     @Override
     public void chatIn(String sender, String message, boolean isPublic) {
         if(isPublic)
-            out.println("(public: " + sender + "): " + message);
+            out.println("(public) from " + sender + ": " + message);
         else
-            out.println("(private: " + sender+ "): " + message);
-    }
-
-    @Override
-    public void chatOut(String to, String message) {
-        out.println("You to " + to + ": " + message);
-        EventDispatcher.getInstance().chat(to, message);
+            out.println("(private) from " + sender + ": " + message);
     }
 
     @Override
@@ -382,9 +376,14 @@ public class CliView extends View {
     private void chatOut(){
         out.println("Digit the receiver, digit 'all' to send to all");
         String receiver = readSafe();
+        String message;
 
-        out.println("Digit the message");
-        String message = readSafe();
+        do {
+            out.println("Digit the message");
+            message = readSafe();
+            if (message.length() > 40) out.println("Message too long, max 40 characters");}
+        while (message.length() > 40);
+
         System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
     }

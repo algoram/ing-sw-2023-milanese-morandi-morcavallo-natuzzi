@@ -79,16 +79,10 @@ public class UpdateHandler {
             String message = ((MessageSendResponse) response).getMessage();
             String sender = ((MessageSendResponse) response).getFrom();
             Boolean allPlayers = ((MessageSendResponse) response).getAllPlayers();
-
-            if(Settings.getInstance().DEBUG)
-                System.out.println("Updatehandler -> handle -> messagesend response is received in client \n" +
-                        "CALLING CHAT IN\n");
-
             View.getInstance().chatIn(sender, message, allPlayers);
 
         } else if (response instanceof PingAck) {
-            if (Settings.getInstance().DEBUG)
-                System.out.println("UpdateHandler-> handle(): Ping ack received");
+            // do nothing
 
         } else if (response instanceof ConnectUpdate) {
             GameState gameState = ((ConnectUpdate) response).getGameState();

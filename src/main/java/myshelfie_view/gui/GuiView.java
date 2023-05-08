@@ -35,11 +35,6 @@ public class GuiView extends View {
     }
 
     @Override
-    public void chatOut(String to, String message) {
-
-    }
-
-    @Override
     public void messageSentSuccessfully() {
 
     }
