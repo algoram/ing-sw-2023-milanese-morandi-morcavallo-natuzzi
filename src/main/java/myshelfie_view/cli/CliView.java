@@ -143,7 +143,6 @@ public class CliView extends View {
 
     @Override
     public void displayNewSetup(GameState gameState){
-        //todo check displayNewSetup
         this.gameState = gameState;
         Printer.getInstance().DisplayAllSetup(this.gameState);
     }

@@ -93,6 +93,7 @@ public class UpdateHandler {
 
             GameState gameState = ((TakeTilesSuccess) response).getGameState();
             View.getInstance().displayNewSetup(gameState);
+            playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesUpdate) {
 

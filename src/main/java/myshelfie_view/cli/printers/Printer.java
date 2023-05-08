@@ -144,7 +144,6 @@ public class Printer {
         setOnSetup(background, 0, 0);
 
         //Board
-        //TODO: verificare che getPlayers().size() rimanga costante per tutta la partita
         boardgame.buildBoard(gameState.getBoard(), gameState.getPlayers().size());
         setOnSetup(boardgame.getBoardCharMatrix(), 1, 2);
 
