@@ -11,6 +11,7 @@ import myshelfie_view.View;
 import myshelfie_view.cli.printers.Printer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -19,19 +20,66 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+//import org.apache.commons.io.IOUtils;
+
+
 public class CliView extends View {
+    Thread ListenerThread;
+    private final Object lockInOut = new Object();
     private boolean gameIsRunning; //the loop
     private boolean chatIsRunning = false; //the moment in which the chat is available
-    private boolean isYourTurn = false; //the moment in which is my turn
     private static CliView instance = null;
     private Scanner scanner;
     private GameState gameState; //is the actual state of the game
     private final PrintStream out;
 
+    private final InputStream in;
+
+
     private CliView() {
         out = System.out;
-        this.scanner = new Scanner(System.in);
+        in = System.in;
+        this.scanner = new Scanner(in);
         this.gameIsRunning = true;
+    }
+
+
+    private void commandListenerSync() {
+        while (gameIsRunning) {
+
+            String input = null;
+
+            synchronized (lockInOut){
+
+                try {
+                    long startTime = System.currentTimeMillis();
+                    while (in.available() == 0 && (System.currentTimeMillis() - startTime) < 100) {
+                        //wait for input
+                    }
+                    if (in.available() > 0) {
+                        input = scanner.nextLine();
+                    }
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    if (input != null) {
+                        if (!commandAvailable(input)) {
+                            System.out.println("Command not available");
+                        }
+                    }
+                }
+                lockInOut.notifyAll();
+            }
+        }
+    }
+
+
+    private String readSafef() throws IllegalStateException{
+        String input;
+        do {
+            input = scanner.nextLine();
+        } while (input.equals(""));
+        return input;
     }
 
     public void start() {
@@ -45,7 +93,6 @@ public class CliView extends View {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         askLogin();
     }
 
@@ -83,6 +130,9 @@ public class CliView extends View {
         this.gameState = gameState;
         showCommandsAvailable();
         Printer.getInstance().DisplayAllSetup(this.gameState);
+
+        ListenerThread = new Thread(()->{ commandListenerSync();});
+        ListenerThread.start(); //start the listener that takes the lock
     }
 
     @Override
@@ -110,8 +160,15 @@ public class CliView extends View {
 
     @Override
     public void yourTurn() {
-        out.println("It's your turn!");
-        askTiles();
+
+        if (Settings.getInstance().DEBUG)System.out.println("lock try");
+
+        synchronized (lockInOut) {
+            out.println("It's your turn!");
+            askTiles();
+            lockInOut.notifyAll();
+        }
+
     }
 
     @Override
@@ -388,6 +445,15 @@ public class CliView extends View {
      * Read a string from the console, if the string is empty or null, it will ask again
     */
     private String readSafe() {
+        String input;
+        do {
+            input = scanner.nextLine();
+        } while (input.equals(""));
+        return input;
+    }
+
+
+    private String readSafef(Scanner scanner) throws IllegalStateException{
         String input;
         do {
             input = scanner.nextLine();

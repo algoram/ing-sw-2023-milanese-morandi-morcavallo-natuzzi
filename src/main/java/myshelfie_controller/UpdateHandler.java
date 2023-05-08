@@ -18,13 +18,28 @@ public class UpdateHandler {
         new Thread(() -> {
             while (threadRun) {
                 Response response;
+                Thread needsToWait;
 
                 synchronized (responseQueue) {
                     response = responseQueue.poll();
                 }
 
                 if (response != null) {
-                    //todo check
+                    //todo check why doeasn't work -> it should be the ping ack
+                    if (response instanceof MessageSendResponse){
+                        if (responseQueue.peek() != null && responseQueue.peek() instanceof TakeTilesUpdate ||  responseQueue.peek() instanceof TakeTilesSuccess){
+                            synchronized (responseQueue) {
+                                Response response1 = responseQueue.poll();
+                                needsToWait = new Thread(() -> handle(response1));
+                                needsToWait.start();
+                                try{
+                                    needsToWait.join();
+                                }catch (InterruptedException e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
                     new Thread(() -> handle(response)).start();
                 }
             }
@@ -85,6 +100,9 @@ public class UpdateHandler {
             // do nothing
 
         } else if (response instanceof ConnectUpdate) {
+
+            System.out.println("UpdateHandler-> handle(): ConnectUpdate received");
+
             GameState gameState = ((ConnectUpdate) response).getGameState();
             View.getInstance().initGameState(gameState);
             playerTurn(gameState.getPlayerTurn());
