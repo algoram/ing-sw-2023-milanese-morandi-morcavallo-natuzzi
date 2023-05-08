@@ -487,7 +487,11 @@ public class CliView extends View {
     private void help(){
         out.println("Available commands:");
         out.println("/help: show the list of available commands");
-        if (chatIsRunning) out.println("/chat: send a message to the other players");
+        if (chatIsRunning) {
+            out.println("/chat: send a message to the other players");
+            out.println("/showcommon1: show the I common goal");
+            out.println("/showcommon2: show the II common goal");
+        }
         out.println("/exit: exit the game");
     }
     private void exit(){
