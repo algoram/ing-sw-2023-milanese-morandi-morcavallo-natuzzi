@@ -74,7 +74,8 @@ public class EventHandler {
 
         if (event instanceof MessageSend) {
             if (((MessageSend) event).getMessage() != null) {
-                System.out.println("EventHandler-> handle(): MessageSend");
+
+                if(Settings.getInstance().DEBUG) {System.out.println("EventHandler-> handle(): MessageSend");}
 
                 //Notify the success of the message send
                 UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player));

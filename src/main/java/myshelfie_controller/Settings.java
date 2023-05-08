@@ -1,8 +1,12 @@
 package myshelfie_controller;
 
+import java.security.PublicKey;
+
 //this class is used to store the global settings of the user
 //Each class saving settings must use this class to save and load settings
 public class Settings {
+
+    public static final boolean DEBUG = true;
     //must be effectively final
     private String username;
 
