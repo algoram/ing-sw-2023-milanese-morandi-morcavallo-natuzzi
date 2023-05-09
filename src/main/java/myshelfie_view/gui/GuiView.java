@@ -219,7 +219,7 @@ public class GuiView extends View {
     private boolean notAvailableUsername(String nickname) {
         return nickname.isEmpty() || nickname.trim().isEmpty() || nickname.trim().equalsIgnoreCase("ALL") || nickname.startsWith("/");
     }
-    private void askHostname() {
+    public void askHostname() {
         Platform.runLater(() -> {
             TextInputDialog dialog = new TextInputDialog("localhost");
             dialog.setTitle("Connect to server");
@@ -253,7 +253,7 @@ public class GuiView extends View {
         });
     }
 
-    private void askConnection() {
+    public void askConnection() {
         // Creazione della checkbox per selezionare la connessione
         CheckBox socketCheckBox = new CheckBox("Socket");
         CheckBox rmiCheckBox = new CheckBox("RMI");
