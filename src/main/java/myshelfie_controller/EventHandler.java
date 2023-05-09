@@ -94,11 +94,20 @@ public class EventHandler {
                 //Notify the success of the message send
                 UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player));
 
-
-
                 if (to != null) {
                     //if to is not null send the message to the recipient
-                    UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(to, message, player, false));
+                    if (to.equals(player)){
+                        StringBuilder errormessage = new StringBuilder("Seems stupid to send a message to yourself... \n");
+
+                        if(GameManager.getInstance().getPlayers(player).size()==2)errormessage.append("The only other player is: ");
+                        else errormessage.append("The other players are: ");
+
+                        for(String p : GameManager.getInstance().getPlayers(player)) {
+                            if (!p.equals(event.getSource())) errormessage.append(p).append(" ");
+                        }
+                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, errormessage.toString()));
+                    }
+                    else UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(to, message, player, false));
                 } else {
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {

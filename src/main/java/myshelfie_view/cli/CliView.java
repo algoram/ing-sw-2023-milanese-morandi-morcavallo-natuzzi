@@ -413,30 +413,24 @@ public class CliView extends View {
      */
     private boolean commandAvailable(String command){
         if(chatIsRunning){
-            switch (command) {
-                case "/showcommon1" -> {
-                    showCommonGoal(1);
-                    return true;
-                }
-                case "/showcommon2" -> {
-                    showCommonGoal(2);
-                    return true;
-                }
-                case "/help" -> {
-                    help();
-                    return true;
-                }
-                case "/chat" -> {
-                    chatOut();
-                    return true;
-                }
-                case "/exit" -> {
-                    exit();
-                    return true;
-                }
-                default -> {
-                    return false;
-                }
+            if (command.equals("/showcommon1")){
+                showCommonGoal(1);
+                return true;
+            }else if (command.equals("/showcommon2")) {
+                showCommonGoal(2);
+                return true;
+            }else if (command.equals("/help")) {
+                help();
+                return true;
+            }else if (command.equals("/exit")) {
+                exit();
+                return true;
+                //if command starts with /chat, it will send the rest of the coomand to the other players as a message
+            }else if (command.startsWith("/chat")) {
+                chatOut(command);
+                return true;
+            }else {
+                return false;
             }
         }
         else{
@@ -462,7 +456,7 @@ public class CliView extends View {
             out.println("/showcommon1: show the I common goal");
             out.println("/showcommon2: show the II common goal");
             out.println("/help: show the commands available");
-            out.println("/chat: send a message to the other players");
+            out.println("/chat to message: send a message to the other players (for public messages,instead of the nickname digit: all)");
             out.println("/exit: exit from the game");
         }
         else{
@@ -493,16 +487,44 @@ public class CliView extends View {
     /***
      * Ask the user to digit the receiver and the message, then it will send the message to the server
      */
-    private void chatOut(){
-        out.println("Digit the receiver, digit 'all' to send to all");
-        String receiver = readSafe();
-        String message;
+    private void chatOut(String command){
 
-        do {
-            out.println("Digit the message");
-            message = readSafe();
-            if (message.length() > 70) out.println("Message too long, max 70 characters");}
-        while (message.length() > 70);
+        String receiver;
+        String message;
+        String[] splitCommand = command.split(" ", 3);
+
+        if (splitCommand.length == 1) {
+            out.println("You must specify a receiver and a message");
+            return;
+        }
+        if (splitCommand.length == 2) {
+            out.println("You must specify a message");
+            return;
+        }
+
+        //receiver = splitCommand[1].split(" ")[0];
+        //message = splitCommand[1].substring(receiver.length() + 1);
+
+        receiver = splitCommand[1];
+        message = splitCommand[2];
+
+        if (receiver.equals("")) {
+            out.println("You must specify a receiver");
+            return;
+        }
+        //if the message is empty or contains just spaces, it will not send it
+        if (message.equals("") || message.matches(" *")) {
+            out.println("You must specify a message");
+            return;
+        }
+
+        if (receiver.length() > 20) {out.println("Nickname too long, max 20 characters");
+            return;
+        }
+        if (message.length() > 60) {out.println("Message too long, max 60 characters");
+            return;
+        }
+
 
         if (Settings.DEBUG) System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
@@ -511,7 +533,7 @@ public class CliView extends View {
         out.println("Available commands:");
         out.println("/help: show the list of available commands");
         if (chatIsRunning) {
-            out.println("/chat: send a message to the other players");
+            out.println("/chat <to> <message>: send a message to other players");
             out.println("/showcommon1: show the I common goal");
             out.println("/showcommon2: show the II common goal");
         }
