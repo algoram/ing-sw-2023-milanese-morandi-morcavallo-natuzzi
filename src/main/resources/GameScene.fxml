@@ -1,8 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.GameSceneController">
-
+   <opaqueInsets>
+      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+   </opaqueInsets>
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/boards/livingroom.png" />
+                     </image>
+                  </ImageView>
+                  <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../assets/scoring tokens/scoring.jpg" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../assets/scoring tokens/scoring.jpg" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Points" />
+                           </children>
+                        </HBox>
+                        <ImageView fitHeight="280.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/personal goal cards/front_EMPTY.jpg" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="200.0" />
+                  <ImageView fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/boards/bookshelf_orth.png" />
+                     </image>
+                  </ImageView>
+                  <Pane prefHeight="200.0" prefWidth="200.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <Label text="Player 2" BorderPane.alignment="CENTER" />
+                           </center>
+                        </BorderPane>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/boards/bookshelf_orth.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <Label text="Player 3" BorderPane.alignment="CENTER" />
+                           </center>
+                        </BorderPane>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/boards/bookshelf_orth.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <Label text="Player 4" BorderPane.alignment="CENTER" />
+                           </center>
+                        </BorderPane>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/boards/bookshelf_orth.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
 </AnchorPane>
