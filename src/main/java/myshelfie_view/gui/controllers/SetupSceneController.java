@@ -2,6 +2,8 @@ package myshelfie_view.gui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -10,7 +12,10 @@ import jdk.jshell.spi.ExecutionControl;
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.Settings;
 
-public class SetupSceneController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class SetupSceneController implements Initializable {
 
     @FXML private TextField username;
     @FXML private TextField hostname;
@@ -18,20 +23,13 @@ public class SetupSceneController {
     @FXML private RadioButton socket;
     @FXML private RadioButton rmi;
 
-    @FXML private RadioButton players2;
-    @FXML private RadioButton players3;
-    @FXML private RadioButton players4;
+    @FXML private ChoiceBox<Integer> players;
 
     @FXML protected void handleStart(ActionEvent event) {
         String user = username.getText();
         String host = hostname.getText();
 
-        // TODO: change from radio buttons to choice box
-        int players = 0;
 
-        if (players2.isSelected()) players = 2;
-        if (players3.isSelected()) players = 3;
-        if (players4.isSelected()) players = 4;
 
         // TODO: check if username and hostname are valid
 
@@ -43,6 +41,13 @@ public class SetupSceneController {
             Settings.getInstance().setConnectionType(ConnectionType.RMI);
         } else {
             System.err.println("SetupSceneController ERROR - Unknown connection type");
+        }
+    }
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        for (int i = 2; i <= 4; i++) {
+            players.getItems().add(i);
         }
     }
 
