@@ -1,4 +1,5 @@
 package myshelfie_model.board;
+import myshelfie_controller.Settings;
 import myshelfie_model.Position;
 import myshelfie_model.Tile;
 
@@ -241,6 +242,7 @@ public abstract class Board implements Serializable {
                 if ( checkAdjacent( chosen.get(0).getRow(), chosen.get(1).getRow(), -1) ) flagAdjacent = 1;
                 else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
             }
+            else throw new IllegalArgumentException("The Tiles are not on a straight line!\n No tile has been moved...");
         }
         else if(chosen.size()==3) {
             //Check flagStraightline on row
@@ -259,17 +261,19 @@ public abstract class Board implements Serializable {
             //Check flagStraightline on column
             else if (chosen.get(0).getColumn() == chosen.get(1).getColumn() && chosen.get(1).getColumn() == chosen.get(2).getColumn()) {
                 flagStraightline = 1; //vertical
-
                 if (checkAdjacent(chosen.get(0).getRow(), chosen.get(1).getRow(), chosen.get(2).getRow())) {
                     flagAdjacent = 1;
-                } else {
-                    throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
-                }
-            } else {
-                throw new IllegalArgumentException("The Tiles do not form a straight line!\n No tile has been moved...");
-            }
+                } else throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
+
+            } else throw new IllegalArgumentException("The Tiles do not form a straight line!\n No tile has been moved...");
+
         }
 
+        if (Settings.DEBUG){
+            System.out.println("Board::remove DEBUG - flagSideFree: " + flagSideFree);
+            System.out.println("Board::remove DEBUG - flagStraightline: " + flagStraightline);
+            System.out.println("Board::remove DEBUG - flagAdjacent: " + flagAdjacent);
+        }
         //replace tile on the board
         if(flagStraightline==1 && flagSideFree==1 && flagAdjacent==1){
                 //first tile

@@ -263,6 +263,7 @@ public class Game {
         tiles = board.remove(chosenTiles);
 
         if (tiles == null){
+            if (Settings.DEBUG) System.out.println("SHOULD OT BE POSSIBLE TO ENTER HERE");
             throw new Exception("Take Tiles Failure: remove returned no Tiles to add in Bookshelf");
         }
         // insert the tiles inside the bookshelf column
