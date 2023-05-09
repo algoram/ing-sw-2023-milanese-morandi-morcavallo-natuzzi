@@ -10,7 +10,6 @@ import myshelfie_network.socket.SocketClient;
 import myshelfie_view.View;
 import myshelfie_view.cli.printers.Printer;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -18,8 +17,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.*;
 
-
-//import org.apache.commons.io.IOUtils;
 
 
 public class CliView extends View {
@@ -55,13 +52,20 @@ public class CliView extends View {
             synchronized (lockInOut){
 
                 try {
-                    long startTime = System.currentTimeMillis();
-                    while (in.available() == 0 && (System.currentTimeMillis() - startTime) < 100) {
-                        //wait for input
+                    while(isMyTurn) {
+                        try {lockInOut.wait();}
+                        catch (Exception e){
+                            //do nothing
+                        }
                     }
+                    long startTime = System.currentTimeMillis();
+                    out.flush();
+                    while (in.available() == 0 && (System.currentTimeMillis() - startTime) < 30) {}//may be useful to sleep some ms here?
+
                     if (in.available() > 0) {
                         input = scanner.nextLine();
                     }
+
                 }catch (IOException e) {
                     e.printStackTrace();
                 }finally {
@@ -76,14 +80,6 @@ public class CliView extends View {
         }
     }
 
-
-    private String readSafef() throws IllegalStateException{
-        String input;
-        do {
-            input = scanner.nextLine();
-        } while (input.equals(""));
-        return input;
-    }
 
     public void start() {
         Printer.getInstance().Logo(); //print MyShelfie
@@ -140,6 +136,7 @@ public class CliView extends View {
         Printer.getInstance().DisplayAllSetup(this.gameState);
 
         ListenerThread = new Thread(()->{ commandListenerSync();});
+        //ListenerThread.setPriority(2);//could set in update dispatcher a 5 priority
         ListenerThread.start(); //start the listener that takes the lock
     }
 
@@ -153,7 +150,7 @@ public class CliView extends View {
         }
         else{
             if(Settings.DEBUG) System.out.println("DEBUG CliView -> chatIn Message received but it's your turn!");
-            messagesQueue.add(new Messages(sender, message, isPublic));
+            messagesQueue.add(new Messages(message, sender, isPublic));
         }
     }
 
@@ -175,12 +172,12 @@ public class CliView extends View {
     @Override
     public void yourTurn() {
 
-        if (Settings.getInstance().DEBUG)System.out.println("CLIVIEW -> YOUTURN lock try");
+        if (Settings.getInstance().DEBUG)System.out.println("CLIVIEW -> YOUTURN  is tryng to take the lock");
 
         synchronized (lockInOut) {
             out.println("It's your turn!");
             askTiles();
-            lockInOut.notifyAll();
+            lockInOut.notify();
         }
 
     }
@@ -199,12 +196,16 @@ public class CliView extends View {
     @Override
     public void takeTiles(List<Position> tiles, int column) {
         out.println("Sending your move to the server...");
-        isMyTurn = false;
         try {
             EventDispatcher.getInstance().takeTiles(tiles, column);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void takeSuccess(){
+
     }
 
     @Override
@@ -214,6 +215,8 @@ public class CliView extends View {
         if (gameState.getPlayerTurn().equals(Settings.getInstance().getUsername())) {isMyTurn = true;}
         Printer.getInstance().DisplayAllSetup(this.gameState);
 
+        if (Settings.DEBUG)System.out.println("sono arrivati" + messagesQueue.size() + " messaggi");
+        isMyTurn = false;
         for (int i = 0; i < messagesQueue.size(); i++) {
             Messages m = messagesQueue.poll();
             chatIn(m.getSender(), m.getMessage(), m.isPublic());
@@ -350,6 +353,8 @@ public class CliView extends View {
     }
 
     private void askTiles(){
+
+        //todo askTiles may be modified to permit the arrive of messages while inserting input
         String input;
         List<Position> modelPositions = new ArrayList<>();
         int columnChoosen = 0;
@@ -493,8 +498,8 @@ public class CliView extends View {
         do {
             out.println("Digit the message");
             message = readSafe();
-            if (message.length() > 40) out.println("Message too long, max 40 characters");}
-        while (message.length() > 40);
+            if (message.length() > 70) out.println("Message too long, max 70 characters");}
+        while (message.length() > 70);
 
         if (Settings.DEBUG) System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);

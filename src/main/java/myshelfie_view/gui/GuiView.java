@@ -135,6 +135,11 @@ public class GuiView extends View {
     }
 
     @Override
+    public void takeSuccess(){
+
+    }
+
+    @Override
     public void turnOf(String playerTurn) {
 
     }

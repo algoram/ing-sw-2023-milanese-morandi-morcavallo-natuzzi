@@ -94,6 +94,8 @@ public class UpdateHandler {
 
         } else if (response instanceof TakeTilesSuccess) {
 
+            //todo this function is created to regulate the listener thread but could carry gamestate
+            View.getInstance().takeSuccess();
             GameState gameState = ((TakeTilesSuccess) response).getGameState();
             View.getInstance().displayNewSetup(gameState);
             playerTurn(gameState.getPlayerTurn());

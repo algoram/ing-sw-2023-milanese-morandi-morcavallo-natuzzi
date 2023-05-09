@@ -32,6 +32,7 @@ public abstract class View {
     public abstract void playerDisconnected(String playerOut);
     public abstract void yourTurn();
     public abstract void takeFailed(String reason);
+    public abstract void takeSuccess();
     public abstract void turnOf(String playerTurn);
     public abstract void takeTiles(List<Position> tiles, int column);
     public abstract void closeCliView();

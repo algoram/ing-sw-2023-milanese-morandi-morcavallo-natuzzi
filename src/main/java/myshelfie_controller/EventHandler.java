@@ -258,7 +258,6 @@ public class EventHandler {
 
                 } catch (Exception e){
                     UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, e.getMessage()));
-                    e.printStackTrace();
                 }
             }
 
