@@ -44,7 +44,6 @@ public class GameManager {
 
     /**
      * This function is calls from event handler when a player connects to a game.
-     *
      * the function checks if there is a player with the same username
      * the server should not allow that 2 different players have the same username
      * it would mean that the player had lost connection
@@ -61,21 +60,22 @@ public class GameManager {
 
         if (playerToGame.containsKey(newPlayer)) { // if the player is already in a game
 
-                //todo this function could return a string so that the client knows why the player was not added
+            //todo this function could return a string so that the client knows why the player was not added
 
-                int numGame = playerToGame.get(newPlayer);
-                int numPlayerInGame = games.get(numGame).findPlayer(newPlayer);
+            int numGame = playerToGame.get(newPlayer);
+            int numPlayerInGame = games.get(numGame).findPlayer(newPlayer);
 
-                int state = games.get(numGame).getPlayerStates().get(numPlayerInGame);
+            Game.StateConnection state = games.get(numGame).getPlayerStates().get(numPlayerInGame);
+
+            if (Settings.DEBUG) System.out.println("GameManager->addPlayer(): Player had state " + state + " in game ");
 
             return switch (state) {
-                case 1 -> //the player is already connected
+                case CONNECTED -> //the player is already connected
                         false;
-                case 0 -> //the player lost connection
+                case LOST_CONNECTION -> //the player lost connection
                         games.get(numGame).addPlayer(newPlayer);
-                case -1 -> //the player disconnected voluntarily
+                case DISCONNECTED -> //the player disconnected voluntarily
                         false;
-                default -> false;
             };
         }
 
@@ -124,8 +124,8 @@ public class GameManager {
 
     public boolean alreadySetLostConnection(String player) {
         Integer game = playerToGame.get(player);
-        games.get(game).alreadySetLostConnection(player);
-        return true;
+        return games.get(game).alreadySetLostConnection(player);
+
     }
 
 

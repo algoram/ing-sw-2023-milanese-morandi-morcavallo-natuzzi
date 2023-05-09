@@ -173,6 +173,9 @@ public class CliView extends View {
 
     @Override
     public void yourTurn() {
+        //todo to check
+        if (Settings.getInstance().DEBUG && isMyTurn)System.out.println("CLIVIEW -> YOUTURN  isMyTurn was already true");
+        isMyTurn = true;
 
         if (Settings.getInstance().DEBUG)System.out.println("CLIVIEW -> YOUTURN  is tryng to take the lock");
 
@@ -372,7 +375,10 @@ public class CliView extends View {
             }
             else if(input.length() > 12){
                 out.println("Too long input for a move");
-            } else if (checkCoordinates(positions,gameState.getPlayers().size())) {
+
+            }
+            //TODO i committed this ! check if was wrong
+            else if (!checkCoordinates(positions,gameState.getPlayers().size())) {
                 out.println("Try another tiles!");
             } else if (!(positions.length == 1 || positions.length == 2 || positions.length == 3) ) {
                 out.println("input not valid");

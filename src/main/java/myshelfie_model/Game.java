@@ -9,6 +9,9 @@ import myshelfie_model.goal.PersonalGoal;
 import myshelfie_model.goal.common_goal.*;
 import myshelfie_model.player.Player;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.*;
 
 public class Game {
@@ -20,7 +23,7 @@ public class Game {
 
     private Board board;
     private ArrayList<Player> players;
-    private ArrayList<Integer> playerStates = new ArrayList<>(); // -1 = disconnected, 0 = lostConnection, 1 = connected
+    private ArrayList<StateConnection> playerStates = new ArrayList<>(); // -1 = disconnected, 0 = lostConnection, 1 = connected
 
     private List<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
@@ -158,8 +161,9 @@ public class Game {
         // check that there's not someone with the same username
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
-                if (playerStates.get(findPlayer(username)) == 0) { //if the player has lost connection
-                    playerStates.add(findPlayer(username), 1);
+
+                if (playerStates.get(findPlayer(username)) == StateConnection.LOST_CONNECTION) { //if the player has lost connection
+                    playerStates.add(findPlayer(username), StateConnection.CONNECTED);
                     return true;
                 }
                 System.out.println("There's already someone with the same username that did not lose connection -> error");
@@ -187,7 +191,7 @@ public class Game {
             }
         }
 
-        playerStates.add(playerIndex, 1); //add state connection
+        playerStates.add(playerIndex, StateConnection.CONNECTED); //add state connection
 
         // remove the goal from the list to avoid giving the same to another player
         possiblePersonalGoals.remove(personalGoalIndex);
@@ -205,7 +209,7 @@ public class Game {
     public boolean removePlayer(String username){
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
-                playerStates.add(findPlayer(username),-1); //remove state connection
+                playerStates.add(findPlayer(username),StateConnection.DISCONNECTED); //remove state connection
                 return true;
             }
         }
@@ -278,6 +282,22 @@ public class Game {
         }
         checkGoals(playerNumber);
 
+        int numConnectedPlayers = 0;
+        for(int i=0; i<players.size(); i++){ //check if there are still connected players
+            if (playerStates.get(i).equals(StateConnection.CONNECTED)) {
+                numConnectedPlayers++;
+            }
+        }
+
+        if(numConnectedPlayers <= 1){ //if there is only one connected player
+
+            if (Settings.DEBUG) System.out.println("GAME -> take TILES: only one connected player");
+
+            //we don't modify turn the player goes on playing alone
+            // until someone else reconnects
+            return true;
+        }
+
 
         // go to the next player
         int i = 0;
@@ -289,7 +309,7 @@ public class Game {
                //todo: manage the case in which all players have lost connection
                throw new Exception("Take Tiles Failure: All players lost connection");
            }
-       }while(!(playerStates.get(turn) == 1)); //check if new turn player is connected
+       }while(!(playerStates.get(turn) == StateConnection.CONNECTED)); //check if new turn player is connected
 
         return true;
     }
@@ -390,16 +410,16 @@ public class Game {
      * @return
      */
     public boolean setLostConnection(String player) {
-        if (playerStates.get(findPlayer(player)) != 1) {
-            System.out.println("Player " + player + " had already lost connection"); //Debug messages
+        if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
+            System.out.println("Player " + player + " had already lost connection or disconnected"); //Debug messages
             return false;
         }
-        playerStates.add(findPlayer(player), 0);
+        playerStates.add(findPlayer(player), StateConnection.LOST_CONNECTION);
         return true;
     }
 
     public boolean alreadySetLostConnection(String player){
-        if (playerStates.get(findPlayer(player))!=1){
+        if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED){
             return true;//the client was already set to disconnected in game
         }
         return false;
@@ -419,7 +439,7 @@ public class Game {
         return -1;
     }
 
-    public ArrayList<Integer> getPlayerStates() {
+    public ArrayList<StateConnection> getPlayerStates() {
         return playerStates;
     }
 
@@ -451,4 +471,13 @@ public class Game {
             System.out.println();
         }
     }
+
+    public enum StateConnection{
+        CONNECTED,
+        DISCONNECTED,
+        LOST_CONNECTION
+    }
 }
+
+
+

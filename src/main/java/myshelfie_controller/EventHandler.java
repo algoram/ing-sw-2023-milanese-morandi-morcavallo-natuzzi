@@ -286,7 +286,7 @@ public class EventHandler {
             }
             for (String player : lastPingTimes.keySet()){
 
-                if (System.currentTimeMillis() - lastPingTimescopy.get(player) > 10000){
+                if (System.currentTimeMillis() - lastPingTimescopy.get(player) > 5000){
 
                     //if the lost of the connection is New
                     if(!GameManager.getInstance().alreadySetLostConnection(player)) {
@@ -295,9 +295,15 @@ public class EventHandler {
 
                         List<String> players = GameManager.getInstance().getPlayers(player);
                         for (String p : players) { //update the other players
-                            if (!p.equals(player))
+                            if (!p.equals(player)) {
+
+                                if (Settings.DEBUG)
+                                    System.out.println("EventHandler-> lastPingChecker(): PlayerDisconnectSuccess for " + p);
+
+
                                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
                                         player, GameManager.getInstance().getTurn(player)));
+                            }
                         }
                     }
                 }
