@@ -1,5 +1,6 @@
 package myshelfie_network.socket;
 import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.Settings;
 import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.event.Event;
 import myshelfie_network.Client;
@@ -44,7 +45,7 @@ public class SocketClient implements Client {
         this.port = port;
 
         socket = new Socket(host, port);
-        System.out.println("SocketClient-> start(): Connected to " + host + ":" + port);
+        if (Settings.DEBUG) System.out.println("SocketClient-> start(): Connected to " + host + ":" + port);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         outputStream.flush();
         try {
