@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="300.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.SetupSceneController">
+   <children>
+      <VBox layoutX="257.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+         <children>
+            <Label text="Username" />
+            <TextField fx:id="username" />
+            <Label text="Server" />
+            <TextField fx:id="hostname" />
+            <Label text="Connection" />
+            <RadioButton fx:id="socket" mnemonicParsing="false" selected="true" text="Socket">
+               <toggleGroup>
+                  <ToggleGroup fx:id="connection" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="rmi" mnemonicParsing="false" text="RMI" toggleGroup="$connection" />
+            <Label text="Players for new game" />
+            <RadioButton fx:id="players2" mnemonicParsing="false" selected="true" text="2">
+               <toggleGroup>
+                  <ToggleGroup fx:id="players" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="players3" mnemonicParsing="false" text="3" toggleGroup="$players" />
+            <RadioButton fx:id="players4" mnemonicParsing="false" text="4" toggleGroup="$players" />
+            <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <HBox>
+               <children>
+                  <Pane HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#handleStart" text="START" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

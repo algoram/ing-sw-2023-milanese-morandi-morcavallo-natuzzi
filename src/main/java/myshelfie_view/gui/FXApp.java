@@ -10,24 +10,44 @@ import java.io.IOException;
 
 public class FXApp extends Application {
 
-    public static void initApplication() {
-        launch();
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final String TITLE = "MyShelfie";
+
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader loader = new FXMLLoader();
         Parent root = null;
         try {
-            root = loader.load(getClass().getResource("/myshelfie_view/gui/example.fxml").openStream());
+            root = FXMLLoader.load(getClass().getClassLoader().getResource("GameScene.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Scene scene = new Scene(root, 720, 1280);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
 
-        primaryStage.setTitle("MyShelfie");
+        showSetup();
+
+        primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    public void showSetup() {
+        Stage stage = new Stage();
+
+        try {
+            Parent setupScene = FXMLLoader.load(getClass().getClassLoader().getResource("SetupScene.fxml"));
+
+            stage.setScene(new Scene(setupScene));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

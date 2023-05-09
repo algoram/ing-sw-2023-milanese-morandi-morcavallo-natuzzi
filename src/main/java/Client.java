@@ -2,6 +2,7 @@ import myshelfie_controller.*;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
 import myshelfie_view.View;
+import myshelfie_view.gui.FXApp;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -21,7 +22,10 @@ public class Client {
         }
 
         switch (viewMode) {
-            case "g" -> Settings.getInstance().setViewType(ViewType.GUI);
+            case "g" -> {
+                Settings.getInstance().setViewType(ViewType.GUI);
+                FXApp.main(args);
+            }
             case "c" -> Settings.getInstance().setViewType(ViewType.CLI);
         }
 

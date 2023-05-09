@@ -35,7 +35,7 @@ public class GuiView extends View {
     private Scanner scanner;
     private GameState gameState; //is the actual state of the game
     private GuiView() {
-        FXApp.initApplication();
+        showLogMessage("Hello World!");
     }
 
     @Override
@@ -119,7 +119,7 @@ public class GuiView extends View {
             Platform.runLater(() -> {
                 Button askTilesButton = new Button("Ask tiles");
                 askTilesButton.setOnAction(e -> {
-                    askTiles();
+                    //askTiles();
                     lockInOut.notifyAll();
                 });
                 // Aggiungere il bottone alla finestra
@@ -178,7 +178,7 @@ public class GuiView extends View {
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
             String nickname = nicknameField.getText();
-            if (nickname.startsWith("/") && commandAvailable(nickname)){
+            if (nickname.startsWith("/")){
                 // handle command input
                 return;
             }
