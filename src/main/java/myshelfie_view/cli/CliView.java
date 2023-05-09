@@ -144,15 +144,14 @@ public class CliView extends View {
 
     @Override
     public void chatIn(String sender, String message, boolean isPublic) {
-        if (!isMyTurn) {
-            if (isPublic)
-                out.println("(public) from " + sender + ": " + message);
-            else
-                out.println("(private) from " + sender + ": " + message);
+        if(Settings.DEBUG) {
+            System.out.println(sender + " " + message + " " + isPublic);
         }
-        else{
-            if(Settings.DEBUG) System.out.println("DEBUG CliView -> chatIn Message received but it's your turn!");
-            messagesQueue.add(new Messages(message, sender, isPublic));
+
+        messagesQueue.add(new Messages(message, sender, isPublic, new Date(), false));
+
+        if (messagesQueue.size() > 15) {
+            messagesQueue.poll();
         }
     }
 
@@ -218,10 +217,7 @@ public class CliView extends View {
 
         if (Settings.DEBUG)System.out.println("sono arrivati " + messagesQueue.size() + " messaggi");
 
-        for (int i = 0; i < messagesQueue.size(); i++) {
-            Messages m = messagesQueue.poll();
-            chatIn(m.getSender(), m.getMessage(), m.isPublic());
-        }
+
     }
 
     @Override
@@ -429,6 +425,9 @@ public class CliView extends View {
             }else if (command.startsWith("/chat")) {
                 chatOut(command);
                 return true;
+            }else if (command.equals("/showchat")) {
+                showChat();
+                return true;
             }else {
                 return false;
             }
@@ -457,6 +456,7 @@ public class CliView extends View {
             out.println("/showcommon2: show the II common goal");
             out.println("/help: show the commands available");
             out.println("/chat to message: send a message to the other players (for public messages,instead of the nickname digit: all)");
+            out.println("/showchat: show the chat");
             out.println("/exit: exit from the game");
         }
         else{
@@ -502,9 +502,6 @@ public class CliView extends View {
             return;
         }
 
-        //receiver = splitCommand[1].split(" ")[0];
-        //message = splitCommand[1].substring(receiver.length() + 1);
-
         receiver = splitCommand[1];
         message = splitCommand[2];
 
@@ -527,13 +524,16 @@ public class CliView extends View {
 
 
         if (Settings.DEBUG) System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
+        messagesQueue.add(new Messages(message,receiver, receiver.equals("all") ? true : false, new Date() ,true));
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
+
     }
     private void help(){
         out.println("Available commands:");
         out.println("/help: show the list of available commands");
         if (chatIsRunning) {
             out.println("/chat <to> <message>: send a message to other players");
+            out.println("/showchat: show the chat");
             out.println("/showcommon1: show the I common goal");
             out.println("/showcommon2: show the II common goal");
         }
@@ -693,6 +693,17 @@ public class CliView extends View {
             modelPositions.add(new Position(boardCLI2Model.get(coordinate.charAt(0)), boardCLI2Model.get(coordinate.charAt(1)) ));
         }
 
+    }
+
+    public void showChat(){
+        if (messagesQueue.isEmpty()||messagesQueue.size()==0){
+            out.println("Yet no messages in the chat");
+        }else{
+            Queue<Messages> messagesQueueCopy = new LinkedList<>(messagesQueue);
+            for (int i = 0; i < messagesQueue.size(); i++) {
+                out.println(messagesQueueCopy.poll().toShow());
+            }
+        }
     }
 
 }
