@@ -174,6 +174,11 @@ public abstract class Board implements Serializable {
         int flagStraightline = 0; //flagStraightline is set to 1, 2 or 3 based on how many aligned tiles are found, the method reaches the correct termination if flagStraightline== chosen.size()
         int flagAdjacent = 0; //flagAdjacent is set to 1 if the tiles are adjacent, 0 otherwise
 
+        System.out.println("Board::remove DEBUG - " + chosen.size());
+        for (Position p : chosen) {
+            System.out.println("Board::remove DEBUG - " + p.toString());
+        }
+
         //Check chosen.size()
         if (chosen == null) throw new NullPointerException("The list of tiles to be removed is null!\n No tile has been moved...");
         if(chosen.size()>3 || chosen.size()<1) throw new IllegalArgumentException("The number of tiles to be removed is not valid!\n No tile has been moved...");
@@ -184,6 +189,9 @@ public abstract class Board implements Serializable {
                 throw new IndexOutOfBoundsException("A Position is out of bounds!\n No tile has been moved...");
             }
         }
+
+        System.out.println("Board::remove DEBUG - 1");
+
         for (Position boardPosition : chosen) {
             if (!CheckBoardPosition(boardPosition)) {
                 throw new IllegalArgumentException("A Position is not a valid!\n No tile has been moved...");
@@ -196,6 +204,8 @@ public abstract class Board implements Serializable {
             }
         }
 
+        System.out.println("Board::remove DEBUG - 2");
+
 
         //Check flagSideFree
         for (Position boardPosition : chosen) {
@@ -204,6 +214,8 @@ public abstract class Board implements Serializable {
                 throw new IllegalArgumentException("A Tile has no free side!\n No tile has been moved...");
             }
         }
+
+        System.out.println("Board::remove DEBUG - 3");
 
         //Check flagStraightline && flagAdjacent
         if(chosen.size()==1){
@@ -245,9 +257,15 @@ public abstract class Board implements Serializable {
 
             }
             //Check flagStraightline on column
-            else if (chosen.get(0).getColumn() == chosen.get(1).getColumn() && chosen.get(1).getColumn() == chosen.get(2).getColumn())
+            else if (chosen.get(0).getColumn() == chosen.get(1).getColumn() && chosen.get(1).getColumn() == chosen.get(2).getColumn()) {
                 flagStraightline = 1; //vertical
-            else {
+
+                if (checkAdjacent(chosen.get(0).getRow(), chosen.get(1).getRow(), chosen.get(2).getRow())) {
+                    flagAdjacent = 1;
+                } else {
+                    throw new IllegalArgumentException("The Tiles are not adjacent!\n No tile has been moved...");
+                }
+            } else {
                 throw new IllegalArgumentException("The Tiles do not form a straight line!\n No tile has been moved...");
             }
         }
