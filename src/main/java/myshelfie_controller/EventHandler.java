@@ -39,7 +39,7 @@ public class EventHandler {
                 }
 
                 if (event != null) {
-                    //todo check new thread creation
+                    //todo change this it could cause problems. otherwise synchronize is required
                     new Thread(() -> handle(event)).start();
                 }
 
@@ -209,7 +209,7 @@ public class EventHandler {
                     UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
 
                     for (String p : players) {
-                        if (!p.equals(player)) {
+                        if (!p.equals(player)&& !GameManager.getInstance().alreadySetLostConnection(p)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
                         }
                     }
@@ -288,13 +288,17 @@ public class EventHandler {
 
                 if (System.currentTimeMillis() - lastPingTimescopy.get(player) > 10000){
 
-                    GameManager.getInstance().lostConnection(player);
+                    //if the lost of the connection is New
+                    if(!GameManager.getInstance().alreadySetLostConnection(player)) {
 
-                    List<String> players = GameManager.getInstance().getPlayers(player);
-                    for (String p : players) {
-                        UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
-                                                                                                    player,
-                                                                                                    GameManager.getInstance().getTurn(player)));
+                        GameManager.getInstance().setLostConnection(player); //set the lost in game
+
+                        List<String> players = GameManager.getInstance().getPlayers(player);
+                        for (String p : players) { //update the other players
+                            if (!p.equals(player))
+                                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
+                                        player, GameManager.getInstance().getTurn(player)));
+                        }
                     }
                 }
             }

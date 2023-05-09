@@ -1,19 +1,18 @@
 package myshelfie_network.socket;
 
 import myshelfie_controller.EventHandler;
+import myshelfie_controller.Settings;
 import myshelfie_controller.event.Event;
 import myshelfie_network.Server;
 import myshelfie_controller.response.Response;
-import myshelfie_network.rmi.RMIClientInterface;
 
+import java.io.EOFException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class SocketServer implements Server {
@@ -55,7 +54,12 @@ public class SocketServer implements Server {
 
                     // TODO: create a flag for the thread to run
                     while (true) {
-                        Object data = inputStream.readObject();
+                        Object data = null;
+                        try{
+                            data = inputStream.readObject();
+                        }catch (EOFException e){
+                            if(Settings.DEBUG)System.out.println("SocketServer -> EOF exception");
+                        }
 
                         if (data instanceof UUID uuid) {
                             System.out.println(uuid);
@@ -70,6 +74,8 @@ public class SocketServer implements Server {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
+                } catch (Exception e){
+                    if(Settings.DEBUG)System.out.println("SocketServer -> start exception generic");
                 }
             }).start();
         }
@@ -121,6 +127,8 @@ public class SocketServer implements Server {
             } catch (IOException e) {
                 e.printStackTrace();
                 tries--;
+            } catch (Exception e){
+                if(Settings.DEBUG) System.out.println("SocketServer -> sendResponse generic exception thrown");
             }
         }
 

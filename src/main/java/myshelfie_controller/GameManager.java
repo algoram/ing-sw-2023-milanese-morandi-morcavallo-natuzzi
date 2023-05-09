@@ -117,9 +117,15 @@ public class GameManager {
      * This function is called from event handler when a player disconnects from a game.
      * @param player the player that disconnected
      */
-    public void lostConnection(String player) {
+    public void setLostConnection(String player) {
         Integer game = playerToGame.get(player);
-        games.get(game).lostConnection(player);
+        games.get(game).setLostConnection(player);
+    }
+
+    public boolean alreadySetLostConnection(String player) {
+        Integer game = playerToGame.get(player);
+        games.get(game).alreadySetLostConnection(player);
+        return true;
     }
 
 

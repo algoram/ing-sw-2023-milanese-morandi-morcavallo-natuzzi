@@ -389,13 +389,20 @@ public class Game {
      * @param player
      * @return
      */
-    public boolean lostConnection(String player) {
+    public boolean setLostConnection(String player) {
         if (playerStates.get(findPlayer(player)) != 1) {
             System.out.println("Player " + player + " had already lost connection"); //Debug messages
             return false;
         }
         playerStates.add(findPlayer(player), 0);
         return true;
+    }
+
+    public boolean alreadySetLostConnection(String player){
+        if (playerStates.get(findPlayer(player))!=1){
+            return true;//the client was already set to disconnected in game
+        }
+        return false;
     }
 
     /**

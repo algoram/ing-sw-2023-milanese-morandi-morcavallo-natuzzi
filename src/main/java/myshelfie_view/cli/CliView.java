@@ -60,7 +60,9 @@ public class CliView extends View {
                     }
                     long startTime = System.currentTimeMillis();
                     out.flush();
-                    while (in.available() == 0 && (System.currentTimeMillis() - startTime) < 30) {}//may be useful to sleep some ms here?
+                    while (in.available() == 0 && (System.currentTimeMillis() - startTime) < 30) {
+                        if(in.available() > 0) break;
+                    }//may be useful to sleep some ms here?
 
                     if (in.available() > 0) {
                         input = scanner.nextLine();
