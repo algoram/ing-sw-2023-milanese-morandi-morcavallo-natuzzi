@@ -1,5 +1,6 @@
 package myshelfie_model;
 
+import myshelfie_controller.Settings;
 import myshelfie_model.board.Board;
 import myshelfie_model.board.Board2players;
 import myshelfie_model.board.Board3players;
@@ -241,33 +242,32 @@ public class Game {
         // check if the game has finished
         int playerNumber = findPlayer(player);
         if (hasFinished()) {
+            if (Settings.DEBUG)System.out.println("GAME -> take HAS FINISHED BUT TAKE TILES IMPOSSIBLE");
             return false;
         }
 
         // check if it's the playerNumber's turn
         if (playerNumber != turn) {
+            if (Settings.DEBUG)System.out.println("GAME -> take TILES !=playerNUm turn IMPOSSIBLE");
             return false;
         }
 
         // check that the player has enough space in the bookshelf
         if (players.get(playerNumber).getBookshelf().emptyCol()[column] < chosenTiles.size()) {
-            return false;
+            throw new Exception("Take Tiles Failed: No Enough space in Bookshelf column");
         }
 
         // take the tiles from the board
         List<Tile> tiles = null;
 
-        try {
-            tiles = board.remove(chosenTiles);
-        } catch (Exception e) {
-            //todo inviare il messaggio di errore anche al client
-            e.printStackTrace();
-        }
+        tiles = board.remove(chosenTiles);
 
+        if (tiles == null){
+            throw new Exception("Take Tiles Failure: remove returned no Tiles to add in Bookshelf");
+        }
         // insert the tiles inside the bookshelf column
-        if(tiles != null){
-            players.get(playerNumber).getBookshelf().fill(column, tiles);
-        } else return false;
+        players.get(playerNumber).getBookshelf().fill(column, tiles);
+
 
         //SET POINTS
         // check if the player has filled the bookshelf first
@@ -286,7 +286,7 @@ public class Game {
            if (i == players.size()) {
                System.out.println("All players have lost connection");
                //todo: manage the case in which all players have lost connection
-               return false;
+               throw new Exception("Take Tiles Failure: All players lost connection");
            }
        }while(!(playerStates.get(turn) == 1)); //check if new turn player is connected
 

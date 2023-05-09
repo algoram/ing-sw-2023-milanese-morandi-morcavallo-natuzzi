@@ -105,13 +105,8 @@ public class GameManager {
     }
 
 
-    public boolean takeTiles(String player, int column, List<Position> tiles) {
-        try {
-            return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public boolean takeTiles(String player, int column, List<Position> tiles) throws Exception {
+        return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
     }
 
     public int getNumberOfPlayers(String player) {
