@@ -594,41 +594,42 @@ public class CliView extends View {
                 out.println("Wrong input: coordinate is null or has a wrong length...");
                 return false;
             }
-            //check if the input is a valid coordinate
-            switch (numPlayers){
-                case 2 -> {
-                    if(possibleCoordinate.get(coordinate) <= 2){
+            if (possibleCoordinate.containsKey(coordinate)) {
+                //check if the input is a valid coordinate
+                switch (numPlayers) {
+                    case 2 -> {
+                        if (possibleCoordinate.get(coordinate) <= 2) {
+                            return false;
+                        } else {
+                            out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                            return true;
+                        }
+                    }
+                    case 3 -> {
+                        if (possibleCoordinate.get(coordinate) <= 3) {
+                            return false;
+                        } else {
+                            out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                            return true;
+                        }
+                    }
+                    case 4 -> {
+                        if (possibleCoordinate.get(coordinate) <= 4) {
+                            return true;
+                        } else {
+                            out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                            return false;
+                        }
+                    }
+                    default -> {
+                        out.println("Wrong input: " + numPlayers + " is not a valid number of players...");
                         return false;
                     }
-                    else{
-                        out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
-                        return true;
-                    }
                 }
-                case 3 -> {
-                    if(possibleCoordinate.get(coordinate) <= 3){
-                        return false;
-                    }
-                    else{
-                        out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
-                        return true;
-                    }
-                }
-                case 4 -> {
-                    if(possibleCoordinate.get(coordinate) <= 4){
-                        return true;
-                    }
-                    else{
-                        out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
-                        return false;
-                    }
-                }
-                default -> {
-                    out.println("Wrong input: " + numPlayers + " is not a valid number of players...");
-                    return false;
-                }
+            } else {
+                out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
+                return false;
             }
-
         }
         return false;
     }
