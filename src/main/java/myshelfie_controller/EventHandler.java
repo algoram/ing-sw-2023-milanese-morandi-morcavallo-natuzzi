@@ -118,12 +118,8 @@ public class EventHandler {
 
             int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
 
-            if (!GameManager.getInstance().addPlayer(player, numberOfPlayers)) {
-
-                //TODO fix messages to distinguish between different errors
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player,"EventHandler-> handle(): Player name not available"));
-
-            } else {
+            try {
+                GameManager.getInstance().addPlayer(player, numberOfPlayers);
 
                 // tell the network stack to memorize the player's client
                 UUID uuid = event.getUuid();
@@ -145,8 +141,7 @@ public class EventHandler {
 
                     GameState gameState = GameManager.getInstance().getGameState(player);
                     String nextPlayer = gameState.getPlayerTurn();
-                    System.out.println("EventHandler-> handle(): The next Player is: : " + nextPlayer);
-
+                    System.out.println("EventHandler-> handle(): Sendind connect update to : " + nextPlayer);
 
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for(String p : players){
@@ -154,6 +149,10 @@ public class EventHandler {
                     }
 
                 }
+
+
+            }catch (Exception e){
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, e.getMessage()));
             }
 
 
@@ -165,7 +164,7 @@ public class EventHandler {
 
             List<String> players = GameManager.getInstance().getPlayers(player);
             for (String p : players) {
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player, GameManager.getInstance().getTurn(player)));
+                if (!p.equals(player)) UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player, GameManager.getInstance().getTurn(player)));
             }
 
 
@@ -298,7 +297,7 @@ public class EventHandler {
                             if (!p.equals(player)) {
 
                                 if (Settings.DEBUG)
-                                    System.out.println("EventHandler-> lastPingChecker(): PlayerDisconnectSuccess for " + p);
+                                    System.out.println("EventHandler->lastPingChecker(): PlayerDisconnectSuccess of player " + player + " for "+ p);
 
 
                                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,

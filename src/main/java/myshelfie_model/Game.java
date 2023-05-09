@@ -151,11 +151,11 @@ public class Game {
      * @param username the username that the player will be identified with
      * @return whether the player has been added or not
      */
-    public boolean addPlayer(String username) {
+    public boolean addPlayer(String username) throws Exception{
         // should not be possible to enter this if
         if (players.size() == numberOfPlayers) {
-            System.out.println("The game is full error in calling addPlayer()");
-            return false;
+            if (Settings.DEBUG)System.out.println("Game -> AddPlayer: The game is full error in calling addPlayer()");
+            throw new Exception("The game is full, should not be possible to enter this if");
         }
 
         // check that there's not someone with the same username
@@ -167,7 +167,7 @@ public class Game {
                     return true;
                 }
                 System.out.println("There's already someone with the same username that did not lose connection -> error");
-                return false; //should not be possible to enter this if
+                throw new Exception("There's already someone with the same username that did not lose connection, should not be possible to enter this if");
             }
         }
 

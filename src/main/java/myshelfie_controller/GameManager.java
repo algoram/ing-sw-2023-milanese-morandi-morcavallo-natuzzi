@@ -56,11 +56,11 @@ public class GameManager {
      * @param players   the number of players in the game
      * @return true if the player was added, false if the addPlayer failed
      */
-    public Boolean addPlayer(String newPlayer, int players) {
+    public Boolean addPlayer(String newPlayer, int players) throws Exception {
 
         if (playerToGame.containsKey(newPlayer)) { // if the player is already in a game
 
-            //todo this function could return a string so that the client knows why the player was not added
+
 
             int numGame = playerToGame.get(newPlayer);
             int numPlayerInGame = games.get(numGame).findPlayer(newPlayer);
@@ -69,14 +69,13 @@ public class GameManager {
 
             if (Settings.DEBUG) System.out.println("GameManager->addPlayer(): Player had state " + state + " in game ");
 
-            return switch (state) {
-                case CONNECTED -> //the player is already connected
-                        false;
-                case LOST_CONNECTION -> //the player lost connection
-                        games.get(numGame).addPlayer(newPlayer);
-                case DISCONNECTED -> //the player disconnected voluntarily
-                        false;
-            };
+            if(state.equals(Game.StateConnection.DISCONNECTED)) {
+                throw new Exception("Player already disconnected voluntarily");
+            }else if(state.equals(Game.StateConnection.CONNECTED)) {
+                throw new Exception("Player already connected in a game");
+            }else{
+                return games.get(numGame).addPlayer(newPlayer);
+            }
         }
 
 

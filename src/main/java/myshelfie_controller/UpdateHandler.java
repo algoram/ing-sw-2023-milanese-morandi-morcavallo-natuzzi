@@ -93,6 +93,7 @@ public class UpdateHandler {
             playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesSuccess) {
+            if (Settings.DEBUG) System.out.println("UpdateHandler-> handle(): TakeTilesSuccess received");
 
             //todo this function is created to regulate the listener thread but could carry gamestate
             View.getInstance().takeSuccess();

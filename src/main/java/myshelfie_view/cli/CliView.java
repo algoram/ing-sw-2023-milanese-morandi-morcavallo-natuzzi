@@ -173,11 +173,6 @@ public class CliView extends View {
 
     @Override
     public void yourTurn() {
-        //todo to check
-        if (Settings.getInstance().DEBUG && isMyTurn)System.out.println("CLIVIEW -> YOUTURN  isMyTurn was already true");
-        isMyTurn = true;
-
-        if (Settings.getInstance().DEBUG)System.out.println("CLIVIEW -> YOUTURN  is tryng to take the lock");
 
         synchronized (lockInOut) {
             out.println("It's your turn!");
@@ -195,6 +190,7 @@ public class CliView extends View {
 
     @Override
     public void turnOf(String playerTurn) {
+        if(Settings.DEBUG) System.out.println("DEBUG CliView -> isMyTurn is:" + isMyTurn);
         out.println("It's " + playerTurn + "'s turn!");
     }
 
@@ -210,7 +206,7 @@ public class CliView extends View {
 
     @Override
     public void takeSuccess(){
-
+        isMyTurn = false;
     }
 
     @Override
@@ -220,8 +216,8 @@ public class CliView extends View {
         if (gameState.getPlayerTurn().equals(Settings.getInstance().getUsername())) {isMyTurn = true;}
         Printer.getInstance().DisplayAllSetup(this.gameState);
 
-        if (Settings.DEBUG)System.out.println("sono arrivati" + messagesQueue.size() + " messaggi");
-        isMyTurn = false;
+        if (Settings.DEBUG)System.out.println("sono arrivati " + messagesQueue.size() + " messaggi");
+
         for (int i = 0; i < messagesQueue.size(); i++) {
             Messages m = messagesQueue.poll();
             chatIn(m.getSender(), m.getMessage(), m.isPublic());
@@ -377,8 +373,7 @@ public class CliView extends View {
                 out.println("Too long input for a move");
 
             }
-            //TODO i committed this ! check if was wrong
-            else if (!checkCoordinates(positions,gameState.getPlayers().size())) {
+            else if (checkCoordinates(positions,gameState.getPlayers().size())) {
                 out.println("Try another tiles!");
             } else if (!(positions.length == 1 || positions.length == 2 || positions.length == 3) ) {
                 out.println("input not valid");
@@ -600,7 +595,7 @@ public class CliView extends View {
             //check  if the input has a valid length for a coordinate
             if(coordinate == null || coordinate.length() != 2){
                 out.println("Wrong input: coordinate is null or has a wrong length...");
-                return false;
+                return true;
             }
             if (possibleCoordinate.containsKey(coordinate)) {
                 //check if the input is a valid coordinate
