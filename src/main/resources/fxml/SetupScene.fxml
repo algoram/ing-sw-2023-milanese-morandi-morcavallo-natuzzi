@@ -6,35 +6,52 @@
 
 <AnchorPane prefWidth="300.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.SetupSceneController">
    <children>
-      <VBox layoutX="257.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox layoutX="257.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
          <padding>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
          </padding>
          <children>
             <Label text="Username" />
-            <TextField fx:id="username" />
+            <TextField fx:id="username" promptText="Insert username">
+               <VBox.margin>
+                  <Insets bottom="16.0" top="8.0" />
+               </VBox.margin></TextField>
             <Label text="Server" />
-            <TextField fx:id="hostname" />
+            <TextField fx:id="hostname" promptText="Insert server address">
+               <VBox.margin>
+                  <Insets bottom="16.0" top="8.0" />
+               </VBox.margin></TextField>
             <Label text="Connection" />
-            <RadioButton fx:id="socket" mnemonicParsing="false" selected="true" text="Socket">
-               <toggleGroup>
-                  <ToggleGroup fx:id="connection" />
-               </toggleGroup>
-            </RadioButton>
-            <RadioButton fx:id="rmi" mnemonicParsing="false" text="RMI" toggleGroup="$connection" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <RadioButton fx:id="socket" mnemonicParsing="false" selected="true" text="Socket">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="connection" />
+                     </toggleGroup>
+                     <HBox.margin>
+                        <Insets right="16.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="rmi" mnemonicParsing="false" text="RMI" toggleGroup="$connection" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="16.0" top="8.0" />
+               </VBox.margin>
+            </HBox>
             <Label text="Players for new game" />
-            <RadioButton fx:id="players2" mnemonicParsing="false" selected="true" text="2">
-               <toggleGroup>
-                  <ToggleGroup fx:id="players" />
-               </toggleGroup>
-            </RadioButton>
-            <RadioButton fx:id="players3" mnemonicParsing="false" text="3" toggleGroup="$players" />
-            <RadioButton fx:id="players4" mnemonicParsing="false" text="4" toggleGroup="$players" />
+            <ChoiceBox fx:id="players" prefWidth="150.0">
+               <VBox.margin>
+                  <Insets bottom="16.0" top="8.0" />
+               </VBox.margin>
+            </ChoiceBox>
             <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <HBox>
                <children>
                   <Pane HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#handleStart" text="START" />
+                  <Button mnemonicParsing="false" onAction="#handleStart" text="START">
+                     <HBox.margin>
+                        <Insets bottom="8.0" />
+                     </HBox.margin></Button>
                </children>
             </HBox>
          </children>

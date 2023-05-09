@@ -27,15 +27,17 @@ public class FXApp extends Application {
             e.printStackTrace();
         }
 
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        Scene scene = new Scene(root);
 
-        //showSetup();
+        showSetup();
 
         //GuiView.getInstance().askConnection();
 
         //GuiView.getInstance().askHostname();
 
         //GuiView.getInstance().askLogin();
+
+        //GuiView.getInstance().askLogin_fullwindows();
 
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
