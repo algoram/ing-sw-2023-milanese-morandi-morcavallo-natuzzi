@@ -224,7 +224,7 @@ public class GuiView extends View {
     private boolean notAvailableUsername(String nickname) {
         return nickname.isEmpty() || nickname.trim().isEmpty() || nickname.trim().equalsIgnoreCase("ALL") || nickname.startsWith("/");
     }
-    private void askHostname() {
+    public void askHostname() {
         Platform.runLater(() -> {
             TextInputDialog dialog = new TextInputDialog("localhost");
             dialog.setTitle("Connect to server");
@@ -258,7 +258,7 @@ public class GuiView extends View {
         });
     }
 
-    private void askConnection() {
+    public void askConnection() {
         // Creazione della checkbox per selezionare la connessione
         CheckBox socketCheckBox = new CheckBox("Socket");
         CheckBox rmiCheckBox = new CheckBox("RMI");
@@ -298,6 +298,93 @@ public class GuiView extends View {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.showAndWait();
+    }
+    public void askLogin_fullwindows() {
+        Stage loginStage = new Stage();
+        loginStage.setTitle("Login");
+
+        // Create components
+        TextField nicknameField = new TextField();
+        nicknameField.setPromptText("Enter your nickname");
+
+        RadioButton twoPlayersRadioButton = new RadioButton("2 players");
+        RadioButton threePlayersRadioButton = new RadioButton("3 players");
+        RadioButton fourPlayersRadioButton = new RadioButton("4 players");
+        ToggleGroup playerToggleGroup = new ToggleGroup();
+        playerToggleGroup.getToggles().addAll(twoPlayersRadioButton, threePlayersRadioButton, fourPlayersRadioButton);
+
+        RadioButton socketCheckBox = new RadioButton("Socket");
+        RadioButton rmiCheckBox = new RadioButton("RMI");
+        ToggleGroup connectionToggleGroup = new ToggleGroup();
+        connectionToggleGroup.getToggles().addAll(socketCheckBox, rmiCheckBox);
+
+        TextField hostnameField = new TextField();
+        hostnameField.setPromptText("Enter server hostname");
+
+        Button submitButton = new Button("Submit");
+        submitButton.setOnAction(e -> {
+            String nickname = nicknameField.getText();
+            if (nickname.startsWith("/")){
+                // handle command input
+                return;
+            }
+            if (!nickname.matches("[a-zA-Z0-9 ]+")) {
+                // handle invalid nickname input
+                return;
+            }
+            if (notAvailableUsername(nickname)) {
+                // handle not available username
+                return;
+            }
+            Settings.getInstance().setUsername(nickname);
+
+            RadioButton selectedPlayerRadioButton = (RadioButton) playerToggleGroup.getSelectedToggle();
+            if (selectedPlayerRadioButton == null) {
+                // handle no player selection
+                return;
+            }
+            int numPlayers = Integer.parseInt(selectedPlayerRadioButton.getText().split(" ")[0]);
+            EventDispatcher.getInstance().connect(numPlayers);
+
+            RadioButton selectedConnectionCheckBox = (RadioButton) connectionToggleGroup.getSelectedToggle();
+            if (selectedConnectionCheckBox == null) {
+                // handle no connection selection
+                return;
+            }
+            ConnectionType connectionType = (selectedConnectionCheckBox == socketCheckBox) ? ConnectionType.SOCKET : ConnectionType.RMI;
+            Settings.getInstance().setConnectionType(connectionType);
+
+            String serverAddress = hostnameField.getText();
+            if (serverAddress.isEmpty()) {
+                // handle empty hostname
+                return;
+            }
+            if (connectionType == ConnectionType.RMI) {
+                try {
+                    RMIClient.getInstance().connect(serverAddress);
+                } catch (RemoteException | NotBoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else if (connectionType == ConnectionType.SOCKET) {
+                try {
+                    SocketClient.getInstance().start(serverAddress, 19736);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+            // continue with game logic
+            loginStage.close();
+        });
+
+        VBox inputContainer = new VBox();
+        inputContainer.setAlignment(Pos.CENTER);
+        inputContainer.setSpacing(10);
+        inputContainer.getChildren().addAll(nicknameField, twoPlayersRadioButton, threePlayersRadioButton, fourPlayersRadioButton, socketCheckBox, rmiCheckBox, hostnameField, submitButton);
+
+        Scene scene = new Scene(inputContainer, 400, 400);
+        loginStage.setScene(scene);
+        loginStage.showAndWait();
     }
 
 

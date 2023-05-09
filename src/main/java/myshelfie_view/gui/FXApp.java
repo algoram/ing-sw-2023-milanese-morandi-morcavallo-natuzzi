@@ -22,14 +22,20 @@ public class FXApp extends Application {
     public void start(Stage primaryStage) {
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getClassLoader().getResource("GameScene.fxml"));
+            root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         Scene scene = new Scene(root, WIDTH, HEIGHT);
 
-        showSetup();
+        //showSetup();
+
+        //GuiView.getInstance().askConnection();
+
+        //GuiView.getInstance().askHostname();
+
+        //GuiView.getInstance().askLogin();
 
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
@@ -41,7 +47,7 @@ public class FXApp extends Application {
         Stage stage = new Stage();
 
         try {
-            Parent setupScene = FXMLLoader.load(getClass().getClassLoader().getResource("SetupScene.fxml"));
+            Parent setupScene = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/SetupScene.fxml"));
 
             stage.setScene(new Scene(setupScene));
             stage.setResizable(false);
