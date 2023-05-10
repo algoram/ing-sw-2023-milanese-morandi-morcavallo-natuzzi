@@ -78,49 +78,54 @@ public class EventHandler {
                 String to = ((MessageSend) event).getRecipient();
 
                 Settings.getInstance();
-                if(Settings.DEBUG) {System.out.println("EventHandler-> handle(): MessageSend");}
+                if (Settings.DEBUG) {
+                    System.out.println("EventHandler-> handle(): MessageSend");
+                }
 
                 if (to != null) {
-                    if(!GameManager.getInstance().getPlayers(player).contains(to)) {
+
+                    //if to is not null check if the recipient is in the game
+                    if (!GameManager.getInstance().getPlayers(player).contains(to)) {
+                        //Notify the failure of the message send
                         StringBuilder errorMessage = new StringBuilder("there is no player with the name " + to + "\nThe available players are: ");
-                        for(String p : GameManager.getInstance().getPlayers(player)) {
+                        for (String p : GameManager.getInstance().getPlayers(player)) {
                             if (!p.equals(event.getSource())) errorMessage.append(p).append(" ");
                         }
                         UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, errorMessage.toString()));
                         return;
                     }
-                }
 
-                //Notify the success of the message send
-                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player));
-
-                if (to != null) {
-                    //if to is not null send the message to the recipient
-                    if (to.equals(player)){
+                    if (to.equals(player)) {
                         StringBuilder errormessage = new StringBuilder("Seems stupid to send a message to yourself... \n");
 
-                        if(GameManager.getInstance().getPlayers(player).size()==2)errormessage.append("The only other player is: ");
+                        if (GameManager.getInstance().getPlayers(player).size() == 2)
+                            errormessage.append("The only other player is: ");
                         else errormessage.append("The other players are: ");
 
-                        for(String p : GameManager.getInstance().getPlayers(player)) {
+                        for (String p : GameManager.getInstance().getPlayers(player)) {
                             if (!p.equals(event.getSource())) errormessage.append(p).append(" ");
                         }
                         UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, errormessage.toString()));
+
                     }
+                    if(GameManager.getInstance().alreadySetLostConnection(to)){
+                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player,"The player " + player + " has lost the connection"));
+                    }
+
                     else UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(to, message, player, false));
+
                 } else {
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {
                         if (!p.equals(player)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(p, message, player, true));
+
                         }
                     }
                 }
-            } else {
-                System.out.println("EventHandler-> handle(): MessageSendFailure");
-                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, "EventHandler-> handle(): Message is null"));
             }
-
+                //Notify the success of the message send
+                UpdateDispatcher.getInstance().dispatchResponse(new MessageSendSuccess(player));
 
         } else if (event instanceof PlayerConnect) {
             System.out.println("EventHandler -> handle():PlayerConnect");
@@ -180,7 +185,7 @@ public class EventHandler {
         } else if (event instanceof Ping){
             synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
-                    //System.out.println("PingFailure player not found: " + player);
+                    System.out.println("PingFailure player not found: " + player);
                 }
                 lastPingTimes.replace(player, System.currentTimeMillis());
             }
