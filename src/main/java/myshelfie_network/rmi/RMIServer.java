@@ -3,6 +3,7 @@ package myshelfie_network.rmi;
 import myshelfie_controller.EventHandler;
 import myshelfie_controller.event.Event;
 import myshelfie_controller.event.PlayerConnect;
+import myshelfie_controller.response.PlayerConnectFailure;
 import myshelfie_network.Server;
 import myshelfie_controller.response.Response;
 
@@ -61,9 +62,17 @@ public class RMIServer implements Server, RMIServerInterface {
 
     @Override
     public void sendResponse(Response response) {
-        String player = response.getTarget();
+        RMIClientInterface client = null;
 
-        RMIClientInterface client = clients.get(player);
+        if (response instanceof PlayerConnectFailure failure) {
+            UUID uuid = failure.getTargetUUID();
+
+            client = tempClients.get(uuid);
+        } else {
+            String player = response.getTarget();
+
+            client = clients.get(player);
+        }
 
         int tries = 3;
 

@@ -1,9 +1,13 @@
 package myshelfie_controller;
 
 import myshelfie_controller.response.PingAck;
+import myshelfie_controller.response.PlayerConnectFailure;
 import myshelfie_network.rmi.RMIServer;
 import myshelfie_network.socket.SocketServer;
 import myshelfie_controller.response.Response;
+
+import java.net.SocketException;
+import java.util.UUID;
 
 public class UpdateDispatcher {
 
@@ -26,6 +30,20 @@ public class UpdateDispatcher {
         if (Settings.getInstance().DEBUG && !(response instanceof PingAck)) {
             System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response " + response.getClass().getSimpleName());
             System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response to " + player);
+        }
+
+        if (response instanceof PlayerConnectFailure failure) {
+            UUID uuid = failure.getTargetUUID();
+
+            if (RMIServer.getInstance().hasTempClient(uuid)) {
+                RMIServer.getInstance().sendResponse(failure);
+            } else if (SocketServer.getInstance().hasTempClient(uuid)) {
+                SocketServer.getInstance().sendResponse(failure);
+            } else {
+                System.out.println("UpdateDispatcher -> dispatchResponse(): Did not send");
+            }
+
+            return;
         }
 
 
