@@ -166,7 +166,7 @@ public class EventHandler {
 
 
             }catch (Exception e){
-                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, e.getMessage()));
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, e.getMessage(), event.getUuid()));
             }
 
 

@@ -3,6 +3,7 @@ package myshelfie_network.socket;
 import myshelfie_controller.EventHandler;
 import myshelfie_controller.Settings;
 import myshelfie_controller.event.Event;
+import myshelfie_controller.response.PlayerConnectFailure;
 import myshelfie_network.Server;
 import myshelfie_controller.response.Response;
 
@@ -113,9 +114,17 @@ public class SocketServer implements Server {
 
     @Override
     public void sendResponse(Response response) {
-        String player = response.getTarget();
+        ClientStruct client = null;
 
-        ClientStruct client = clients.get(player);
+        if (response instanceof PlayerConnectFailure failure) {
+            UUID uuid = failure.getTargetUUID();
+
+            client = tempClients.get(uuid);
+        } else {
+            String player = response.getTarget();
+
+            client = clients.get(player);
+        }
 
         int tries = 3;
 
