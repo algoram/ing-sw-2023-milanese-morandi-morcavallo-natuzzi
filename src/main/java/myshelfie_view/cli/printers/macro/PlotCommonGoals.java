@@ -2,7 +2,6 @@ package myshelfie_view.cli.printers.macro;
 
 import myshelfie_model.goal.common_goal.*;
 
-import static myshelfie_view.cli.printers.Printer.String2CharMatrix;
 
 
 public class PlotCommonGoals{
@@ -333,6 +332,15 @@ public class PlotCommonGoals{
                 commongoal = null;
                 break;
         }
+    }
+
+    private static char[][] String2CharMatrix(String multilineString) {
+        String[] rows = multilineString.split("\n");
+        char[][] charMatrix = new char[rows.length][];
+        for (int i = 0; i < rows.length; i++) {
+            charMatrix[i] = rows[i].toCharArray();
+        }
+        return charMatrix;
     }
 
 
