@@ -640,10 +640,10 @@ public class CliView extends View {
                     }
                     case 4 -> {
                         if (possibleCoordinate.get(coordinate) <= 4) {
-                            return true;
+                            return false;
                         } else {
                             out.println("Wrong input: " + coordinate + " is not a valid coordinate...");
-                            return false;
+                            return true;
                         }
                     }
                     default -> {
