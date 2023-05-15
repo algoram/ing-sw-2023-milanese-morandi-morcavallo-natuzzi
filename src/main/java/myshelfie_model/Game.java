@@ -273,6 +273,10 @@ public class Game {
         // insert the tiles inside the bookshelf column
         players.get(playerNumber).getBookshelf().fill(column, tiles);
 
+        if(board.refillNeeded()){
+            //let's take the tiles removing them from the bag
+            board.refill(bag);
+        }
 
         //SET POINTS
         // check if the player has filled the bookshelf first
