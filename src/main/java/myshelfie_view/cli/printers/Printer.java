@@ -2,7 +2,6 @@ package myshelfie_view.cli.printers;
 
 import myshelfie_controller.Settings;
 import myshelfie_model.GameState;
-import myshelfie_model.Tile;
 import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Player;
 import myshelfie_view.cli.printers.macro.PlotBoardgame;
@@ -11,14 +10,107 @@ import myshelfie_view.cli.printers.macro.PlotCommonGoals;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import static myshelfie_view.cli.printers.Color.colorChar;
 
 
 public class Printer {
     private final PrintStream out = System.out;
 
-    private char[][] allSetup = new char[40][100];
+
+
+
+
+
+
+
+
+
+    /***
+     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░X                                       Y░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░X┌────────┐  ┌────────┐Y░░░░░XYour PointsY░░░░░░░░░░
+     * ░░                                         ░░░░░ │ ┬   A  │  │ ┬┬  B  │ ░░░░░Z    C      W░░░░░░░░░░
+     * ░░                                         ░░░░░ │ ┴  ¯¯¯ │  │ ┴┴ ¯¯¯ │ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░Z└────────┘  └────────┘W░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░ X                   Y ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░               (Board)                   ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░   (Personal)          ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░                                         ░░░░░                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░Z                                       W░░░░░ Z                   W ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ Personal Goal  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░U   Your Bookshelf:   V░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * ░░░░   1 ░ 2 ░ 3 ░ 4 ░ 5   ░░░░░ player_1          ░░░ player_2          ░░░ player_3          ░░░░░
+     * ░░░░ X                   Y ░░░ X                   Y X                   Y X                   Y ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░     (P1)                 (P2)                    (P3)             ░░░
+     * ░░░░     (Bookshelf)       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░                       ░░░                                                                   ░░░
+     * ░░░░ Z                   W ░░░ Z                   W Z                   W Z                   W ░░░
+     * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     * */
+    private String[][] allSetup = {
+            {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//0
+            {"░░","X                                       Y","░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//1
+            {"░░","                                         ","░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//2
+            {"░░","                                         ","░░░░░"," ┌────────┐  ┌────────┐ ","░░░░░"," Your POINTS ","░░░░░░░░░░"},//3
+            {"░░","                                         ","░░░░░"," │ ┬  "," 1 "," │  │ ┬┬ "," 2 "," │ ","░░░░░","   ","  P3  ","     ","░░░░░░░░░░"},//4
+            {"░░","                                         ","░░░░░"," │ ┴  ¯¯¯ │  │ ┴┴ ¯¯¯ │ ","░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//5
+            {"░░","                                         ","░░░░░"," └────────┘  └────────┘ ","░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//6
+            {"░░","                                         ","░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//7
+            {"░░","                                         ","░░░░░ ","X                   Y"," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//8
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//9
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//10
+            {"░░","               (Board)                   ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//11
+            {"░░","                                         ","░░░░░ ","  (Personal)         "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//12
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//13
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//14
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//15
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//16
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//17
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//18
+            {"░░","                                         ","░░░░░ ","                     "," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//19
+            {"░░","Z                                       W","░░░░░ ","Z                   W"," ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//20
+            {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"," Personal Goal ","░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//21
+            {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//22
+            {"░░░░","    Your Bookshelf:    ","░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//23
+            {"░░░░","   1 | 2 | 3 | 4 | 5   ","░░░░░","░░░░░░░░░░░░░░░░░░"," ░░░","░░░░░░░░░░░░░░░░░░","░░░░","░░░░░░░░░░░░░░░░░░","░░░░░░░░"},//24
+            {"░░░░ ","X                   Y"," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//25
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//26
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//27
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//28
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//29
+            {"░░░░ ","    (Bookshelf)      "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//30
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//31
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//32
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//33
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//34
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//35
+            {"░░░░ ","                     "," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//36
+            {"░░░░ ","Z                   W"," ░░░ ","░░░░░░░░░░░░░░░░░░░░░"," ","░░░░░░░░░░░░░░░░░░░░░","░","░░░░░░░░░░░░░░░░░░░░░","░░░░░"},//37
+            {"░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░"},//38
+    };
 
     private static Printer instance = null;
 
@@ -108,9 +200,13 @@ public class Printer {
      * */
     public void DisplayAllSetup(GameState gameState) {
        BuildSetup(gameState); //build the matrix setup from gameState
-       for (int i = 0; i < allSetup.length; i++) {
-           out.println(allSetup[i]);
-       }
+
+        for (int i = 0; i < allSetup.length; i++) {
+            for (int j = 0; j < allSetup[i].length; j++) {
+                out.print(allSetup[i][j]);
+            }
+            System.out.println();
+        }
     }
     //todo: add the commongoal to allSetup
     public void DisplayCommonGoal(CommonGoal modelCommonGoal){
@@ -126,117 +222,110 @@ public class Printer {
         Player thisPlayer = getThisPlayer(gameState.getPlayers());
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
 
-        char[][] background = new char[40][100];
-        PlotBoardgame boardgame = new PlotBoardgame();
-        PlotBookshelf personalGoal = new PlotBookshelf();
-        PlotBookshelf bookshelf = new PlotBookshelf();
-        List<PlotBookshelf> otherBookshelf = new ArrayList<>();
-        for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new PlotBookshelf());
-        }
 
-        //Background
-        buildBackground(background, otherPlayers);
-        setOnSetup(background, 0, 0);
+        String[][] background = allSetup;
+        PlotBoardgame boardgame = new PlotBoardgame(gameState.getBoard(), gameState.getPlayers().size());
+        PlotBookshelf personalGoal = new PlotBookshelf(thisPlayer.getPersonalGoal().map_PGoalToBookshelf());
+        PlotBookshelf bookshelf = new PlotBookshelf(thisPlayer.getBookshelf());
+        List<PlotBookshelf> otherBookshelf = new ArrayList<>();
+
+
+        //Other player username
+        buildOtherUsername(allSetup, otherPlayers);
 
         //Board
-        boardgame.buildBoard(gameState.getBoard(), gameState.getPlayers().size());
-        setOnSetup(boardgame.getBoardCharMatrix(), 1, 2);
+
+        setOnSetup(boardgame.getBoardStringMatrix(), 1, 1);
 
         //CommonGoal
-        updateCommongoalStacks(gameState.getTopCommonGoal()[0].getPoints(),
-                                gameState.getTopCommonGoal()[1].getPoints());
+        updateCommongoalStacks(gameState.getTopCommonGoal()[0].getPoints(), gameState.getTopCommonGoal()[1].getPoints());
 
         //Your Points
         updateYourPoints(getPoints(thisPlayer,gameState));
-
         //PersonalGoal
-        personalGoal.buildBookshelf(thisPlayer.getPersonalGoal().map_PGoalToBookshelf());
-        setOnSetup(personalGoal.getBookshelfCharMatrix(), 8, 49);
+        setOnSetup(personalGoal.getBookshelfStringMatrix(), 8, 3);
         //your Bookshelf
-        bookshelf.buildBookshelf(thisPlayer.getBookshelf());
-        setOnSetup(bookshelf.getBookshelfCharMatrix(),25,5);
+        setOnSetup(bookshelf.getBookshelfStringMatrix(),25,1);
 
         //otherBookshelf
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherBookshelf.add(new PlotBookshelf());
-        }
-        for (int i=0; i< otherPlayers.size(); i++){
-            otherBookshelf.get(i).buildBookshelf(otherPlayers.get(i).getBookshelf());
+            otherBookshelf.add(new PlotBookshelf(otherPlayers.get(i).getBookshelf()));
             switch (i){
-                case 0 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 31);
-                case 1 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 53);
-                case 2 -> setOnSetup(otherBookshelf.get(i).getBookshelfCharMatrix(), 25, 75);
+                case 0 -> setOnSetup(otherBookshelf.get(i).getBookshelfStringMatrix(), 25, 3);
+                case 1 -> setOnSetup(otherBookshelf.get(i).getBookshelfStringMatrix(), 25, 5);
+                case 2 -> setOnSetup(otherBookshelf.get(i).getBookshelfStringMatrix(), 25, 7);
             }
         }
+        //build the background
+        buildBackground(background, gameState.getPlayers().size());
+
     }
+    //todo add function to allineate the last column of background
+    private void buildBackground(String[][] background,int numPlayers) {
+        //build the background
+        switch (numPlayers){
+            case 3->{
+                for (int i = 25; i <38 ; i++) {
+                    allSetup[i][4] = " ";
+                }
+            }
+            case 4->{
+                for (int i = 25; i <38 ; i++) {
+                    allSetup[i][4] = " ";
+                    allSetup[i][6] = " ";
+                }
+            }
+        }
+        for (int i=0; i<allSetup.length; i++){
+            for (int j=0; j<allSetup[i].length; j++){
+                allSetup[i][j] = colorChar(allSetup[i][j], List.of('░'), Color.PARQUET);
+            }
+        }
+
+    }
+    public static String changeBack(String string, char special,char nuovo, Color color){
+
+        StringBuilder output = new StringBuilder(); // stringa di output
+
+        // ciclo sulla stringa di input
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+
+            if (special==(c)) {
+                // se il carattere è quello da colorare, aggiungi il codice colore
+                output.append(color.getCode()); // aggiungi il codice colore
+                while (i < string.length()-1 && special==string.charAt(i+1)){
+                    output.append(nuovo); // aggiungi il carattere
+                    i++;
+                };
+                output.append(string.charAt(nuovo)).append(Color.RESET.getCode()) ;
+            } else {
+                // altrimenti aggiungi il carattere normale
+                output.append(c);
+            }
+        }
+        return output.toString();
+
+    };
     /**
-     * Build the background of the game
+     * Build the string for the other players username
      * @param background the matrix of the background
      * @param otherPlayers the list of the other players
      */
-    private void buildBackground(char[][] background , List<Player> otherPlayers) {
-        List<char[]> otherPlayersUsername = new ArrayList<>();
-        //fill background with ░
-        for (int i = 0; i < background.length; i++) {
-            for (int j = 0; j < background[i].length; j++) {
-                background[i][j] = '░';
-            }
-        }
-        //fill commonGoal
-        String commonGoalString = """
-                 ┌────────┐  ┌────────┐\s
-                 │ ┬   A  │  │ ┬┬  B  │\s 
-                 │ ┴  ¯¯¯ │  │ ┴┴ ¯¯¯ │\s
-                 └────────┘  └────────┘\s
-                """;
-        char[][] commonGoalChar = new char[4][24];
-        commonGoalChar = String2CharMatrix(commonGoalString);
-        for (int i = 0; i < commonGoalChar.length; i++) {
-            for (int j = 0; j < commonGoalChar[i].length; j++) {
-                background[i+3][j+48] = commonGoalChar[i][j];
-            }
-        }
-        //fill YourPoints
-        String yourPointsString = """
-                 Your Points \s
-                     C       \s
-                """;
-        char[][] yourPointsChar = new char[2][13];
-        yourPointsChar = String2CharMatrix(yourPointsString);
-        for (int i = 0; i < yourPointsChar.length; i++) {
-            for (int j = 0; j < yourPointsChar[i].length; j++) {
-                background[i+3][j+77] = yourPointsChar[i][j];
-            }
-        }
-        //fill PersonalGoal
-        char[] personalGoalChar = (" Personal Goal  ").toCharArray();
-        for (int i = 0; i < personalGoalChar.length; i++) {
-            background[21][i+47] = personalGoalChar[i];
-        }
-        //fill YourBookshelf
-        String yourBookshelfString = """
-                    Your Bookshelf:   \s
-                   1 ░ 2 ░ 3 ░ 4 ░ 5  \s
-                """;
-        char[][] yourBookshelfChar = new char[3][23];
-        yourBookshelfChar = String2CharMatrix(yourBookshelfString);
-        for (int i = 0; i < yourBookshelfChar.length; i++) {
-            for (int j = 0; j < yourBookshelfChar[i].length; j++) {
-                background[i+23][j+4] = yourBookshelfChar[i][j];
-            }
-        }
+    private void buildOtherUsername(String[][] background , List<Player> otherPlayers) {
+        List<String> otherPlayersUsername = new ArrayList<>();
+
         //fill player's username
         for (int i = 0; i < otherPlayers.size(); i++) {
-            otherPlayersUsername.add(otherPlayers.get(i).getUsername().toCharArray());
+            otherPlayersUsername.add(otherPlayers.get(i).getUsername());
         }
         for (int i = 0; i < otherPlayersUsername.size(); i++) {
             //j has max length of 17 because the space available for username is max 17 char
-            for (int j = 0; j < otherPlayersUsername.get(i).length && j<17; j++) {
-                switch (i){
-                    case 0 -> background[24][j+31] = otherPlayersUsername.get(i)[j];
-                    case 1 -> background[24][j+53] = otherPlayersUsername.get(i)[j];
-                    case 2 -> background[24][j+75] = otherPlayersUsername.get(i)[j];
+           if(otherPlayersUsername.get(i).length() <17){
+                switch (i) {
+                    case 0 -> background[24][3] = centerString(otherPlayersUsername.get(i), 18);
+                    case 1 -> background[24][5] = centerString(otherPlayersUsername.get(i), 18);
+                    case 2 -> background[24][7] =centerString(otherPlayersUsername.get(i), 18);
                 }
             }
         }
@@ -247,9 +336,9 @@ public class Printer {
      * @param yourPoints has to be a number between 0 and 999
      * */
     private void updateYourPoints(int yourPoints){
-       char[] yourPointsChar = new char[3];
-       yourPointsChar = (String.valueOf(yourPoints)).toCharArray();
-       setOnSetup(yourPointsChar,4,82);
+        String numStr = String.format("%02d", yourPoints); // trasforma l'intero in una stringa di due cifre con zero a sinistra se necessario
+        numStr = String.format("%5s", numStr).replace(' ', ' ');
+        allSetup[4][10] = numStr ;
     }
     private int getPoints(Player player, GameState gameState){
 
@@ -271,55 +360,25 @@ public class Printer {
      * @param commonStack2 has to be a number between 0 and 9 {0,2,4,8}
      * */
     private void updateCommongoalStacks(int commonStack1, int commonStack2){
-        char[] commonStack1Char = new char[1];
-        commonStack1Char = (String.valueOf(commonStack1)).toCharArray();
-        char[] commonStack2Char = new char[1];
-        commonStack2Char = (String.valueOf(commonStack2)).toCharArray();
-        setOnSetup(commonStack1Char,4,55);
-        setOnSetup(commonStack2Char,4,67);
+        String common1 = String.format("%02d", commonStack1); // trasforma l'intero in una stringa di due cifre con zero a sinistra se necessario
+        common1 = String.format("%3s", common1).replace(' ', ' '); // aggiunge spazi bianchi a sinistra e a destra della stringa fino a renderla lunga tre caratteri
+        String common2 = String.format("%02d", commonStack2); // trasforma l'intero in una stringa di due cifre con zero a sinistra se necessario
+        common2 = String.format("%3s", common2).replace(' ', ' '); // aggiunge spazi bianchi a sinistra e a destra della stringa fino a renderla lunga tre caratteri
+        allSetup[4][4] =common1;
+        allSetup[4][6] =common2;
     }
-    private void setOnSetup(char [][] image, int x , int y){
-        for(int i= 0; i<image.length; i++){
-            for(int j=0; j<image[i].length; j++){
-                allSetup[x+i][y+j] = image[i][j];
-            }
+    private void setOnSetup(String[][] image , int row, int col){
+
+        for (int i = 0; i <image.length; i++) {
+            allSetup[i+row][col] = Color.aggregateStrings(image[i]);
         }
     }
-    private void setOnSetup(char[] string, int x , int y){
-        for(int i= 0; i<string.length; i++){
-            allSetup[x][y+i] = string[i];
-        }
-    }
+
+
 
 
     /********************************* Util Functions **********+***************************/
-    public static char[][] String2CharMatrix(String multilineString) {
-        String[] rows = multilineString.split("\n");
-        char[][] charMatrix = new char[rows.length][];
-        for (int i = 0; i < rows.length; i++) {
-            charMatrix[i] = rows[i].toCharArray();
-        }
 
-        return charMatrix;
-    }
-    public static char Tile2Char(Tile tile) {
-        char tileChar = ' ';
-
-        if (tile == null) {
-            return tileChar;
-        }
-
-        switch (tile.getType())
-        {
-            case CATS -> tileChar = 'C';
-            case BOOKS -> tileChar = 'B';
-            case FRAMES -> tileChar = 'F';
-            case TROPHIES -> tileChar = 'T';
-            case PLANTS -> tileChar = 'P';
-            case GAMES -> tileChar = 'G';
-        }
-        return tileChar;
-    }
     private List<Player> otherPlayer(List<Player> players, Player thisPlayer) {
         List<Player> otherPlayers = new ArrayList<>();
         for (Player player : players) {
@@ -336,6 +395,22 @@ public class Printer {
             }
         }
         return null;
+    }
+
+    /**
+     * Center a string in a string of a given length
+     * @param str the string to center
+     * @param totalLength the length of the string to return, HAS TO BE >= 4
+     * @return the centered string
+     */
+    private String centerString(String str, int totalLength) {
+        if (str == null || totalLength <= str.length()) {
+            return str;
+        }
+        int leftPadding = (totalLength - str.length()) / 2;
+        int rightPadding = totalLength - str.length() - leftPadding;
+        String result = String.format("%" + leftPadding + "s%s%" + rightPadding + "s", "", str, "");
+        return result;
     }
 
 }

@@ -2,15 +2,14 @@ package myshelfie_view.cli.printers.macro;
 
 import myshelfie_model.Tile;
 import myshelfie_model.board.Board;
+import myshelfie_view.cli.printers.Color;
+
 import java.util.HashMap;
 
-import static myshelfie_view.cli.printers.Printer.String2CharMatrix;
-import static myshelfie_view.cli.printers.Printer.Tile2Char;
 
 public class PlotBoardgame {
-    private char[][] boardgame;
-    private static final int BOARDGAME_COL = 41;
-    private static final int BOARDGAME_ROW = 20;
+    private String[][] boardgame;
+
     /**
      * Map for the row CORDINATES of the board3Player (and board4Player) in the model
      * into the CORDINATES of the board3Player (and board4Player) in the view
@@ -31,22 +30,21 @@ public class PlotBoardgame {
      * into the CORDINATES of the board3Player (and board4Player) in the view
      */
     private final HashMap<Integer, Integer> boardColModel2CLI = new HashMap<>() {{
-        put(0, 5);
-        put(1, 9);
-        put(2, 13);
-        put(3, 17);
-        put(4,21);
-        put(5,25);
-        put(6,29);
-        put(7,33);
-        put(8,37);
+        put(0, 2);
+        put(1, 4);
+        put(2, 6);
+        put(3, 8);
+        put(4,10);
+        put(5,12);
+        put(6,14);
+        put(7,16);
+        put(8,18);
     }};
-
-    public PlotBoardgame() {
-        this.boardgame = new char[BOARDGAME_ROW][BOARDGAME_COL];
+    public PlotBoardgame(Board modelBoard, int numPlayers) {
         this.boardgame = boardgame;
+        buildBoard(modelBoard, numPlayers);
     }
-    public char[][] getBoardCharMatrix() {
+    public String[][] getBoardStringMatrix() {
         return boardgame;
     }
     /***
@@ -54,7 +52,7 @@ public class PlotBoardgame {
      * @param modelBoard is the board of the model
      * @param numPlayers is the number of players: has to be 2, 3 or 4 and remain CONSTANT for the whole game
      * */
-    public void buildBoard( Board modelBoard, int numPlayers) {
+    private void buildBoard( Board modelBoard, int numPlayers) {
         switch (numPlayers)
         {
             case 2 -> Board2Players(modelBoard);
@@ -86,29 +84,30 @@ public class PlotBoardgame {
      *
      * */
     private void Board2Players(Board modelBoard) {
-        String boardImage = """
-                ░░░░░░░░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░░░
-                ░░                                       \s
-                ░░                                       \s
-                ░░             ╔═══╦═══╗                 \s
-                 B             ║   ║   ║                 \s
-                ░░             ╠═══╬═══╬═══╗             \s
-                 C             ║   ║   ║   ║             \s
-                ░░         ╔═══╬═══╬═══╬═══╬═══╦═══╗     \s
-                 D         ║   ║   ║   ║   ║   ║   ║     \s
-                ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣     \s
-                 E     ║   ║   ║   ║   ║   ║   ║   ║     \s
-                ░░     ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝     \s
-                 F     ║   ║   ║   ║   ║   ║   ║         \s
-                ░░     ╚═══╩═══╬═══╬═══╬═══╬═══╝         \s
-                 G             ║   ║   ║   ║             \s
-                ░░             ╚═══╬═══╬═══╣             \s
-                 H                 ║   ║   ║             \s
-                ░░                 ╚═══╩═══╝             \s
-                ░░                                       \s
-                ░░                                       \s
-                """;
-        this.boardgame = String2CharMatrix(boardImage); //insert the Image
+        final String[][] boardImage ={
+                {"░░░░░░░░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░░░░░"},//0
+                {"░░                                       \s"},//1
+                {"░░                                       \s"},//2
+                {"░░            \s","╔═══╦═══╗","                 \s"},//3
+                {"","","","","",""," B            \s","║","   ","║","   ","║","                 \s"},//4
+                {"░░            \s","╠═══╬═══╬═══╗","             \s"},//5
+                {"","","","","",""," C            \s","║","   ","║","   ","║","   ","║","             \s"},//6
+                {"░░        \s","╔═══╬═══╬═══╬═══╬═══╦═══╗","     \s"},//7
+                {"","","",""," D         ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","     \s"},//8
+                {"░░     ","╔═══╬═══╬═══╬═══╬═══╬═══╬═══╣","     \s"},//9
+                {"",""," E     ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","     \s"},//10
+                {"░░     ","╠═══╬═══╬═══╬═══╬═══╬═══╬═══╝","     \s"},//11
+                {"",""," F     ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","         \s"},//12
+                {"░░     ","╚═══╩═══╬═══╬═══╬═══╬═══╝","         \s"},//13
+                {"","","","","",""," G            \s","║","   ","║","   ","║","   ","║","             \s"},//14
+                {"░░             ","╚═══╬═══╬═══╣","             \s"},//15
+                {"","","","","","","",""," H                 ","║","   ","║","   ","║","             \s"},//16
+                {"░░                 ","╚═══╩═══╝","             \s"},//17
+                {"░░                                       \s"},//18
+                {"░░                                       \s"}//19
+        };
+        this.boardgame = boardImage; //insert the Image
+        colorBoard2P(this.boardgame,Color.BROWN); //Set all the color
         setTileBoard(this.boardgame,modelBoard.getTiles()); //Set all the Tile
     };
     /***
@@ -135,29 +134,30 @@ public class PlotBoardgame {
 
      */
     private void Board3Players(Board modelBoard) {
-        String boardImage = """
-                 ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
-                 ░░             ╔═══╗                    \s
-                 A              ║   ║                    \s
-                 ░░             ╠═══╬═══╗                \s
-                 B              ║   ║   ║                \s
-                 ░░         ╔═══╬═══╬═══╬═══╦═══╗        \s
-                 C          ║   ║   ║   ║   ║   ║        \s
-                 ░░         ╠═══╬═══╬═══╬═══╬═══╬═══╦═══╗\s
-                 D          ║   ║   ║   ║   ║   ║   ║   ║\s
-                 ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝\s
-                 E      ║   ║   ║   ║   ║   ║   ║   ║    \s
-                 ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝    \s
-                 F  ║   ║   ║   ║   ║   ║   ║   ║        \s
-                 ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╣        \s
-                 G          ║   ║   ║   ║   ║   ║        \s
-                 ░░         ╚═══╩═══╬═══╬═══╬═══╝        \s
-                 H                  ║   ║   ║            \s
-                 ░░                 ╚═══╬═══╣            \s
-                 I                      ║   ║            \s
-                 ░░                     ╚═══╝            \s
-                 """;
-        this.boardgame = String2CharMatrix(boardImage); //insert the Image
+        final String[][] boardImage={
+                {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░"},//0
+                {"░░             ","╔═══╗","                     "},//1
+                {"","","","","",""," A             ","║","   ","║","                     "},//2
+                {"░░             ","╠═══╬═══╗                 "},//3
+                {"","","","","",""," B             ","║","   ","║","   ","║","                 "},//4
+                {"░░         ","╔═══╬═══╬═══╬═══╦═══╗","         "},//5
+                {"","","",""," C         ","║","   ","║","   ","║","   ","║","   ","║","   ","║","         "},//6
+                {"░░         ","╠═══╬═══╬═══╬═══╬═══╬═══╦═══╗"," "},//7
+                {"","","",""," D         ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║"," "},//8
+                {"░░     ","╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝ "},//9
+                {"",""," E     ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","     "},//10
+                {"░░ ","╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝     "},//11
+                {" F ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","         "},//12
+                {"░░ ","╚═══╩═══╬═══╬═══╬═══╬═══╬═══╣         "},//13
+                {"","","",""," G         ","║","   ","║","   ","║","   ","║","   ","║","   ","║","         "},//14
+                {"░░         ","╚═══╩═══╬═══╬═══╬═══╝         "},//15
+                {"","","","","","","",""," H                 ","║","   ","║","   ","║","             "},//16
+                {"░░                 ","╚═══╬═══╣","             "},//17
+                {"","","","","","","","","",""," I                     ","║","   ","║","             "},//18
+                {"░░                     ","╚═══╝","             "},//19
+        };
+        this.boardgame = boardImage; //insert the Image
+        colorBoard3P(this.boardgame,Color.BROWN); //Set all the color
         setTileBoard(this.boardgame,modelBoard.getTiles());
     };
     /***
@@ -187,29 +187,30 @@ public class PlotBoardgame {
      *
      */
     private void Board4Players(Board modelBoard) {
-        String boardImage = """
-                ░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░
-                ░░             ╔═══╦═══╗                \s
-                A              ║   ║   ║                \s
-                ░░             ╠═══╬═══╬═══╗            \s
-                B              ║   ║   ║   ║            \s
-                ░░         ╔═══╬═══╬═══╬═══╬═══╗        \s
-                C          ║   ║   ║   ║   ║   ║        \s
-                ░░     ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗\s
-                D      ║   ║   ║   ║   ║   ║   ║   ║   ║\s
-                ░░ ╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣\s
-                E  ║   ║   ║   ║   ║   ║   ║   ║   ║   ║\s
-                ░░ ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝\s
-                F  ║   ║   ║   ║   ║   ║   ║   ║   ║    \s
-                ░░ ╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝    \s
-                G          ║   ║   ║   ║   ║   ║        \s
-                ░░         ╚═══╬═══╬═══╬═══╬═══╝        \s
-                H              ║   ║   ║   ║            \s
-                ░░             ╚═══╬═══╬═══╣            \s
-                I                  ║   ║   ║            \s
-                ░░                 ╚═══╩═══╝            \s
-                """;
-        this.boardgame = String2CharMatrix(boardImage); //insert the Image
+        final String[][] boardImage = {
+                {"░░░░ 1 ░ 2 ░ 3 ░ 4 ░ 5 ░ 6 ░ 7 ░ 8 ░ 9 ░"},//0
+                {"░░             ","╔═══╦═══╗","                "},//1
+                {"","","","","",""," A             ","║","   ","║","   ","║","                "},//2
+                {"░░             ","╠═══╬═══╬═══╗","            "},//3
+                {"","","","","",""," B             ","║","   ","║","   ","║","   ","║","            "},//4
+                {"░░         ","╔═══╬═══╬═══╬═══╬═══╗","        "},//5
+                {"","","",""," C         ","║","   ","║","   ","║","   ","║","   ","║","   ","║","        "},//6
+                {"░░     ","╔═══╬═══╬═══╬═══╬═══╬═══╬═══╦═══╗"},//7
+                {"",""," D     ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║"},//8
+                {"░░ ","╔═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣"},//9
+                {" E ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║"},//10
+                {"░░ ","╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╝"},//11
+                {" F ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","   ","║","    "},//12
+                {"░░ ","╚═══╩═══╬═══╬═══╬═══╬═══╬═══╬═══╝","    "},//13
+                {"","","",""," G         ","║","   ","║","   ","║","   ","║","   ","║","   ","║","        "},//14
+                {"░░         ","╚═══╬═══╬═══╬═══╬═══╝","        "},//15
+                {"","","","","",""," H             ","║","   ","║","   ","║","   ","║","            "},//16
+                {"░░             ","╚═══╬═══╬═══╣","            "},//17
+                {"","","","","","","",""," I                 ","║","   ","║","   ","║","            "},//18
+                {"░░                 ","╚═══╩═══╝","            "},//19
+        };
+        this.boardgame = boardImage; //insert the Image
+        colorBoard4P(this.boardgame,Color.BROWN); //Set all the color
         setTileBoard(this.boardgame,modelBoard.getTiles());
     }
     /***
@@ -224,12 +225,140 @@ public class PlotBoardgame {
      *         H:8
      *         I:9
      * */
-    private void setTileBoard(char[][] board, Tile[][] tiles) {
+    private void setTileBoard(String[][] board, Tile[][] tiles) {
         for (int i= 0; i < tiles.length; i++) {
             for (int j=0; j < tiles[i].length; j++) {
-                board[boardRowModel2CLI.get(i)][boardColModel2CLI.get(j)] = Tile2Char(tiles[i][j]);
+                if(tiles[i][j] != null) {
+                    board[boardRowModel2CLI.get(i)][boardColModel2CLI.get(j)] = Color.Tile2String(tiles[i][j]);
+                }
             }
         }
     }
 
+    private String[][] colorBoard4P (String[][] board, Color code){
+        String[][] coloredBoard=board;
+        final HashMap<Integer,Integer[]> boardComponents4P = new HashMap<>(){{
+            //Usages map i,j
+            put(1,new Integer[]{1});
+            put(2,new Integer[]{7,9,11});
+            put(3,new Integer[]{1});
+            put(4,new Integer[]{7,9,11,13});
+            put(5,new Integer[]{1});
+            put(6,new Integer[]{5,7,9,11,13,15});
+            put(7,new Integer[]{1});
+            put(8,new Integer[]{3,5,7,9,11,13,15,17,19});
+            put(9,new Integer[]{1});
+            put(10,new Integer[]{1,3,5,7,9,11,13,15,17,19});
+            put(11,new Integer[]{1});
+            put(12,new Integer[]{1,3,5,7,9,11,13,15,17});
+            put(13,new Integer[]{1});
+            put(14,new Integer[]{5,7,9,11,13,15});
+            put(15,new Integer[]{1});
+            put(16,new Integer[]{7,9,11,13});
+            put(17,new Integer[]{1});
+            put(18,new Integer[]{9,11,13});
+            put(19,new Integer[]{1});
+        }};
+
+        for (int row = 1; row < 20; row++) {
+            if(boardComponents4P.containsKey(row)) {
+                for (int j : boardComponents4P.get(row)) {
+                    coloredBoard[row][j] = Color.getColoredString(board[row][j], code);
+                }
+            }
+        }
+        return coloredBoard;
+    }
+
+    private String[][] colorBoard3P (String[][] board, Color code) {
+        String[][] coloredBoard = board;
+        final HashMap<Integer,Integer[]> boardComponents3P = new HashMap<>(){{
+            //Usages map i,j
+            //boardComponents.put(i,j);
+            put(1,new Integer[]{1});
+            put(2,new Integer[]{7,9});
+            put(3,new Integer[]{1});
+            put(4,new Integer[]{7,9,11});
+            put(5,new Integer[]{1});
+            put(6,new Integer[]{5,7,9,11,13,15});
+            put(7,new Integer[]{1});
+            put(8,new Integer[]{5,7,9,11,13,15,17,19});
+            put(9,new Integer[]{1});
+            put(10,new Integer[]{3,5,7,9,11,13,15,17});
+            put(11,new Integer[]{1});
+            put(12,new Integer[]{1,3,5,7,9,11,13,15});
+            put(13,new Integer[]{1});
+            put(14,new Integer[]{5,7,9,11,13,15});
+            put(15,new Integer[]{1});
+            put(16,new Integer[]{9,11,13});
+            put(17,new Integer[]{1});
+            put(18,new Integer[]{11,13});
+            put(19,new Integer[]{1});
+        }};
+
+        for (int row = 1; row < 20; row++) {
+            if (boardComponents3P.containsKey(row)) {
+                for (int j : boardComponents3P.get(row)) {
+                    coloredBoard[row][j] = Color.getColoredString(board[row][j], code);
+                }
+            }
+        }
+        return coloredBoard;
+    };
+
+    private String[][] colorBoard2P (String[][] board, Color code){
+        String[][] coloredBoard=board;
+        final HashMap<Integer,Integer[]> boardComponents2P = new HashMap<>(){{
+            //Usages map i,j
+            //boardComponents.put(i,j);
+            put(3,new Integer[]{1});
+            put(4,new Integer[]{7,9,11});
+            put(5,new Integer[]{1});
+            put(6,new Integer[]{7,9,11,13});
+            put(7,new Integer[]{1});
+            put(8,new Integer[]{5,7,9,11,13,15,17});
+            put(9,new Integer[]{1});
+            put(10,new Integer[]{3,5,7,9,11,13,15,17});
+            put(11,new Integer[]{1});
+            put(12,new Integer[]{3,5,7,9,11,13,15});
+            put(13,new Integer[]{1});
+            put(14,new Integer[]{7,9,11,13});
+            put(15,new Integer[]{1});
+            put(16,new Integer[]{9,11,13});
+            put(17,new Integer[]{1});
+        }};
+        for (int row = 3; row < 18; row++) {
+            if(boardComponents2P.containsKey(row)) {
+                for (int j : boardComponents2P.get(row)) {
+                    coloredBoard[row][j] = Color.getColoredString(board[row][j], code);
+                }
+            }
+        }
+        return coloredBoard;
+    };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
