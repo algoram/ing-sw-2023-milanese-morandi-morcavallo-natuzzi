@@ -5,7 +5,7 @@ import myshelfie_network.rmi.RMIServer;
 import myshelfie_network.socket.SocketServer;
 
 import java.io.IOException;
-
+//todo implementare la gestione del setting partita disabilitato per i giocatori che entrano dopo il primo giocatore (che ha inserito numplayer etc)
 public class Server {
 
     public static void main(String[] args) {
