@@ -45,8 +45,12 @@ public class FXApp extends Application {
     public void showSetup() {
         Stage stage = new Stage();
 
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/SetupScene.fxml"));
+
         try {
-            Parent setupScene = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/SetupScene.fxml"));
+            Parent setupScene = loader.load();
+
+            GuiView.getInstance().setSetupSceneController(loader.getController());
 
             stage.setScene(new Scene(setupScene));
             stage.setResizable(false);
