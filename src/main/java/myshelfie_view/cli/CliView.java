@@ -172,13 +172,10 @@ public class CliView extends View {
 
     @Override
     public void yourTurn() {
-
         synchronized (lockInOut) {
             out.println("It's your turn!");
             askTiles();
-            lockInOut.notify();
         }
-
     }
 
     @Override
@@ -205,7 +202,11 @@ public class CliView extends View {
 
     @Override
     public void takeSuccess(){
-        isMyTurn = false;
+        synchronized (lockInOut) {
+            out.println("Tiles taken successfully!");
+            isMyTurn = false;
+            lockInOut.notifyAll();
+        }
     }
 
     @Override

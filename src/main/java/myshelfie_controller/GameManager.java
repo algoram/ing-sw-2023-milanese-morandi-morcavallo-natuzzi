@@ -3,6 +3,7 @@ package myshelfie_controller;
 import myshelfie_model.Game;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
+import myshelfie_model.Tile;
 import myshelfie_model.board.Board;
 import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.CommonGoal;
@@ -23,6 +24,8 @@ public class GameManager {
     private static GameManager instance = null;
 
     private GameManager() {
+        // TODO: check for backups
+        //games.addAll(BackupManager.getInstance().getBackup());
     }
 
     public static GameManager getInstance() {
@@ -146,13 +149,17 @@ public class GameManager {
         String finishedFirst = games.get(game).getFinishedFirst();
         String playerTurn = GameManager.getInstance().getTurn(player);
         ArrayList<Player> players = GameManager.getInstance().getObjectPlayers(game);
+        ArrayList<Tile> bag = GameManager.getInstance().getBag(game);
 
         Token[] topCommonGoals = new Token[2];
 
         topCommonGoals[0] = commonGoals[0].peekTokens();
         topCommonGoals[1] = commonGoals[1].peekTokens();
 
-        return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals);
+        // TODO: backup the game
+        BackupManager.getInstance().backupGames(games);
+
+        return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals, bag);
     }
 
 
@@ -167,6 +174,10 @@ public class GameManager {
 
     private ArrayList<Player> getObjectPlayers(Integer game) {
         return games.get(game).getPlayers();
+    }
+
+    public ArrayList<Tile> getBag(int game) {
+        return games.get(game).getBag();
     }
 
     public String getTurn(String player){

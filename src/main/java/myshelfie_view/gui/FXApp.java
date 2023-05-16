@@ -1,17 +1,17 @@
 package myshelfie_view.gui;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import myshelfie_view.gui.controllers.GameController;
+import myshelfie_view.gui.controllers.SetupSceneController;
 
 import java.io.IOException;
 
 public class FXApp extends Application {
-
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
     private static final String TITLE = "MyShelfie";
 
     public static void main(String[] args) {
@@ -21,23 +21,20 @@ public class FXApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         Parent root = null;
+
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
+
         try {
-            root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
+            root = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        GuiView.getInstance().setGameController(loader.getController());
+
         Scene scene = new Scene(root);
 
         showSetup();
-
-        //GuiView.getInstance().askConnection();
-
-        //GuiView.getInstance().askHostname();
-
-        //GuiView.getInstance().askLogin();
-
-        //GuiView.getInstance().askLogin_fullwindows();
 
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
@@ -48,12 +45,16 @@ public class FXApp extends Application {
     public void showSetup() {
         Stage stage = new Stage();
 
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/SetupScene.fxml"));
+
         try {
-            Parent setupScene = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/SetupScene.fxml"));
+            Parent setupScene = loader.load();
+
+            GuiView.getInstance().setSetupSceneController(loader.getController());
 
             stage.setScene(new Scene(setupScene));
             stage.setResizable(false);
-            stage.show();
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -25,7 +25,7 @@ public class Game {
     private ArrayList<Player> players;
     private ArrayList<StateConnection> playerStates = new ArrayList<>(); // -1 = disconnected, 0 = lostConnection, 1 = connected
 
-    private List<Tile> bag;
+    private ArrayList<Tile> bag;
     //private final int TILES = (Type.values().length - 1) * 22; // correct formula
     private final int TILES_PER_TYPE = 22;
 
@@ -34,6 +34,41 @@ public class Game {
 
     private ArrayList<Integer> possiblePersonalGoals;
     private int numberOfPlayers;
+
+    public static Game fromGameState(GameState state) {
+        Game g = new Game();
+
+        g.board = state.getBoard();
+        g.players = state.getPlayers();
+
+        g.playerStates = new ArrayList<>();
+        for (int i = 0; i < g.players.size(); i++) {
+            g.playerStates.add(StateConnection.LOST_CONNECTION);
+        }
+
+        g.bag = state.getBag();
+        g.commonGoals = state.getCommonGoals();
+        g.numberOfPlayers = g.players.size();
+
+        g.finishedFirst = -1;
+        for (int i = 0; i < g.numberOfPlayers; i++) {
+            String username = g.players.get(i).getUsername();
+
+            if (username.equals(state.getPlayerSeat())) {
+                g.playerSeat = i;
+            }
+
+            if (username.equals(state.getPlayerTurn())) {
+                g.turn = i;
+            }
+
+            if (username.equals(state.getFinishedFirst())) {
+                g.finishedFirst = i;
+            }
+        }
+
+        return g;
+    }
 
     /**
      * Starts a new game with the given number of players (clamped between 2 and MAX_PLAYERS),
@@ -273,6 +308,10 @@ public class Game {
         // insert the tiles inside the bookshelf column
         players.get(playerNumber).getBookshelf().fill(column, tiles);
 
+        if(board.refillNeeded()){
+            //let's take the tiles removing them from the bag
+            board.refill(bag);
+        }
 
         //SET POINTS
         // check if the player has filled the bookshelf first
@@ -399,6 +438,10 @@ public class Game {
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public ArrayList<Tile> getBag() {
+        return bag;
     }
 
     public String getTurn() {return players.get(turn).getUsername();}

@@ -1,6 +1,7 @@
 package myshelfie_network.rmi;
 
 import myshelfie_controller.EventHandler;
+import myshelfie_controller.Settings;
 import myshelfie_controller.event.Event;
 import myshelfie_controller.event.PlayerConnect;
 import myshelfie_controller.response.PlayerConnectFailure;
@@ -79,7 +80,7 @@ public class RMIServer implements Server, RMIServerInterface {
         while (tries > 0) {
             try {
                 client.dispatchResponse(response);
-                System.out.println("Trying to send...");
+                if(Settings.DEBUG) System.out.println("Trying to send...");
 
                 break;
             } catch (RemoteException e) {
