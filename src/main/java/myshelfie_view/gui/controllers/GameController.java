@@ -24,11 +24,6 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Initialized GameController");
-
-        token1Controller.setToken(2);
-        token2Controller.setToken(6);
-
-        personalGoalController.setGoal(1);
     }
 
     public void setGameState(GameState gameState) {

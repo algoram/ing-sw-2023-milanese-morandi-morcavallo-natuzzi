@@ -68,15 +68,16 @@ public class SocketServer implements Server {
                         } else if (data instanceof Event event) {
                             EventHandler.getInstance().addToEventQueue(event);
                         } else {
-                            throw new RuntimeException("SocketServer->start(): Invalid data type from client");
+                            if (Settings.DEBUG) System.err.println("SocketServer ERROR - Invalid data type from client");
+                            //throw new RuntimeException("SocketServer->start(): Invalid data type from client");
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (Settings.DEBUG) System.err.println("SocketServer ERROR - IO error occured");
                 } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                    if (Settings.DEBUG) System.err.println("SocketServer ERROR - Wrong object was sent");
                 } catch (Exception e){
-                    if(Settings.DEBUG)System.out.println("SocketServer -> start exception generic");
+                    if (Settings.DEBUG) System.err.println("SocketServer ERROR - Generic Exception");
                 }
             }).start();
         }
@@ -134,10 +135,10 @@ public class SocketServer implements Server {
                 client.out.writeObject(response);
                 break;
             } catch (IOException e) {
-                e.printStackTrace();
+                if (Settings.DEBUG) System.err.println("SocketServer ERROR - IO error occured");
                 tries--;
             } catch (Exception e){
-                if(Settings.DEBUG) System.out.println("SocketServer -> sendResponse generic exception thrown");
+                if(Settings.DEBUG) System.err.println("SocketServer ERROR - SendResponse generic exception");
             }
         }
 

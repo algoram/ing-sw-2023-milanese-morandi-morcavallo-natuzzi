@@ -1,6 +1,7 @@
 package myshelfie_network.rmi;
 
 import myshelfie_controller.EventDispatcher;
+import myshelfie_controller.Settings;
 import myshelfie_controller.UpdateHandler;
 import myshelfie_controller.event.Event;
 import myshelfie_network.Client;
@@ -27,7 +28,7 @@ public class RMIClient extends UnicastRemoteObject implements Client, RMIClientI
                 instance = new RMIClient();
             } catch (RemoteException e) {
                 // something went horribly wrong
-                throw new RuntimeException(e);
+                if (Settings.DEBUG) System.err.println("RMIClient ERROR - Couldn't create instance");
             }
         }
 
@@ -46,7 +47,7 @@ public class RMIClient extends UnicastRemoteObject implements Client, RMIClientI
         try {
             server.dispatchEvent(event);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            if (Settings.DEBUG) System.err.println("RMIClient ERROR - Failed to dispatch an event");
         }
     }
 

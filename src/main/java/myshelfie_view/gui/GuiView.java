@@ -87,7 +87,13 @@ public class GuiView extends View {
 
     @Override
     public void connectionFailed(String reason) {
-
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("MyShelfie");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Connection failed - " + reason);
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -97,17 +103,23 @@ public class GuiView extends View {
 
     @Override
     public void chatIn(String sender, String Message, boolean isPublic) {
-
+        // TODO: implement chat
     }
 
     @Override
     public void messageSentSuccessfully() {
-
+        // TODO: implement
     }
 
     @Override
     public void messageSentFailure(String errorMessage) {
-
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("MyShelfie");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Couldn't send chat message - " + errorMessage);
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -123,6 +135,8 @@ public class GuiView extends View {
 
     @Override
     public void yourTurn() {
+        // TODO: check implementation
+
         Label yourTurnLabel = new Label();
         Scene yourTurnScene = new Scene(new VBox());
 
@@ -151,22 +165,28 @@ public class GuiView extends View {
 
     @Override
     public void takeFailed(String reason) {
-
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("MyShelfie");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Couldn't take tiles - " + reason);
+            alert.showAndWait();
+        });
     }
 
     @Override
     public void takeSuccess(){
-
+        // TODO: implement, maybe refresh view
     }
 
     @Override
     public void turnOf(String playerTurn) {
-
+        // TODO: implement, don't know what this does
     }
 
     @Override
     public void takeTiles(List<Position> tiles, int column) {
-
+        // TODO: implement
     }
 
     @Override
@@ -176,17 +196,29 @@ public class GuiView extends View {
 
     @Override
     public void displayNewSetup(GameState gameState) {
-
+        gameController.setGameState(gameState);
     }
 
     @Override
     public void gameFinished(String winner) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("MyShelfie");
+            alert.setHeaderText(null);
 
+            if (winner.equals(Settings.getInstance().getUsername())) {
+                alert.setContentText("You WON!!!");
+            } else {
+                alert.setContentText(winner + " has won the game");
+            }
+
+            alert.showAndWait();
+        });
     }
 
     @Override
     public void gameFinishedForYou() {
-
+        // TODO: implement, maybe show an info dialog
     }
     public void askLogin() {
         Stage loginStage = new Stage();
@@ -258,13 +290,13 @@ public class GuiView extends View {
                     try {
                         RMIClient.getInstance().connect(serverAddress);
                     } catch (RemoteException | NotBoundException e) {
-                        throw new RuntimeException(e);
+                        if (Settings.DEBUG) System.err.println("GuiView ERROR - Failed to connect to RMI Server");
                     }
                 } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
                     try {
                         SocketClient.getInstance().start(serverAddress, 19736);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        if (Settings.DEBUG) System.err.println("GuiView ERROR - Failed to connect to socket server");
                     }
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -383,13 +415,13 @@ public class GuiView extends View {
                 try {
                     RMIClient.getInstance().connect(serverAddress);
                 } catch (RemoteException | NotBoundException ex) {
-                    throw new RuntimeException(ex);
+                    if (Settings.DEBUG) System.err.println("GuiView ERROR - Failed to connect to RMI Server");
                 }
             } else if (connectionType == ConnectionType.SOCKET) {
                 try {
                     SocketClient.getInstance().start(serverAddress, 19736);
                 } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    if (Settings.DEBUG) System.err.println("GuiView ERROR - Failed to connect to socket server");
                 }
             }
 

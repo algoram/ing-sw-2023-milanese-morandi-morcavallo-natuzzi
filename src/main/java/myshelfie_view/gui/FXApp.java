@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import myshelfie_controller.Settings;
 import myshelfie_view.gui.controllers.GameController;
 import myshelfie_view.gui.controllers.SetupSceneController;
 
@@ -16,6 +17,9 @@ public class FXApp extends Application {
     private static final String TITLE = "MyShelfie";
 
     public static void main(String[] args) {
+        for (String s : args) {
+            System.out.println(s);
+        }
         launch(args);
     }
 
@@ -28,7 +32,7 @@ public class FXApp extends Application {
         try {
             root = loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("FXApp ERROR - Couldn't load fxml file");
         }
 
         GuiView.getInstance().setGameController(loader.getController());
@@ -57,7 +61,7 @@ public class FXApp extends Application {
             stage.setResizable(false);
             stage.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("FXApp ERROR - Couldn't load fxml file");
         }
     }
 }
