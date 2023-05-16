@@ -175,13 +175,14 @@ public abstract class Board implements Serializable {
         int flagStraightline = 0; //flagStraightline is set to 1, 2 or 3 based on how many aligned tiles are found, the method reaches the correct termination if flagStraightline== chosen.size()
         int flagAdjacent = 0; //flagAdjacent is set to 1 if the tiles are adjacent, 0 otherwise
 
+        if (chosen == null) throw new NullPointerException("The list of tiles to be removed is null!\n No tile has been moved...");
+
         System.out.println("Board::remove DEBUG - " + chosen.size());
         for (Position p : chosen) {
             System.out.println("Board::remove DEBUG - " + p.toString());
         }
 
         //Check chosen.size()
-        if (chosen == null) throw new NullPointerException("The list of tiles to be removed is null!\n No tile has been moved...");
         if(chosen.size()>3 || chosen.size()<1) throw new IllegalArgumentException("The number of tiles to be removed is not valid!\n No tile has been moved...");
 
         //Check ValidBoardPosition

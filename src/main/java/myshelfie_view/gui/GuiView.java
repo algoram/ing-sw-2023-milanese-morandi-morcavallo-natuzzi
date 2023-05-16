@@ -92,7 +92,7 @@ public class GuiView extends View {
 
     @Override
     public void initGameState(GameState gameState) {
-
+        gameController.setGameState(gameState);
     }
 
     @Override
