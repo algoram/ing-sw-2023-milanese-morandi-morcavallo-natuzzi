@@ -27,7 +27,7 @@ public class UpdateDispatcher {
 
         String player = response.getTarget();
 
-        if (Settings.getInstance().DEBUG && !(response instanceof PingAck)) {
+        if (Settings.DEBUG && !(response instanceof PingAck)) {
             System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response " + response.getClass().getSimpleName());
             System.out.println("UpdateDispatcher -> dispatchResponse(): Sending response to " + player);
         }
