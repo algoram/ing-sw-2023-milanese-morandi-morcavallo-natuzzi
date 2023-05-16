@@ -21,6 +21,7 @@ public class GameState implements Serializable {
     private final String finishedFirst;
     private final String playerTurn;
     private final Token[] topCommonGoal;
+    private final ArrayList<Tile> bag;
 
     private final ArrayList<Player> players;
 
@@ -31,7 +32,8 @@ public class GameState implements Serializable {
                      String playerTurn,
                      String finishedFirst,
                      ArrayList<Player> players,
-                     Token[] topCommonGoal) {
+                     Token[] topCommonGoal,
+                     ArrayList<Tile> bag) {
         this.gameNumber = gameNumber;
         this.board = board;
         this.commonGoals = commonGoals;
@@ -40,6 +42,7 @@ public class GameState implements Serializable {
         this.players = players;
         this.playerTurn = playerTurn;
         this.topCommonGoal = topCommonGoal;
+        this.bag = bag;
     }
 
     public Integer getGameNumber() {
@@ -68,6 +71,10 @@ public class GameState implements Serializable {
     }
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public ArrayList<Tile> getBag() {
+        return bag;
     }
 
 }
