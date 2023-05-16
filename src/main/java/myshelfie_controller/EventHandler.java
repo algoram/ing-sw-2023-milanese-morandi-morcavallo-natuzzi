@@ -195,6 +195,7 @@ public class EventHandler {
 
 
         } else if (event instanceof Ping){
+            //todo the ping arrive after setLostDisconnection
             synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
                     System.out.println("PingFailure player not found: " + player);
@@ -268,6 +269,7 @@ public class EventHandler {
                             System.out.println("So the Game finished for everyone");
                             for (String p : players) {
                                 String winner = GameManager.getInstance().getWinner(player);
+                                GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
                                 UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
                             }
                             GameManager.getInstance().closeGame(player);
@@ -296,11 +298,27 @@ public class EventHandler {
                             System.out.println("EventHandler-> handle()->And everyone has finished");
                             for (String p : players) {
                                 String winner = GameManager.getInstance().getWinner(player);
+                                GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
                                 UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
                             }
                             GameManager.getInstance().closeGame(player);
                         }
                     }
+
+                    //calculate it again because the game could have finished
+                    //and unSetTurn could have been called
+                    //it may be more efficient to calculate it only if the game has finished
+                    gameState = GameManager.getInstance().getGameState(player);
+
+                    for (String p : players) {
+                        //send the update to all the players except the one who did the takeTiles
+                        // and the ones that lost connection
+                        if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
+                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
+                        }
+                    }
+
+
 
                 } catch (Exception e){
                     UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesFailure(player, e.getMessage()));

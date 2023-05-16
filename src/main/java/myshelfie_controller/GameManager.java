@@ -207,6 +207,10 @@ public class GameManager {
         return playerIndex == (startedFirst + (players.size() - 1) % players.size());
     }
 
+    public void unSetTurn(String player){
+        games.get(playerToGame.get(player)).unSetTurn();
+    }
+
     public boolean someoneElseFinished(String player){
         return (games.get(playerToGame.get(player)).getFinishedFirst() != null &&
                 !games.get(playerToGame.get(player)).getFinishedFirst().equals(player));

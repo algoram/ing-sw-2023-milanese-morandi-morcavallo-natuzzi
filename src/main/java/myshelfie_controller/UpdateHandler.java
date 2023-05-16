@@ -90,7 +90,7 @@ public class UpdateHandler {
 
             GameState gameState = ((ConnectUpdate) response).getGameState();
             View.getInstance().initGameState(gameState);
-            playerTurn(gameState.getPlayerTurn());
+            if (gameState.getPlayerTurn() != null) playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesSuccess) {
             if (Settings.DEBUG) System.out.println("UpdateHandler-> handle(): TakeTilesSuccess received");
@@ -98,13 +98,15 @@ public class UpdateHandler {
             View.getInstance().takeSuccess();
             GameState gameState = ((TakeTilesSuccess) response).getGameState();
             View.getInstance().displayNewSetup(gameState);
-            playerTurn(gameState.getPlayerTurn());
+            //todo here it should not ever be called due to the costraints of the game
+            //if there is just one player left the game should stop
+            if (gameState.getPlayerTurn() != null) playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesUpdate) {
 
             GameState gameState = ((TakeTilesUpdate) response).getGameState();
             View.getInstance().displayNewSetup(gameState);
-            playerTurn(gameState.getPlayerTurn());
+            if (gameState.getPlayerTurn() != null) playerTurn(gameState.getPlayerTurn());
 
         } else if (response instanceof TakeTilesFailure) {
 

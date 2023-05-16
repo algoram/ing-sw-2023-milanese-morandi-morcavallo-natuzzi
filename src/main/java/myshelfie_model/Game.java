@@ -336,7 +336,6 @@ public class Game {
             return true;
         }
 
-
         recalculateTurn();
 
         return true;
@@ -433,7 +432,12 @@ public class Game {
         return bag;
     }
 
-    public String getTurn() {return players.get(turn).getUsername();}
+    public String getTurn() {
+        if(turn != -1)
+            return players.get(turn).getUsername();
+        else
+            return null;
+    }
 
     private void recalculateTurn() throws Exception{
         // go to the next player
@@ -447,6 +451,12 @@ public class Game {
                 throw new Exception("All players lost connection");
             }
         }while(!(playerStates.get(turn) == StateConnection.CONNECTED)); //check if new turn player is connected
+    }
+
+    public void unSetTurn(){
+        if(turn == -1)
+            System.out.println("GAME -> UNSETTurn: Turn is already unset IMPOSSIBLE");
+        turn = -1;
     }
 
 
