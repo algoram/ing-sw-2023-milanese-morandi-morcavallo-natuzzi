@@ -27,6 +27,8 @@ public class GameController implements Initializable {
     }
 
     public void setGameState(GameState gameState) {
+        System.out.println("GameController::setGameState called");
+
         // set the board state
         boardController.setBoard(gameState.getBoard());
 
@@ -45,8 +47,8 @@ public class GameController implements Initializable {
         // set the common goals state
         Token[] commonGoalsPoints = localPlayer.getCommonTokens();
 
-        token1Controller.setToken(commonGoalsPoints[0].getPoints());
-        token2Controller.setToken(commonGoalsPoints[1].getPoints());
+        token1Controller.setToken(commonGoalsPoints[0] != null ? commonGoalsPoints[0].getPoints() : 0);
+        token2Controller.setToken(commonGoalsPoints[1] != null ? commonGoalsPoints[1].getPoints() : 0);
 
         // set the personal goal state
         personalGoalController.setGoal(localPlayer.getPersonalGoal().getPersonalGoalNumber());

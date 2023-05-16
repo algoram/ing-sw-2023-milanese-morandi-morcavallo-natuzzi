@@ -16,10 +16,7 @@ import java.io.IOException;
 public class FXApp extends Application {
     private static final String TITLE = "MyShelfie";
 
-    public static void main(String[] args) {
-        for (String s : args) {
-            System.out.println(s);
-        }
+    public static void startUI(String[] args) {
         launch(args);
     }
 
@@ -35,7 +32,11 @@ public class FXApp extends Application {
             if (Settings.DEBUG) System.err.println("FXApp ERROR - Couldn't load fxml file");
         }
 
-        GuiView.getInstance().setGameController(loader.getController());
+        System.out.println("FXApp - " + GuiView.getInstance());
+
+        GameController gameController = loader.getController();
+
+        GuiView.getInstance().setGameController(gameController);
 
         Scene scene = new Scene(root);
 

@@ -39,6 +39,7 @@ public class GuiView extends View {
 
     private GameController gameController;
     private SetupSceneController setupSceneController;
+    private static GuiView instance = null;
 
     private GuiView() {}
 
@@ -442,7 +443,11 @@ public class GuiView extends View {
 
 
     public static GuiView getInstance() {
-        return new GuiView();
+        if (instance == null) {
+            instance = new GuiView();
+        }
+
+        return instance;
     }
 
     @Override
