@@ -6,7 +6,7 @@ import java.security.PublicKey;
 //Each class saving settings must use this class to save and load settings
 public class Settings {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     //must be effectively final
     private String username;
 
