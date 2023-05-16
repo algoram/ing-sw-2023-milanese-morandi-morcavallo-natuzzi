@@ -242,21 +242,30 @@ public class EventHandler {
 
                     UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
 
+                    //todo here is the problem with the end of the game
+                    //i need a way for return to the player the update without calling yourturn if the game has to finish
                     for (String p : players) {
-                        if (!p.equals(player)&& !GameManager.getInstance().alreadySetLostConnection(p)) {
+                        //send the update to all the players except the one who did the takeTiles
+                        // and the ones that lost connection
+                        if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
                         }
                     }
 
                     //if the player has finished the game
                     if (GameManager.getInstance().hasFinishedFirst(player)) {
-
+                        System.out.println("EventHandler-> handle()->End of the game: Player " + player + " has finished the game");
                         //the player who finished first will not be able anymore to do the takeTiles
                         //so this part of the code will not be entered anymore from anyone
 
                         //let's see which one of the players has finished the game
                         //if he has started last the game must end for everyone
+
+
+
                         if (GameManager.getInstance().hasStartedLast(player)) {
+                            System.out.println("EventHandler-> handle(): Player " + player + " has started last ");
+                            System.out.println("So the Game finished for everyone");
                             for (String p : players) {
                                 String winner = GameManager.getInstance().getWinner(player);
                                 UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
@@ -264,24 +273,27 @@ public class EventHandler {
                             GameManager.getInstance().closeGame(player);
                         }
                         else {
+                            System.out.println("EventHandler-> handle(): Player " + player + " has not started last ");
+                            System.out.println("So the Game is finished just for him and the ones that already did the last turn");
                             //only the player and all the ones that already did the last
                             //turn must receive the game finished update
                             UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
 
-                            //the players that didn't do the last turn must do it
-                            //todo we could implement a kind of message here -> "wait for the other players to finish"
+                            //todo we could implement a way to send gamefinished for you to the ones that did the last turn
                         }
                     }
                     //here is the case where the player has finished the game, but he is not the first
                     else if(GameManager.getInstance().someoneElseFinished(player)){
-
+                        System.out.println("EventHandler-> handle()->Someone else finished the game");
                         //if someone else has finished the game
                         //the player who finished did his last take tiles so:
 
                         if (GameManager.getInstance().someoneStillHasToPlay(player)){ //if someone still has to play
+                            System.out.println("EventHandler-> handle()->But someone still has to play");
                             UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
                         }
                         else { //if everyone has finished
+                            System.out.println("EventHandler-> handle()->And everyone has finished");
                             for (String p : players) {
                                 String winner = GameManager.getInstance().getWinner(player);
                                 UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));

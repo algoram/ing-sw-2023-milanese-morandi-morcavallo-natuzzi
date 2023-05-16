@@ -196,7 +196,7 @@ public class GameManager {
 
     public boolean hasStartedLast(String player){
         if (player == null){
-            System.out.println("GameManager-> hasStartedLast(): player is null in started last function");
+            System.out.println("GameManager-> hasStartedLast(): player is null IMPOSSIBLE in started last function");
             return false;
         }
         int startedFirst = games.get(playerToGame.get(player)).getPlayerSeatIndex();
@@ -218,7 +218,7 @@ public class GameManager {
             System.out.println("GameManager-> someoneStillHasToPlay():No one has finished yet: ERROR IN LOGIC");
             return false;
         }
-        return hasStartedLast(player);
+        return !hasStartedLast(player);
     }
 
     public String getWinner(String player) {

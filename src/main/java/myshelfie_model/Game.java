@@ -9,9 +9,6 @@ import myshelfie_model.goal.PersonalGoal;
 import myshelfie_model.goal.common_goal.*;
 import myshelfie_model.player.Player;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.*;
 
 public class Game {
@@ -282,7 +279,7 @@ public class Game {
     public boolean takeTiles(String player, List<Position> chosenTiles, int column) throws Exception {
         // check if the game has finished
         int playerNumber = findPlayer(player);
-        if (hasFinished()) {
+        if (isGameFinished()) {
             if (Settings.DEBUG)System.out.println("GAME -> take HAS FINISHED BUT TAKE TILES IMPOSSIBLE");
             return false;
         }
@@ -290,7 +287,7 @@ public class Game {
         // check if it's the playerNumber's turn
         if (playerNumber != turn) {
             if (Settings.DEBUG)System.out.println("GAME -> take TILES !=playerNUm turn IMPOSSIBLE");
-            return false;
+            turn = playerNumber;
         }
 
         // check that the player has enough space in the bookshelf
@@ -349,7 +346,7 @@ public class Game {
      * Returns whether the game has finished yet or not
      * @return whether tha game has finished yet or not
      */
-    public boolean hasFinished() {
+    public boolean isGameFinished() {
         return finishedFirst != -1 &&   // someone has completed the bookshelf
                 turn == playerSeat;     // the player to the left of the first player has completed his last move
     }
@@ -467,9 +464,14 @@ public class Game {
         return true;
     }
 
+    /**
+     * check if the player has already lost connection
+     * @param player
+     * @return true if the player has already lost connection
+     */
     public boolean alreadySetLostConnection(String player){
         if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED){
-            return true;//the client was already set to disconnected in game
+            return true;
         }
         return false;
     }

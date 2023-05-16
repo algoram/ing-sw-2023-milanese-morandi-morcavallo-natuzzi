@@ -239,6 +239,10 @@ public class CliView extends View {
     public void gameFinishedForYou() {
         out.println("Your Bookshelf is full!");
         out.println("Please wait for the other players to finish the game!");
+        if (isMyTurn) {
+            if(Settings.DEBUG) System.out.println("DEBUG CliView -> isMyTurn still true should be false");
+            isMyTurn = false;
+        }
     }
 
     @Override
@@ -289,14 +293,14 @@ public class CliView extends View {
         //todo implementare versione con indirizzi ip
         if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
             try {
-                RMIClient.getInstance().connect("localhost");
+                RMIClient.getInstance().connect(input);
             } catch (RemoteException | NotBoundException e) {
                 if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
                 System.out.println("Couldn't connect to the server. Try again later...");
             }
         } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
             try {
-                SocketClient.getInstance().start("localhost", 19736);
+                SocketClient.getInstance().start(input, 19736);
             } catch (IOException e) {
                 if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
                 System.out.println("Couldn't connect to the server. Try again later...");
