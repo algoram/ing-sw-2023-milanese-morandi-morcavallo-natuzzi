@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import myshelfie_view.gui.controllers.GameController;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -34,8 +35,19 @@ public class GuiView extends View {
 
     private Scanner scanner;
     private GameState gameState; //is the actual state of the game
+
+    private GameController gameController;
+
     private GuiView() {
         showLogMessage("Hello World!");
+    }
+
+    public GameController getGameController() {
+        return gameController;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 
     @Override
