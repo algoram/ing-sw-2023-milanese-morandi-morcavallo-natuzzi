@@ -9,6 +9,8 @@ import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.CommonGoal;
 
 import myshelfie_model.player.Player;
+import myshelfie_network.rmi.RMIServer;
+import myshelfie_network.socket.SocketServer;
 
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class GameManager {
         return instance;
     }
 
-    public void removePlayer(String player) {
+    public void removePlayer(String player) throws Exception {
         games.get(playerToGame.get(player)).removePlayer(player);
     }
 
@@ -240,7 +242,23 @@ public class GameManager {
 
     public void closeGame(String player) {
         int game = playerToGame.get(player);
-        //todo
+
+        for(String p: games.get(game).getPlayersUsernames()){
+
+            //remove player from server
+            if(SocketServer.getInstance().hasClient(p)) {
+                SocketServer.getInstance().removeClient(p);
+            }
+            else if(RMIServer.getInstance().hasClient(p)){
+                SocketServer.getInstance().removeClient(p);
+            }
+            else System.out.println("impossible error in closegame");
+
+            playerToGame.remove(p); //remove string player from player to game
+
+            games.remove(game);  //remove integer game from arraylist
+
+        }
     }
 }
 
