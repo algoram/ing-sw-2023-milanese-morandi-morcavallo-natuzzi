@@ -157,4 +157,14 @@ public class SocketServer implements Server {
 
         tempClients.remove(uuid);
     }
+
+    @Override
+    public void removeClient(String player) {
+        try {
+            clients.get(player).socket.close();
+        } catch (IOException e) {
+            if (Settings.DEBUG) System.err.println("SocketServer ERROR - Couldn't close the connection");
+        }
+        clients.remove(player);
+    }
 }

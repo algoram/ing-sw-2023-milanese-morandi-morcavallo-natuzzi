@@ -15,4 +15,6 @@ public interface Server {
     boolean hasTempClient(UUID uuid);
 
     void addClient(UUID uuid, String player);
+
+    void removeClient(String player);
 }

@@ -9,4 +9,6 @@ public interface RMIClientInterface extends Remote {
 
     void dispatchResponse(Response response) throws RemoteException;
 
+    void closeConnection() throws RemoteException;
+
 }

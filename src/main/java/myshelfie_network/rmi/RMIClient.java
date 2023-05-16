@@ -54,4 +54,9 @@ public class RMIClient extends UnicastRemoteObject implements Client, RMIClientI
     public void dispatchResponse(Response response) throws RemoteException {
         UpdateHandler.getInstance().handle(response);
     }
+
+    @Override
+    public void closeConnection() throws RemoteException {
+        server = null;
+    }
 }

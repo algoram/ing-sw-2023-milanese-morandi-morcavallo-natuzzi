@@ -12,6 +12,8 @@ public class PersonalGoal extends Goal{
 
     private final Map<Position,Type> positions;
 
+    private final int numCard;
+
     /**
      * The function allocates the 'positions' attribute
      * and adds to the map all the key-value pairs corresponding
@@ -20,6 +22,7 @@ public class PersonalGoal extends Goal{
      *                1 <= numCard <= 12
      */
     public PersonalGoal(int numCard){
+        this.numCard = numCard;
 
         Position p1,p2,p3,p4,p5,p6;
         Type t1,t2,t3,t4,t5,t6;
@@ -207,6 +210,10 @@ public class PersonalGoal extends Goal{
         positions.put(p5,t5);
         positions.put(p6,t6);
 
+    }
+
+    public int getPersonalGoalNumber() {
+        return numCard;
     }
 
     public Map<Position, Type> getPositions() {

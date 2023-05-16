@@ -62,6 +62,16 @@ public class RMIServer implements Server, RMIServerInterface {
     }
 
     @Override
+    public void removeClient(String player) {
+        try {
+            clients.get(player).closeConnection();
+        } catch (RemoteException e) {
+            if (Settings.DEBUG) System.err.println("RMIServer ERROR - Couldn't close the connection");
+        }
+        clients.remove(player);
+    }
+
+    @Override
     public void sendResponse(Response response) {
         RMIClientInterface client = null;
 
