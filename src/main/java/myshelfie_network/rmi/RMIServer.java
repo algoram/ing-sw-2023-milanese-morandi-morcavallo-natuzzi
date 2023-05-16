@@ -96,7 +96,7 @@ public class RMIServer implements Server, RMIServerInterface {
             } catch (RemoteException e) {
                 tries--;
                 System.out.println("Failed to send. Retrying...");
-                e.printStackTrace();
+                if (Settings.DEBUG) System.err.println("RMIServer ERROR - Couldn't send response");
             }
         }
 

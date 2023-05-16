@@ -1,5 +1,6 @@
 import myshelfie_controller.EventHandler;
 import myshelfie_controller.GameManager;
+import myshelfie_controller.Settings;
 import myshelfie_controller.UpdateDispatcher;
 import myshelfie_network.rmi.RMIServer;
 import myshelfie_network.socket.SocketServer;
@@ -13,7 +14,7 @@ public class Server {
         try {
             SocketServer.getInstance().start(19736);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            if (Settings.DEBUG) System.err.println("Server ERROR - Couldn't start socket server");
         }
     }
 

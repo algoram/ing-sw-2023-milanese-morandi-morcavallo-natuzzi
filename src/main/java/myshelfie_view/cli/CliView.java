@@ -75,7 +75,7 @@ public class CliView extends View {
                     }
 
                 }catch (IOException e) {
-                    e.printStackTrace();
+                    if (Settings.DEBUG) System.err.println("CliView ERROR - IO exception occured");
                 }finally {
                     if (input != null) {
                         if (!commandAvailable(input)) {
@@ -98,7 +98,7 @@ public class CliView extends View {
         try {
             askHostname();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("CliView ERROR - Exception while asking hostname");
         }
         askLogin();
     }
@@ -202,7 +202,7 @@ public class CliView extends View {
         try {
             EventDispatcher.getInstance().takeTiles(tiles, column);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("CliView ERROR - Failed to take the tiles");
         }
     }
 
@@ -296,14 +296,14 @@ public class CliView extends View {
                 RMIClient.getInstance().connect(input);
             } catch (RemoteException | NotBoundException e) {
                 if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
-                System.out.println("Couldn't connect to the server. Try again later...");
+                System.out.println("Couldn't connect to the server. Try again ...");
             }
         } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
             try {
                 SocketClient.getInstance().start(input, 19736);
             } catch (IOException e) {
                 if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
-                System.out.println("Couldn't connect to the server. Try again later...");
+                System.out.println("Couldn't connect to the server. Try again ...");
             }
         } else {
             throw new Exception("Unknown connection type");

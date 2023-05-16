@@ -3,14 +3,12 @@ package myshelfie_view.gui.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import jdk.jshell.spi.ExecutionControl;
 import myshelfie_controller.ConnectionType;
+import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
@@ -83,10 +81,15 @@ public class SetupSceneController implements Initializable {
             alert.setContentText("Unknown connection type");
             alert.showAndWait();
         }
+
+        int backupPlayers = players.getSelectionModel().getSelectedItem();
+        EventDispatcher.getInstance().connect(backupPlayers);
     }
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+        players.setValue(4);
+
         for (int i = 2; i <= 4; i++) {
             players.getItems().add(i);
         }
