@@ -289,17 +289,17 @@ public class CliView extends View {
         //todo implementare versione con indirizzi ip
         if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
             try {
-                RMIClient.getInstance().connect("localhost");
+                RMIClient.getInstance().connect(input);
             } catch (RemoteException | NotBoundException e) {
                 if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
-                System.out.println("Couldn't connect to the server. Try again later...");
+                System.out.println("Couldn't connect to the server. Try again ...");
             }
         } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
             try {
-                SocketClient.getInstance().start("localhost", 19736);
+                SocketClient.getInstance().start(input, 19736);
             } catch (IOException e) {
                 if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
-                System.out.println("Couldn't connect to the server. Try again later...");
+                System.out.println("Couldn't connect to the server. Try again ...");
             }
         } else {
             throw new Exception("Unknown connection type");
