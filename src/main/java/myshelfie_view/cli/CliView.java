@@ -285,13 +285,15 @@ public class CliView extends View {
             try {
                 RMIClient.getInstance().connect("localhost");
             } catch (RemoteException | NotBoundException e) {
-                throw new RuntimeException(e);
+                if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
+                System.out.println("Couldn't connect to the server. Try again later...");
             }
         } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
             try {
                 SocketClient.getInstance().start("localhost", 19736);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                if (Settings.DEBUG) System.err.println("CliView ERROR - Could not connect to the server");
+                System.out.println("Couldn't connect to the server. Try again later...");
             }
         } else {
             throw new Exception("Unknown connection type");

@@ -66,13 +66,15 @@ public class SetupSceneController implements Initializable {
             try {
                 RMIClient.getInstance().connect(host);
             } catch (RemoteException | NotBoundException e) {
-                throw new RuntimeException(e);
+                if (Settings.DEBUG) System.err.println("SetupSceneController ERROR - Could not connect to the server");
+                System.out.println("Couldn't connect to the server. Try again later...");
             }
         } else if (Settings.getInstance().getConnectionType() == ConnectionType.SOCKET) {
             try {
                 SocketClient.getInstance().start(host, 19736);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                if (Settings.DEBUG) System.err.println("SetupSceneController ERROR - Could not connect to the server");
+                System.out.println("Couldn't connect to the server. Try again later...");
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
