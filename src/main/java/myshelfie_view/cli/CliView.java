@@ -44,10 +44,16 @@ public class CliView extends View {
     }
 
 
-    private void commandListenerSync() {
+    private void commandListenerSync()  {
         while (gameIsRunning) {
 
             String input = null;
+            try{
+                //todo check
+                Thread.sleep(30);
+            }catch (Exception e){
+                //do nothing
+            }
 
             synchronized (lockInOut){
 
@@ -280,7 +286,7 @@ public class CliView extends View {
                 break;
             }
         }
-//todo implementare versione con indirizzi ip
+        //todo implementare versione con indirizzi ip
         if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
             try {
                 RMIClient.getInstance().connect("localhost");
