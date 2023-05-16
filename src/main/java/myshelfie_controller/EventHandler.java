@@ -174,9 +174,21 @@ public class EventHandler {
         } else if (event instanceof PlayerDisconnect) {
             System.out.println("EventHandler-> handle(): PlayerDisconnect");
 
-            GameManager.getInstance().removePlayer(player);
+            //the function removePlayer recalculates the player turn and
+            //then it is updated in playerDisconnectSuccess
+            try{
+                GameManager.getInstance().removePlayer(player);
+            }catch (Exception e){
+                //if everyone disconnected
+                if(e.getMessage().equals("All players lost connection")){
+                    GameManager.getInstance().closeGame(player);
+                }
+            }
 
             List<String> players = GameManager.getInstance().getPlayers(player);
+
+            //todo here we have to recalculate turn and send update
+
             for (String p : players) {
                 if (!p.equals(player)) UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player, GameManager.getInstance().getTurn(player)));
             }
@@ -186,8 +198,17 @@ public class EventHandler {
             synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
                     System.out.println("PingFailure player not found: " + player);
+                } else {
+
+                    if (GameManager.getInstance().alreadySetLostConnection(player)) {//if the player was disconnected
+                        try{
+                            GameManager.getInstance().addPlayer(player,2);
+                        }catch (Exception e){
+                            if(Settings.DEBUG) System.out.println("EventHandler -> Ping: error in adding player after Ping");
+                        }
+                    }
+                    lastPingTimes.replace(player, System.currentTimeMillis());
                 }
-                lastPingTimes.replace(player, System.currentTimeMillis());
             }
             UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player));
 

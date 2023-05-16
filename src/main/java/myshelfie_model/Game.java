@@ -241,10 +241,12 @@ public class Game {
      * @param username the username of the player to remove
      * @return whether the player has been removed or not
      */
-    public boolean removePlayer(String username){
+    public boolean removePlayer(String username) throws Exception{
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
                 playerStates.add(findPlayer(username),StateConnection.DISCONNECTED); //remove state connection
+
+                recalculateTurn();
                 return true;
             }
         }
@@ -338,17 +340,7 @@ public class Game {
         }
 
 
-        // go to the next player
-        int i = 0;
-       do{
-           turn = (turn + 1) % players.size();
-           i++;
-           if (i == players.size()) {
-               System.out.println("All players have lost connection");
-               //todo: manage the case in which all players have lost connection
-               throw new Exception("Take Tiles Failure: All players lost connection");
-           }
-       }while(!(playerStates.get(turn) == StateConnection.CONNECTED)); //check if new turn player is connected
+        recalculateTurn();
 
         return true;
     }
@@ -445,6 +437,20 @@ public class Game {
     }
 
     public String getTurn() {return players.get(turn).getUsername();}
+
+    private void recalculateTurn() throws Exception{
+        // go to the next player
+        int i = 0;
+        do{
+            turn = (turn + 1) % players.size();
+            i++;
+            if (i == players.size()) {
+                System.out.println("All players have lost connection");
+                //todo: manage the case in which all players have lost connection
+                throw new Exception("All players lost connection");
+            }
+        }while(!(playerStates.get(turn) == StateConnection.CONNECTED)); //check if new turn player is connected
+    }
 
 
     /**
