@@ -86,7 +86,7 @@ public class UpdateHandler {
 
         } else if (response instanceof ConnectUpdate) {
 
-            System.out.println("UpdateHandler-> handle(): ConnectUpdate received");
+            if(Settings.DEBUG)System.out.println("UpdateHandler-> handle(): ConnectUpdate received");
 
             GameState gameState = ((ConnectUpdate) response).getGameState();
             View.getInstance().initGameState(gameState);
@@ -121,7 +121,7 @@ public class UpdateHandler {
             //todo
             View.getInstance().gameFinishedForYou();
         } else {
-            System.out.println("response still not implemented in update handler");
+            if(Settings.DEBUG)System.out.println("UpdateHandler-> handle(): response still not implemented in update handler");
         }
     }
 

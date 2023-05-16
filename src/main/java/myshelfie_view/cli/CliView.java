@@ -280,7 +280,7 @@ public class CliView extends View {
                 break;
             }
         }
-
+//todo implementare versione con indirizzi ip
         if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
             try {
                 RMIClient.getInstance().connect("localhost");
