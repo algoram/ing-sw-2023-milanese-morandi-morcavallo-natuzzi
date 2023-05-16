@@ -75,7 +75,7 @@ public class CliView extends View {
                     }
 
                 }catch (IOException e) {
-                    e.printStackTrace();
+                    if (Settings.DEBUG) System.err.println("CliView ERROR - IO exception occured");
                 }finally {
                     if (input != null) {
                         if (!commandAvailable(input)) {
@@ -98,7 +98,7 @@ public class CliView extends View {
         try {
             askHostname();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("CliView ERROR - Exception while asking hostname");
         }
         askLogin();
     }
@@ -202,7 +202,7 @@ public class CliView extends View {
         try {
             EventDispatcher.getInstance().takeTiles(tiles, column);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("CliView ERROR - Failed to take the tiles");
         }
     }
 

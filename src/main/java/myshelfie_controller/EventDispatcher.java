@@ -40,7 +40,7 @@ public class EventDispatcher {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    if (Settings.DEBUG) System.err.println("EventDispatcher ERROR - Thread interrupted while sleeping");
                     pingThreadRun = false;
                 }
             }

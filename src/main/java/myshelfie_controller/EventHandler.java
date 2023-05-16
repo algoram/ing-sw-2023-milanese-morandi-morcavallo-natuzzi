@@ -296,7 +296,8 @@ public class EventHandler {
             }
 
         } else {
-            throw new RuntimeException("EventHandler-> handle():  Event not implemented");
+            if (Settings.DEBUG) System.err.println("EventHandler ERROR - Handle not implemented for this event");
+            //throw new RuntimeException("EventHandler-> handle():  Event not implemented");
         }
     }
 
@@ -311,7 +312,7 @@ public class EventHandler {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (Settings.DEBUG) System.err.println("EventHandler ERROR - Thread interrupted while sleeping");
             }
 
             Map<String,Long> lastPingTimescopy;

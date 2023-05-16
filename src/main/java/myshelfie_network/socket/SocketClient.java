@@ -52,7 +52,7 @@ public class SocketClient implements Client {
             outputStream.writeUnshared(EventDispatcher.getInstance().getUuid());
             outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("SocketClient ERROR - Failed to send UUID");
         }
         inputStream = new ObjectInputStream(socket.getInputStream());
 
@@ -64,7 +64,7 @@ public class SocketClient implements Client {
                     Response response = (Response) inputStream.readObject();
                     UpdateHandler.getInstance().handle(response);
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    if (Settings.DEBUG) System.err.println("SocketClient ERROR - Couldn't handle response");
                 }
             }
         }).start();
@@ -95,7 +95,7 @@ public class SocketClient implements Client {
             outputStream.writeObject(event);
             outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Settings.DEBUG) System.err.println("SocketClient ERROR - Couldn't dispatch event");
         }
     }
 }
