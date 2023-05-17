@@ -65,6 +65,9 @@ public class GameManager {
 
         //todo check add player corrected when someone reconnetcts after a disconnection not voluntary
         //todo implement it working when just one player is connected and so the game stopped
+        //if he wasn't connected and just one player was or (turn was unset recalculate turn)
+        //we could need something like backup turn to unset turn when everyone disconnected
+        //without losing memory of the turn
         if (playerToGame.containsKey(newPlayer)) { // if the player is already in a game
 
             int numGame = playerToGame.get(newPlayer);
