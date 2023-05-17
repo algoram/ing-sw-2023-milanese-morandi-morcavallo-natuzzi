@@ -237,21 +237,7 @@ public class EventHandler {
                     }
                     System.out.println();
 
-                    //Notify the success of the take tiles and update the view for all players
-                    GameState gameState = GameManager.getInstance().getGameState(player);
-                    System.out.println("EventHandler-> handle(): GameState has been updated" + gameState.toString());
 
-                    UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
-
-                    //todo here is the problem with the end of the game
-                    //i need a way for return to the player the update without calling yourturn if the game has to finish
-                    for (String p : players) {
-                        //send the update to all the players except the one who did the takeTiles
-                        // and the ones that lost connection
-                        if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
-                        }
-                    }
 
                     //if the player has finished the game
                     if (GameManager.getInstance().hasFinishedFirst(player)) {
@@ -261,8 +247,6 @@ public class EventHandler {
 
                         //let's see which one of the players has finished the game
                         //if he has started last the game must end for everyone
-
-
 
                         if (GameManager.getInstance().hasStartedLast(player)) {
                             System.out.println("EventHandler-> handle(): Player " + player + " has started last ");
@@ -305,19 +289,7 @@ public class EventHandler {
                         }
                     }
 
-                    //calculate it again because the game could have finished
-                    //and unSetTurn could have been called
-                    //it may be more efficient to calculate it only if the game has finished
-                    gameState = GameManager.getInstance().getGameState(player);
-
-                    for (String p : players) {
-                        //send the update to all the players except the one who did the takeTiles
-                        // and the ones that lost connection
-                        if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
-                        }
-                    }
-
+                    updatePlayers(player); //update with take tiles Success and Update
 
 
                 } catch (Exception e){
@@ -328,6 +300,20 @@ public class EventHandler {
         } else {
             if (Settings.DEBUG) System.err.println("EventHandler ERROR - Handle not implemented for this event");
             //throw new RuntimeException("EventHandler-> handle():  Event not implemented");
+        }
+    }
+
+    private void updatePlayers(String player){
+        GameState gameState = GameManager.getInstance().getGameState(player);
+
+        UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesSuccess(player, gameState));
+
+        for (String p : GameManager.getInstance().getPlayers(player)) {
+            //send the update to all the players except the one who did the takeTiles
+            // and the ones that lost connection
+            if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
+                UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
+            }
         }
     }
 

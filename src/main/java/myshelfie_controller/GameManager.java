@@ -1,5 +1,7 @@
 package myshelfie_controller;
 
+import myshelfie_controller.response.ConnectUpdate;
+import myshelfie_controller.response.TakeTilesUpdate;
 import myshelfie_model.Game;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
@@ -52,18 +54,16 @@ public class GameManager {
      * the function checks if there is a player with the same username
      * the server should not allow that 2 different players have the same username
      * it would mean that the player had lost connection
-     *
+     * <p>
      * otherwise it checks if there is a game with a free spot
      * if there is it adds the player to the game
      * otherwise it creates a new game and adds the player to it
      *
      * @param newPlayer the player to add
      * @param players   the number of players in the game
-     * @return true if the player was added, false if the addPlayer failed
      */
-    public Boolean addPlayer(String newPlayer, int players) throws Exception {
+    public void addPlayer(String newPlayer, int players) throws Exception {
 
-        //todo check add player corrected when someone reconnetcts after a disconnection not voluntary
         //todo implement it working when just one player is connected and so the game stopped
         //if he wasn't connected and just one player was or (turn was unset recalculate turn)
         //we could need something like backup turn to unset turn when everyone disconnected
@@ -82,7 +82,26 @@ public class GameManager {
             }else if(state.equals(Game.StateConnection.CONNECTED)) {
                 throw new Exception("Player already connected in a game");
             }else{
-                return games.get(numGame).addPlayer(newPlayer);
+
+                if(games.get(numGame).addPlayer(newPlayer)){
+
+                    //let's check if the game stopped due to disconnection
+                    if (games.get(numGame).getTurnMemory() != null){
+                        System.out.println("GameManager->addPlayer(): Game stopped due to disconnection, restarting it");
+                        games.get(numGame).recalculateTurn();
+                    }
+
+                    //let's update the player of restart
+                    GameState gameState = getGameState(newPlayer);
+                    for (String p : games.get(numGame).getPlayersUsernames()) {
+                        if (!GameManager.getInstance().alreadySetLostConnection(p)) {
+                            UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                        }
+                    }
+
+                    return;
+                }
+
             }
         }
 
@@ -94,9 +113,9 @@ public class GameManager {
 
                 if (games.get(i).addPlayer(newPlayer)) {
                     playerToGame.put(newPlayer, i); // save which game the player is playing
-                    return true;
+                    return;
                 }
-                else { return false;}
+
             }
         }
 
@@ -106,9 +125,8 @@ public class GameManager {
         if (game.addPlayer(newPlayer)) {
             games.add(game);
             playerToGame.put(newPlayer, games.size() - 1); // save which game the player is playing
-            return true;
         }
-        else { return false;}
+
     }
 
 

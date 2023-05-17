@@ -17,6 +17,7 @@ public class Game {
 
     private int playerSeat;
     private int turn;
+    private Integer turnMemory = null; // used to remember the turn when just a player is still connected
     private int finishedFirst;
 
     private Board board;
@@ -185,11 +186,6 @@ public class Game {
      * @return whether the player has been added or not
      */
     public boolean addPlayer(String username) throws Exception{
-        // should not be possible to enter this if
-        if (players.size() == numberOfPlayers) {
-            if (Settings.DEBUG)System.out.println("Game -> AddPlayer: The game is full error in calling addPlayer()");
-            throw new Exception("The game is full, should not be possible to enter this if");
-        }
 
         // check that there's not someone with the same username
         for (Player player : players) {
@@ -236,20 +232,21 @@ public class Game {
 
     /**
      * Removes a player from the game when it disconnects
+     *
      * @param username the username of the player to remove
-     * @return whether the player has been removed or not
      */
-    public boolean removePlayer(String username) throws Exception{
+    public void removePlayer(String username) throws Exception{
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
                 playerStates.add(findPlayer(username),StateConnection.DISCONNECTED); //remove state connection
 
-                recalculateTurn();
-                return true;
+                if(players.get(turn).getUsername().equals(username)) //if the player is the active player
+                    recalculateTurn();
+
+                return;
             }
         }
         checkSomeOneStillConnected(username);
-        return false;
     }
 
     /**
@@ -338,7 +335,12 @@ public class Game {
             return true;
         }
 
-        recalculateTurn();
+        //if the turn is unsetted during my take tiles, I should not recalculate it again but just
+        // change the turn memory. (it was on me but now has to be no more)
+        if (turn != -1) recalculateTurn();
+        else {
+            turnMemory =(turnMemory + 1) % players.size(); //no problem if next player is disconnected, we will check it later in recalculateTurn
+        }
 
         return true;
     }
@@ -441,13 +443,30 @@ public class Game {
             return null;
     }
 
-    private void recalculateTurn() throws Exception{
+    /**
+     * Calculates the next turn.
+     * If there is a turn memory it means that one player was left alone in the game.
+     * In this case the turn is set to memory, and it may be non connected anymore:
+     * player A,B,C are playing. C is of turn. B and C disconnect simultaneously. C is set to memory turn.
+     * If B reconnects turnMemory will remember about C, but he is still disconnected, so we have to recalculate the turn.
+     */
+    public void recalculateTurn() throws Exception{
+
+        if (turnMemory != null){ //if there is a turn memory
+
+            turn = turnMemory; //set the turn to the turn memory
+            turnMemory = null; //reset the turn memory
+            if (!playerStates.get(turn).equals(StateConnection.CONNECTED)) //if the player that was on memory turn is not connected explanation in javadoc
+                recalculateTurn();
+            else
+                return;
+        }
+
         // go to the next player
-        int i = 0;
+        int saveTurn = turn;
         do{
             turn = (turn + 1) % players.size();
-            i++;
-            if (i == players.size()-1) {
+            if (turn == saveTurn) {
                 System.out.println("just one player left connected...\nhe is going to wait for someone else to reconnect");
                 unSetTurn();
             }
@@ -457,10 +476,17 @@ public class Game {
     public void unSetTurn(){
         System.out.println("GAME -> UNSETTurn: Turn is now unset");
         if(turn == -1)
-            System.out.println("GAME -> UNSETTurn: Turn is already unset IMPOSSIBLE");
+            System.out.println("GAME -> UNSETTurn: Turn is already unset, this is no error");
         turn = -1;
     }
 
+    public void setTurnMemory(int turnMemory) {
+        this.turnMemory = turnMemory;
+    }
+
+    public Integer getTurnMemory() {
+        return turnMemory;
+    }
 
     /**
      * set the player state to zero -> disconnected
@@ -473,8 +499,21 @@ public class Game {
             return false;
         }
         playerStates.add(findPlayer(player), StateConnection.LOST_CONNECTION);
+        if (justOnePlayerConnected()) {
+            System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
+            unSetTurn();
+        }
         checkSomeOneStillConnected(player);
         return true;
+    }
+
+    private boolean justOnePlayerConnected(){
+        int connectedPlayers = 0;
+        for (StateConnection state: playerStates) {
+            if (state == StateConnection.CONNECTED)
+                connectedPlayers++;
+        }
+        return connectedPlayers == 1;
     }
 
     private void checkSomeOneStillConnected(String player){
@@ -490,20 +529,17 @@ public class Game {
 
     /**
      * check if the player has already lost connection
-     * @param player
+     * @param  player the player to check
      * @return true if the player has already lost connection
      */
     public boolean alreadySetLostConnection(String player){
-        if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED){
-            return true;
-        }
-        return false;
+        return playerStates.get(findPlayer(player)) != StateConnection.CONNECTED;
     }
 
     /**
      * returns the index of the player in the players arraylist
      * @param player
-     * @return
+     * @return the index of the player in the players arraylist
      */
     public int findPlayer(String player) {
         for (int i = 0; i < players.size(); i++) {
