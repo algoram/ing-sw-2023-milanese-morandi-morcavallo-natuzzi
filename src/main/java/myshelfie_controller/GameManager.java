@@ -63,9 +63,9 @@ public class GameManager {
      */
     public Boolean addPlayer(String newPlayer, int players) throws Exception {
 
+        //todo check add player corrected when someone reconnetcts after a disconnection not voluntary
+        //todo implement it working when just one player is connected and so the game stopped
         if (playerToGame.containsKey(newPlayer)) { // if the player is already in a game
-
-
 
             int numGame = playerToGame.get(newPlayer);
             int numPlayerInGame = games.get(numGame).findPlayer(newPlayer);

@@ -1,5 +1,6 @@
 package myshelfie_model;
 
+import myshelfie_controller.GameManager;
 import myshelfie_controller.Settings;
 import myshelfie_model.board.Board;
 import myshelfie_model.board.Board2players;
@@ -247,6 +248,7 @@ public class Game {
                 return true;
             }
         }
+        checkSomeOneStillConnected(username);
         return false;
     }
 
@@ -445,15 +447,15 @@ public class Game {
         do{
             turn = (turn + 1) % players.size();
             i++;
-            if (i == players.size()) {
-                System.out.println("All players have lost connection");
-                //todo: manage the case in which all players have lost connection
-                throw new Exception("All players lost connection");
+            if (i == players.size()-1) {
+                System.out.println("just one player left connected...\nhe is going to wait for someone else to reconnect");
+                unSetTurn();
             }
         }while(!(playerStates.get(turn) == StateConnection.CONNECTED)); //check if new turn player is connected
     }
 
     public void unSetTurn(){
+        System.out.println("GAME -> UNSETTurn: Turn is now unset");
         if(turn == -1)
             System.out.println("GAME -> UNSETTurn: Turn is already unset IMPOSSIBLE");
         turn = -1;
@@ -471,7 +473,19 @@ public class Game {
             return false;
         }
         playerStates.add(findPlayer(player), StateConnection.LOST_CONNECTION);
+        checkSomeOneStillConnected(player);
         return true;
+    }
+
+    private void checkSomeOneStillConnected(String player){
+        for (Player p: players) {
+            if (playerStates.get(findPlayer(p.getUsername())) == StateConnection.CONNECTED){
+                return;
+            }
+        }
+        System.out.println("GAME -> checkSomeOneStillConnected: All players have lost connection");
+        //let's close the game
+        GameManager.getInstance().closeGame(player);
     }
 
     /**
