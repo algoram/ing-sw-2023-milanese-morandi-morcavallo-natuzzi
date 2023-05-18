@@ -64,7 +64,6 @@ public class GameManager {
      */
     public void addPlayer(String newPlayer, int players) throws Exception {
 
-        //todo implement it working when just one player is connected and so the game stopped
         //if he wasn't connected and just one player was or (turn was unset recalculate turn)
         //we could need something like backup turn to unset turn when everyone disconnected
         //without losing memory of the turn
@@ -94,7 +93,7 @@ public class GameManager {
                     //let's update the player of restart
                     GameState gameState = getGameState(newPlayer);
                     for (String p : games.get(numGame).getPlayersUsernames()) {
-                        if (!GameManager.getInstance().alreadySetLostConnection(p)) {
+                        if (!p.equals(newPlayer) && !GameManager.getInstance().alreadySetLostConnection(p)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
                         }
                     }
@@ -131,6 +130,10 @@ public class GameManager {
 
 
     public boolean takeTiles(String player, int column, List<Position> tiles) throws Exception {
+        int numGame = playerToGame.get(player);
+        if (games.get(numGame).getTurn() == null) {
+            throw new Exception("The game is Paused due to disconnection of another player");
+        }
         return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
     }
 
@@ -138,6 +141,11 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getNumberOfPlayers();
     }
 
+    public boolean isConnected(String player){
+        int numGame = playerToGame.get(player);
+        int numPlayer = games.get(numGame).findPlayer(player);
+        return games.get(numGame).getPlayerStates().get(numPlayer).equals(Game.StateConnection.CONNECTED);
+    }
     /**
      * This function is called from event handler when a player disconnects from a game.
      * @param player the player that disconnected

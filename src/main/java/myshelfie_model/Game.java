@@ -286,7 +286,6 @@ public class Game {
         // check if it's the playerNumber's turn
         if (playerNumber != turn) {
             if (Settings.DEBUG)System.out.println("GAME -> take TILES !=playerNUm turn IMPOSSIBLE");
-            turn = playerNumber;
         }
 
         // check that the player has enough space in the bookshelf
@@ -477,11 +476,8 @@ public class Game {
         System.out.println("GAME -> UNSETTurn: Turn is now unset");
         if(turn == -1)
             System.out.println("GAME -> UNSETTurn: Turn is already unset, this is no error");
+        turnMemory = turn;
         turn = -1;
-    }
-
-    public void setTurnMemory(int turnMemory) {
-        this.turnMemory = turnMemory;
     }
 
     public Integer getTurnMemory() {
@@ -498,7 +494,7 @@ public class Game {
             System.out.println("Player " + player + " had already lost connection or disconnected"); //Debug messages
             return false;
         }
-        playerStates.add(findPlayer(player), StateConnection.LOST_CONNECTION);
+        playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
             unSetTurn();

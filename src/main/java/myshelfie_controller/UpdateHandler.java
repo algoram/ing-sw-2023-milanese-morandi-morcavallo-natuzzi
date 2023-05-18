@@ -66,7 +66,8 @@ public class UpdateHandler {
 
             View.getInstance().playerDisconnected(playerout);
 
-            playerTurn(playerTurn);
+            if (playerTurn != null) playerTurn(playerTurn);
+            //todo here an else should notify that the player has to wait for the other player to reconnect
 
         } else if (response instanceof MessageSendSuccess) {
             View.getInstance().messageSentSuccessfully();
@@ -112,7 +113,6 @@ public class UpdateHandler {
 
             String reason = ((TakeTilesFailure) response).getReason();
             View.getInstance().takeFailed(reason);
-            //thi cli already runs the take turn again
 
         } else if (response instanceof GameFinished) {
             String winner = ((GameFinished) response).getWinner();

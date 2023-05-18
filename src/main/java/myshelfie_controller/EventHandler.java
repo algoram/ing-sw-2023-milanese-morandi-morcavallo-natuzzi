@@ -109,7 +109,7 @@ public class EventHandler {
 
                     }
                     if(GameManager.getInstance().alreadySetLostConnection(to)){
-                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player,"The player " + player + " has lost the connection"));
+                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player,"The player " + to + " has lost the connection"));
                     }
 
                     else UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(to, message, player, false));
@@ -117,7 +117,7 @@ public class EventHandler {
                 } else {
                     List<String> players = GameManager.getInstance().getPlayers(player);
                     for (String p : players) {
-                        if (!p.equals(player)) {
+                        if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
                             UpdateDispatcher.getInstance().dispatchResponse(new MessageSendResponse(p, message, player, true));
 
                         }
@@ -203,7 +203,7 @@ public class EventHandler {
 
                     if (GameManager.getInstance().alreadySetLostConnection(player)) {//if the player was disconnected
                         try{
-                            GameManager.getInstance().addPlayer(player,2);
+                            GameManager.getInstance().addPlayer(player,2); //the number doesn't count
                         }catch (Exception e){
                             if(Settings.DEBUG) System.out.println("EventHandler -> Ping: error in adding player after Ping");
                         }
@@ -211,7 +211,7 @@ public class EventHandler {
                     lastPingTimes.replace(player, System.currentTimeMillis());
                 }
             }
-            UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player));
+            if (GameManager.getInstance().isConnected(player)) UpdateDispatcher.getInstance().dispatchResponse(new PingAck(player));
 
         } else if (event instanceof TakeTiles){
             System.out.println("EventHandler-> handle(): TakeTiles");
