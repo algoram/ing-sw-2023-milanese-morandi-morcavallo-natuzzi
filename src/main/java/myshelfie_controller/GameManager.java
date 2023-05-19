@@ -62,8 +62,9 @@ public class GameManager {
      *
      * @param newPlayer the player to add
      * @param players   the number of players in the game
+     * @return true if the player was new, false if he was already in a game
      */
-    public void addPlayer(String newPlayer, int players) throws Exception {
+    public boolean addPlayer(String newPlayer, int players) throws Exception {
 
         //if he wasn't connected and just one player was or (turn was unset recalculate turn)
         //we could need something like backup turn to unset turn when everyone disconnected
@@ -82,38 +83,9 @@ public class GameManager {
             }else if(state.equals(Game.StateConnection.CONNECTED)) {
                 throw new Exception("Player already connected in a game");
             }else{
-
-                if(games.get(numGame).addPlayer(newPlayer)){/*
-                    //let's check if the game stopped due to disconnection
-                    if (games.get(numGame).getTurnMemory() != null){
-                        System.out.println("GameManager->addPlayer(): Game stopped due to disconnection, restarting it");
-                        String turnMemoryOld = games.get(numGame).getTurnMemory();
-                        games.get(numGame).recalculateTurn();
-
-                        //let's update the player of restart
-                        GameState gameState = getGameState(newPlayer);
-                        for (String p : games.get(numGame).getPlayersUsernames()) {
-                            if (!p.equals(newPlayer) && !GameManager.getInstance().alreadySetLostConnection(p)) {
-
-                                //here there is a problem with the player that was on turn
-                                if(!turnMemoryOld.equals(p)){
-                                    UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
-                                }
-                                else{// I need to be sure that the Connect Update is sent after the takeTilesFAilure
-                                    if(TakeStoppedReceived.containsKey(p)){
-                                        UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
-                                        TakeStoppedReceived.remove(p);
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-*/
-                    return;
-                }
-
+                games.get(numGame).addPlayer(newPlayer);
             }
+            return false;
         }
 
 
@@ -124,7 +96,7 @@ public class GameManager {
 
                 if (games.get(i).addPlayer(newPlayer)) {
                     playerToGame.put(newPlayer, i); // save which game the player is playing
-                    return;
+                    return true;
                 }
 
             }
@@ -137,7 +109,7 @@ public class GameManager {
             games.add(game);
             playerToGame.put(newPlayer, games.size() - 1); // save which game the player is playing
         }
-
+        return true;
     }
 
 
@@ -214,6 +186,10 @@ public class GameManager {
         return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals, bag);
     }
 
+    public void recalculateTurn(String player){
+        int numGame = playerToGame.get(player);
+        games.get(numGame).recalculateTurn();
+    }
 
     //all the functions below are used to get the gameState and may become private later
     private Board getBoard(Integer game) {

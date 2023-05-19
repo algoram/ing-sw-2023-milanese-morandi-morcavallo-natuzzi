@@ -78,7 +78,7 @@ public class Game {
      */
     public void startGame(int numPlayers) {
         Random random = new Random();
-        flagGameStarted = true
+        flagGameStarted = true;
 
         // clamp the number of players
         if (numPlayers < 2) numPlayers = 2;
@@ -198,7 +198,9 @@ public class Game {
             if (player.getUsername().equals(username)) {
 
                 if (playerStates.get(findPlayer(username)) == StateConnection.LOST_CONNECTION) { //if the player has lost connection
-                    playerStates.add(findPlayer(username), StateConnection.CONNECTED);
+
+                    System.out.println("Game -> addPlayer: Setting player of index: "+ findPlayer(username) +" username:" + username + " to connected");
+                    playerStates.set(findPlayer(username), StateConnection.CONNECTED);
                     return true;
                 }
                 System.out.println("There's already someone with the same username that did not lose connection -> error");
@@ -455,14 +457,15 @@ public class Game {
      * player A,B,C are playing. C is of turn. B and C disconnect simultaneously. C is set to memory turn.
      * If B reconnects turnMemory will remember about C, but he is still disconnected, so we have to recalculate the turn.
      */
-    public void recalculateTurn() throws Exception{
+    public void recalculateTurn(){
 
         if (turnMemory != null){ //if there is a turn memory
-
             turn = turnMemory; //set the turn to the turn memory
             turnMemory = null; //reset the turn memory
-            if (!playerStates.get(turn).equals(StateConnection.CONNECTED)) //if the player that was on memory turn is not connected explanation in javadoc
+            if (!playerStates.get(turn).equals(StateConnection.CONNECTED)) { //if the player that was on memory turn is not connected explanation in javadoc
+                System.out.println("GAME -> recalculateTurn: player on turnMemory is not connected, recalculating turn");
                 recalculateTurn();
+            }
             else
                 return;
         }
