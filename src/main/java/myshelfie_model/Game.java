@@ -13,6 +13,7 @@ import myshelfie_model.player.Player;
 import java.util.*;
 
 public class Game {
+    private boolean flagGameStarted = false;
     public final int MAX_PLAYERS = 4;
 
     private int playerSeat;
@@ -77,6 +78,7 @@ public class Game {
      */
     public void startGame(int numPlayers) {
         Random random = new Random();
+        flagGameStarted = true
 
         // clamp the number of players
         if (numPlayers < 2) numPlayers = 2;
@@ -170,6 +172,10 @@ public class Game {
 
         // no one has finished yet
         finishedFirst = -1;
+    }
+
+    public boolean isGameStarted() {
+        return flagGameStarted;
     }
 
     /**
@@ -480,8 +486,11 @@ public class Game {
         turn = -1;
     }
 
-    public Integer getTurnMemory() {
-        return turnMemory;
+    public String getTurnMemory() {
+        if(turnMemory != null)
+            return players.get(turnMemory).getUsername();
+        else
+            return null;
     }
 
     /**

@@ -69,7 +69,7 @@ public class SocketServer implements Server {
                             EventHandler.getInstance().addToEventQueue(event);
                         } else {
                             if (Settings.DEBUG) System.err.println("SocketServer ERROR - Invalid data type from client");
-                            //throw new RuntimeException("SocketServer->start(): Invalid data type from client");
+                            throw new RuntimeException("SocketServer->start(): Invalid data type from client");
                         }
                     }
                 } catch (IOException e) {

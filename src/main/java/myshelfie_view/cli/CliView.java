@@ -186,8 +186,14 @@ public class CliView extends View {
 
     @Override
     public void takeFailed(String reason) {
-        out.println("Take failed: " + reason);
-        if (!reason.equals("The game is Paused due to disconnection of another player")) yourTurn();
+        out.println("TakeTiles failed: " + reason);
+        if (reason.equals("The game is Paused due to disconnection of another player")){
+            synchronized (lockInOut) {
+                isMyTurn = false;
+                lockInOut.notifyAll();
+            }
+        }
+        else yourTurn();
     }
 
     @Override

@@ -25,6 +25,7 @@ public class GameManager {
     private final ArrayList<Game> games = new ArrayList<>();
     private final HashMap<String, Integer> playerToGame = new HashMap<>();
 
+    private HashMap<String, String> TakeStoppedReceived = new HashMap<>();
     private static GameManager instance = null;
 
     private GameManager() {
@@ -82,22 +83,33 @@ public class GameManager {
                 throw new Exception("Player already connected in a game");
             }else{
 
-                if(games.get(numGame).addPlayer(newPlayer)){
-
+                if(games.get(numGame).addPlayer(newPlayer)){/*
                     //let's check if the game stopped due to disconnection
                     if (games.get(numGame).getTurnMemory() != null){
                         System.out.println("GameManager->addPlayer(): Game stopped due to disconnection, restarting it");
+                        String turnMemoryOld = games.get(numGame).getTurnMemory();
                         games.get(numGame).recalculateTurn();
-                    }
 
-                    //let's update the player of restart
-                    GameState gameState = getGameState(newPlayer);
-                    for (String p : games.get(numGame).getPlayersUsernames()) {
-                        if (!p.equals(newPlayer) && !GameManager.getInstance().alreadySetLostConnection(p)) {
-                            UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                        //let's update the player of restart
+                        GameState gameState = getGameState(newPlayer);
+                        for (String p : games.get(numGame).getPlayersUsernames()) {
+                            if (!p.equals(newPlayer) && !GameManager.getInstance().alreadySetLostConnection(p)) {
+
+                                //here there is a problem with the player that was on turn
+                                if(!turnMemoryOld.equals(p)){
+                                    UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                }
+                                else{// I need to be sure that the Connect Update is sent after the takeTilesFAilure
+                                    if(TakeStoppedReceived.containsKey(p)){
+                                        UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                        TakeStoppedReceived.remove(p);
+                                    }
+                                }
+
+                            }
                         }
                     }
-
+*/
                     return;
                 }
 
@@ -132,6 +144,7 @@ public class GameManager {
     public boolean takeTiles(String player, int column, List<Position> tiles) throws Exception {
         int numGame = playerToGame.get(player);
         if (games.get(numGame).getTurn() == null) {
+            TakeStoppedReceived.put(player, "true");
             throw new Exception("The game is Paused due to disconnection of another player");
         }
         return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
@@ -141,6 +154,14 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getNumberOfPlayers();
     }
 
+    public String getTurnMemory(String player) {
+        return games.get(playerToGame.get(player)).getTurnMemory();
+    }
+
+    public boolean isGameStarted(String player) {
+        int numGame = playerToGame.get(player);
+        return games.get(numGame).isGameStarted();
+    }
     public boolean isConnected(String player){
         int numGame = playerToGame.get(player);
         int numPlayer = games.get(numGame).findPlayer(player);

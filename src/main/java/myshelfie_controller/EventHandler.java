@@ -152,14 +152,46 @@ public class EventHandler {
                 //if everyone is connected send the connection update to all players
                 if(GameManager.getInstance().getPlayers(player).size() == GameManager.getInstance().getNumberOfPlayers(player)){
 
+                    if (GameManager.getInstance().isGameStarted(player) && GameManager.getInstance().getTurnMemory(player) != null){ //if the game was blocked due to a disconnection
+                        //I have to update both players of the start but I have to diffferentiate case for the one who was playing
+                        //otherwise the player who was playing will receive the Connect update before the takeTilesFailure
+                        System.out.println("GameManager->addPlayer(): Game stopped due to disconnection, restarting it");
+                        String turnMemoryOld = GameManager.getInstance().getTurnMemory(player);
+                        GameManager.getInstance().recalculateTurn(player);
 
-                    GameState gameState = GameManager.getInstance().getGameState(player);
-                    String nextPlayer = gameState.getPlayerTurn();
-                    System.out.println("EventHandler-> handle(): Sendind connect update to : " + nextPlayer);
+                        //let's update the player of restart
+                        GameState gameState = GameManager.getInstance().getGameState(player);
+                        for (String p : games.get(numGame).getPlayersUsernames()) {
+                            if (!p.equals(newPlayer) && !GameManager.getInstance().alreadySetLostConnection(p)) {
 
-                    List<String> players = GameManager.getInstance().getPlayers(player);
-                    for(String p : players){
-                        UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                //here there is a problem with the player that was on turn
+                                if(!turnMemoryOld.equals(p)){
+                                    UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                }
+                                else{// I need to be sure that the Connect Update is sent after the takeTilesFAilure
+                                    if(TakeStoppedReceived.containsKey(p)){
+                                        UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                        TakeStoppedReceived.remove(p);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    else if(GameManager.getInstance().isGameStarted(player)){ // if the game did not stop but it was already started
+                        System.out.println("GameManager->addPlayer(): Game already started, sending connect update");
+                        // I should update just the player who reconnected
+                    }
+                    else{
+                        GameState gameState = GameManager.getInstance().getGameState(player);
+                        String nextPlayer = gameState.getPlayerTurn();
+                        System.out.println("EventHandler-> handle(): Sending connect update to all:");
+
+                        List<String> players = GameManager.getInstance().getPlayers(player);
+                        for(String p : players){
+                            UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                        }
+
                     }
 
                 }
