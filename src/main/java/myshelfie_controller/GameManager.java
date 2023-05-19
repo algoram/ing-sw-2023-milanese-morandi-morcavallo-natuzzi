@@ -25,7 +25,7 @@ public class GameManager {
     private final ArrayList<Game> games = new ArrayList<>();
     private final HashMap<String, Integer> playerToGame = new HashMap<>();
 
-    private HashMap<String, String> TakeStoppedReceived = new HashMap<>();
+    private ArrayList TakeStoppedReceived = new ArrayList();
     private static GameManager instance = null;
 
     private GameManager() {
@@ -116,10 +116,18 @@ public class GameManager {
     public boolean takeTiles(String player, int column, List<Position> tiles) throws Exception {
         int numGame = playerToGame.get(player);
         if (games.get(numGame).getTurn() == null) {
-            TakeStoppedReceived.put(player, "true");
+            TakeStoppedReceived.add(player);//the controller need to know if the player has noticed that the game was "stopped"
             throw new Exception("The game is Paused due to disconnection of another player");
         }
         return games.get(playerToGame.get(player)).takeTiles(player, tiles, column);
+    }
+
+    public boolean alreadyNotified(String player){
+        return TakeStoppedReceived.contains(player);
+    }
+
+    public void resetNotified(String player){
+        TakeStoppedReceived.remove(player);
     }
 
     public int getNumberOfPlayers(String player) {
@@ -130,10 +138,6 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getTurnMemory();
     }
 
-    public boolean isGameStarted(String player) {
-        int numGame = playerToGame.get(player);
-        return games.get(numGame).isGameStarted();
-    }
     public boolean isConnected(String player){
         int numGame = playerToGame.get(player);
         int numPlayer = games.get(numGame).findPlayer(player);

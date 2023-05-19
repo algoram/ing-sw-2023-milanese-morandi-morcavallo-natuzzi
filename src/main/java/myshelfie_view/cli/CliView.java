@@ -725,4 +725,8 @@ public class CliView extends View {
         }
     }
 
+    @Override
+    public boolean getIsMyTurn() {
+        return isMyTurn;
+    }
 }

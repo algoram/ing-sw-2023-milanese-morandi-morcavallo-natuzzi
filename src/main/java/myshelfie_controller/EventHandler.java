@@ -159,17 +159,24 @@ public class EventHandler {
                             //I have to update both players of the start of the game
 
                             System.out.println("EventHandler ->handle ->addPlayer(): Game stopped due to disconnection, restarting it");
-                            //String turnMemoryOld = GameManager.getInstance().getTurnMemory(player);
+                            String turnMemoryOld = GameManager.getInstance().getTurnMemory(player);
                             GameManager.getInstance().recalculateTurn(player);
+
+                            //we don't want to notify anything to the player who was of turn if he did not even know of disconnection
+                            boolean playerOfTurnWasNotified = false;
+                            playerOfTurnWasNotified = GameManager.getInstance().alreadyNotified(turnMemoryOld);
 
                             //let's update the player of restart
                             GameState gameState = GameManager.getInstance().getGameState(player);
                             for (String p : GameManager.getInstance().getPlayers(player)) {
                                 if (!GameManager.getInstance().alreadySetLostConnection(p)) {
-                                    System.out.println("EventHandler ->handle ->addPlayer(): Sending connect update to: " + p);
-                                    UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                    if (p.equals(player) || !p.equals(turnMemoryOld) || playerOfTurnWasNotified) {
+                                        System.out.println("EventHandler ->handle ->addPlayer(): Sending connect update to: " + p);
+                                        UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                                    }
                                 }
                             }
+                            GameManager.getInstance().resetNotified(turnMemoryOld);
                         }
                         else{
                             //the game was not blocked, so I have to update only the player who's doing the Connect

@@ -66,7 +66,7 @@ public class UpdateHandler {
 
             View.getInstance().playerDisconnected(playerout);
 
-            if (playerTurn != null) playerTurn(playerTurn);
+            if (playerTurn != null && !View.getInstance().getIsMyTurn()) playerTurn(playerTurn);
             //todo here an else should notify that the player has to wait for the other player to reconnect
 
         } else if (response instanceof MessageSendSuccess) {

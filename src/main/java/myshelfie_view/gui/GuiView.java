@@ -41,6 +41,8 @@ public class GuiView extends View {
     private SetupSceneController setupSceneController;
     private static GuiView instance = null;
 
+    private boolean isMyTurn = false;//todo implement use of this variable
+
     private GuiView() {}
 
     public GameController getGameController() {
@@ -453,5 +455,10 @@ public class GuiView extends View {
     @Override
     public void start() {
 
+    }
+
+    @Override
+    public boolean getIsMyTurn() {
+        return isMyTurn;
     }
 }

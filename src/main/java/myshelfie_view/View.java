@@ -39,4 +39,5 @@ public abstract class View {
     public abstract void displayNewSetup(GameState gameState);
     public abstract void gameFinished(String winner);
     public abstract void gameFinishedForYou();
+    public abstract boolean getIsMyTurn();
 }

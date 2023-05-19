@@ -511,7 +511,11 @@ public class Game {
             System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
             unSetTurn();
         }
-        checkSomeOneStillConnected(player);
+        else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
+            System.out.println("GAME -> setLostConnection: The player who lost connection was on turn, recalculating turn");
+            recalculateTurn();
+        }
+        else checkSomeOneStillConnected(player); //if not it close the game
         return true;
     }
 
