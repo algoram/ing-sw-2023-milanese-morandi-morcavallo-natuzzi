@@ -277,6 +277,8 @@ public class GameManager {
     public void closeGame(String player) {
         int game = playerToGame.get(player);
 
+        EventHandler.getInstance().closeGame(games.get(game).getPlayersUsernames());
+
         for(String p: games.get(game).getPlayersUsernames()){
 
             //remove player from server

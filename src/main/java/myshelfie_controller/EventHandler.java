@@ -369,29 +369,33 @@ public class EventHandler {
             synchronized (lastPingTimes) {
                 lastPingTimescopy = new HashMap<>(lastPingTimes);
             }
-            for (String player : lastPingTimes.keySet()){
+            for (String player : lastPingTimescopy.keySet()){
 
-                if (System.currentTimeMillis() - lastPingTimescopy.get(player) > 5000){
+                if (System.currentTimeMillis() - lastPingTimescopy.get(player) < 5000) continue;
+                //if the lost of the connection is not New
+                if(GameManager.getInstance().alreadySetLostConnection(player)) continue;
 
-                    //if the lost of the connection is New
-                    if(!GameManager.getInstance().alreadySetLostConnection(player)) {
+                GameManager.getInstance().setLostConnection(player); //set the lost in game
 
-                        GameManager.getInstance().setLostConnection(player); //set the lost in game
+                List<String> players = GameManager.getInstance().getPlayers(player);
+                for (String p : players) { //update the other players
+                    if (!p.equals(player)) {
 
-                        List<String> players = GameManager.getInstance().getPlayers(player);
-                        for (String p : players) { //update the other players
-                            if (!p.equals(player)) {
+                        if (Settings.DEBUG)
+                            System.out.println("EventHandler->lastPingChecker(): PlayerDisconnectSuccess of player " + player + " for "+ p);
 
-                                if (Settings.DEBUG)
-                                    System.out.println("EventHandler->lastPingChecker(): PlayerDisconnectSuccess of player " + player + " for "+ p);
-
-
-                                UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
-                                        player, GameManager.getInstance().getTurn(player)));
-                            }
-                        }
+                        UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
+                                player, GameManager.getInstance().getTurn(player)));
                     }
                 }
+            }
+        }
+    }
+
+    public void closeGame(List<String> player){
+        for (String p : player){
+            synchronized (lastPingTimes) {
+                lastPingTimes.remove(p);
             }
         }
     }
