@@ -32,11 +32,7 @@ public class FXApp extends Application {
             if (Settings.DEBUG) System.err.println("FXApp ERROR - Couldn't load fxml file");
         }
 
-        System.out.println("FXApp - " + GuiView.getInstance());
-
-        GameController gameController = loader.getController();
-
-        GuiView.getInstance().setGameController(gameController);
+        GuiView.getInstance().setGameController(loader.getController());
 
         Scene scene = new Scene(root);
 
@@ -55,7 +51,6 @@ public class FXApp extends Application {
 
         try {
             Parent setupScene = loader.load();
-
             GuiView.getInstance().setSetupSceneController(loader.getController());
 
             stage.setScene(new Scene(setupScene));

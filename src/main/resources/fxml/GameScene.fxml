@@ -21,9 +21,9 @@
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <fx:include fx:id="token1" source="tokens/scoring_token.fxml" />
+                              <fx:include fx:id="token1" source="tokens/ScoringToken.fxml" />
                               <Pane prefHeight="200.0" prefWidth="200.0" />
-                              <fx:include fx:id="token2" source="tokens/scoring_token.fxml" />
+                              <fx:include fx:id="token2" source="tokens/ScoringToken.fxml" />
                            </children>
                         </HBox>
                         <fx:include fx:id="personalGoal" source="personal_goal/PersonalGoal.fxml" />
@@ -33,37 +33,10 @@
             </HBox>
             <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <ImageView fitHeight="280.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/boards/bookshelf_orth.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/boards/bookshelf_orth.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="32.0" />
-                     </HBox.margin>
-                  </ImageView>
-                  <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="322.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/boards/bookshelf_orth.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="32.0" />
-                     </HBox.margin>
-                  </ImageView>
-                  <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="554.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/boards/bookshelf_orth.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="32.0" />
-                     </HBox.margin>
-                  </ImageView>
-               </children>
+               <fx:include fx:id="player1" source="bookshelf/Bookshelf.fxml"/>
+               <fx:include fx:id="player2" source="bookshelf/Bookshelf.fxml"/>
+               <fx:include fx:id="player3" source="bookshelf/Bookshelf.fxml"/>
+               <fx:include fx:id="player4" source="bookshelf/Bookshelf.fxml"/>
             </HBox>
          </children>
       </VBox>

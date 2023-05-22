@@ -7,6 +7,7 @@ import myshelfie_model.GameState;
 import myshelfie_model.goal.Token;
 import myshelfie_model.player.Player;
 import myshelfie_view.gui.controllers.board.BoardController;
+import myshelfie_view.gui.controllers.bookshelf.BookshelfController;
 import myshelfie_view.gui.controllers.personal_goal.PersonalGoalController;
 import myshelfie_view.gui.controllers.tokens.ScoringTokenController;
 
@@ -21,13 +22,34 @@ public class GameController implements Initializable {
     @FXML private ScoringTokenController token2Controller;
     @FXML private PersonalGoalController personalGoalController;
 
+    @FXML private BookshelfController player1Controller; // local player
+    @FXML private BookshelfController player2Controller;
+    @FXML private BookshelfController player3Controller;
+    @FXML private BookshelfController player4Controller;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Initialized GameController");
+        player1Controller.setVisible(true); // show the local player
     }
 
     public void setGameState(GameState gameState) {
         System.out.println("GameController::setGameState called");
+
+        // set the number of players
+        int numPlayers = gameState.getPlayers().size();
+
+        if (numPlayers >= 2) {
+            player2Controller.setVisible(true);
+        }
+
+        if (numPlayers >= 3) {
+            player3Controller.setVisible(true);
+        }
+
+        if (numPlayers >= 4) {
+            player4Controller.setVisible(true);
+        }
 
         // set the board state
         boardController.setBoard(gameState.getBoard());
@@ -52,5 +74,9 @@ public class GameController implements Initializable {
 
         // set the personal goal state
         personalGoalController.setGoal(localPlayer.getPersonalGoal().getPersonalGoalNumber());
+    }
+
+    public void setLocalUsername(String username) {
+        player1Controller.setUsername(username);
     }
 }

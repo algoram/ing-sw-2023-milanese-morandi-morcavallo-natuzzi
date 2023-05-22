@@ -12,6 +12,7 @@ import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
+import myshelfie_view.gui.GuiView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -84,6 +85,11 @@ public class SetupSceneController implements Initializable {
 
         int backupPlayers = players.getSelectionModel().getSelectedItem();
         EventDispatcher.getInstance().connect(backupPlayers);
+
+        GuiView.getInstance().getGameController().setLocalUsername(user);
+
+        Stage stage = (Stage) players.getScene().getWindow();
+        stage.close();
     }
 
     @Override
