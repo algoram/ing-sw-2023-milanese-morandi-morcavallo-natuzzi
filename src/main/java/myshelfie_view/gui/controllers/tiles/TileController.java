@@ -1,15 +1,20 @@
 package myshelfie_view.gui.controllers.tiles;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import myshelfie_model.Type;
 
+import java.net.URL;
 import java.util.Random;
+import java.util.ResourceBundle;
 
-public class TileController {
+public class TileController implements Initializable {
 
     @FXML private ImageView tile;
+
+    private int imageIndex;
 
     public void setTile(Type type) {
         if (type == null) {
@@ -17,23 +22,18 @@ public class TileController {
             return;
         }
 
-        int randomIndex = new Random().nextInt(3) + 1; // number from 1 to 3
-        StringBuilder filePath = new StringBuilder("images/item_tiles/");
+        String filePath = Type.getImagePath(type, imageIndex);
 
-        switch (type) {
-            case FRAMES -> filePath.append("Cornici1.");
-            case CATS -> filePath.append("Gatti1.");
-            case GAMES -> filePath.append("Giochi1.");
-            case BOOKS -> filePath.append("Libri1.");
-            case PLANTS -> filePath.append("Piante1.");
-            case TROPHIES -> filePath.append("Trofei1.");
-        }
-
-        filePath.append(randomIndex);
-        filePath.append(".png");
-
-        tile.setImage(new Image(filePath.toString()));
+        tile.setImage(new Image(filePath));
         tile.setVisible(true);
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        imageIndex = new Random().nextInt(3) + 1;
+    }
+
+    public int getImageIndex() {
+        return imageIndex;
+    }
 }
