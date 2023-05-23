@@ -63,7 +63,7 @@ public class EventHandler {
     }
 
     /**
-     * this function is called in the private constructor in a while(threadrun).
+     * this function is called in the private constructor in a while(thread run).
      * @param event is the event crated by the client that needs to be handled
      */
     public void handle(Event event) {
@@ -164,7 +164,7 @@ public class EventHandler {
                             GameManager.getInstance().recalculateTurn(player);
 
                             //we don't want to notify anything to the player who was of turn if he did not even know of disconnection
-                            boolean playerOfTurnWasNotified = false;
+                            boolean playerOfTurnWasNotified;
                             playerOfTurnWasNotified = GameManager.getInstance().alreadyNotified(turnMemoryOld);
 
                             //let's update the player of restart
@@ -180,14 +180,14 @@ public class EventHandler {
                             GameManager.getInstance().resetNotified(turnMemoryOld);
                         }
                         else{
-                            //the game was not blocked, so I have to update only the player who's doing the Connect
+                            //the game was not blocked, so I have to update only the player who's doing to Connect
                             GameState gameState = GameManager.getInstance().getGameState(player);
                             UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(player, gameState));
                         }
                     }
                     else{
                         GameState gameState = GameManager.getInstance().getGameState(player);
-                        String nextPlayer = gameState.getPlayerTurn();
+
                         System.out.println("EventHandler-> handle(): Sending connect update to all:");
 
                         List<String> players = GameManager.getInstance().getPlayers(player);
@@ -209,7 +209,7 @@ public class EventHandler {
         } else if (event instanceof PlayerDisconnect) {
             System.out.println("EventHandler-> handle(): PlayerDisconnect");
 
-            //the function removePlayer recalculates the player turn and
+            //the function removePlayer recalculates the player turn, and
             //then it is updated in playerDisconnectSuccess
             try{
                 GameManager.getInstance().removePlayer(player);
@@ -304,7 +304,7 @@ public class EventHandler {
                             //turn must receive the game finished update
                             UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
 
-                            //todo we could implement a way to send gamefinished for you to the ones that did the last turn
+                            //todo we could implement a way to send game finished for you to the ones that did the last turn
                         }
                     }
                     //here is the case where the player has finished the game, but he is not the first
@@ -357,7 +357,7 @@ public class EventHandler {
     }
 
     /**
-     * this function is called in the private constructor in a while(threadrun).
+     * this function is called in the private constructor in a while(thread run).
      * it checks if the last ping time of a player is greater than 5 seconds
      * and if it is it disconnects the player
      * so that the others can continue playing
@@ -370,13 +370,13 @@ public class EventHandler {
                 if (Settings.DEBUG) System.err.println("EventHandler ERROR - Thread interrupted while sleeping");
             }
 
-            Map<String,Long> lastPingTimescopy;
+            Map<String,Long> lastPingTimesCopy;
             synchronized (lastPingTimes) {
-                lastPingTimescopy = new HashMap<>(lastPingTimes);
+                lastPingTimesCopy = new HashMap<>(lastPingTimes);
             }
-            for (String player : lastPingTimescopy.keySet()){
+            for (String player : lastPingTimesCopy.keySet()){
 
-                if (System.currentTimeMillis() - lastPingTimescopy.get(player) < 5000) continue;
+                if (System.currentTimeMillis() - lastPingTimesCopy.get(player) < 5000) continue;
                 //if the lost of the connection is not New
                 if(GameManager.getInstance().alreadySetLostConnection(player)) continue;
 
@@ -399,6 +399,8 @@ public class EventHandler {
             }
         }
     }
+
+
 
     public void closeGame(List<String> player){
         for (String p : player){

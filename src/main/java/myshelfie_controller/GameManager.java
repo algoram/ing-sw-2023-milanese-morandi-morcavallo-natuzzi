@@ -1,7 +1,5 @@
 package myshelfie_controller;
-
-import myshelfie_controller.response.ConnectUpdate;
-import myshelfie_controller.response.TakeTilesUpdate;
+import myshelfie_controller.response.GameFinished;
 import myshelfie_model.Game;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
@@ -295,7 +293,7 @@ public class GameManager {
             else if(RMIServer.getInstance().hasClient(p)){
                 SocketServer.getInstance().removeClient(p);
             }
-            else System.out.println("impossible error in closegame");
+            else System.out.println("impossible error in close game");
 
             playerToGame.remove(p); //remove string player from player to game
 
@@ -316,6 +314,10 @@ public class GameManager {
         if(gameToLastPing.get(game) == games.get(game).getPlayers().size()){
             closeGame(player);
         }
+    }
+
+    public void notifyWonForDisconnection(String winner){
+        UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(winner, winner));
     }
 }
 

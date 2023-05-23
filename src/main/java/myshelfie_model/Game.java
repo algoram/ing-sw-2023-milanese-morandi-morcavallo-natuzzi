@@ -243,7 +243,7 @@ public class Game {
      *
      * @param username the username of the player to remove
      */
-    public void removePlayer(String username) throws Exception{
+    public void removePlayer(String username){
         for (Player player : players) {
             if (player.getUsername().equals(username)) {
                 playerStates.add(findPlayer(username),StateConnection.DISCONNECTED); //remove state connection
@@ -514,6 +514,7 @@ public class Game {
         playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
+            new Thread(()-> timerOnePlayerConnected());
             unSetTurn();
         }
         else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
@@ -522,6 +523,28 @@ public class Game {
         }
         else checkSomeOneStillConnected(player); //if not it close the game
         return true;
+    }
+
+    public void timerOnePlayerConnected(){
+        try{
+            Thread.sleep(15000);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        //if when the thread wakes up the turn is not Unset anymore
+        if(turn != -1) return;
+
+        String winner = null;
+        for (int i=0; i < players.size(); i++){
+            if (playerStates.get(i).equals(StateConnection.CONNECTED)){
+                if(winner!=null) System.out.println("Game->timerOnePlayerConnected: More than one player connected after timer");
+                winner = players.get(i).getUsername();
+            }
+        }
+        GameManager.getInstance().notifyWonForDisconnection(winner);
+
+
     }
 
     public boolean setStopConnection(String player){
