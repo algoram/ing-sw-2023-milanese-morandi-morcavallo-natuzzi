@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1012.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.GameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.GameController">
    <padding>
       <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
    </padding>
@@ -29,14 +29,37 @@
                         <fx:include fx:id="personalGoal" source="personal_goal/PersonalGoal.fxml" />
                      </children>
                   </VBox>
+                  <VBox fx:id="chosenTiles" prefHeight="200.0" prefWidth="100.0">
+                     <HBox.margin>
+                        <Insets left="32.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0">
+                     <HBox.margin>
+                        <Insets left="32.0" />
+                     </HBox.margin>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#displayChat" text="Display Chat">
+                           <VBox.margin>
+                              <Insets bottom="32.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" text="Common Goal 1">
+                           <VBox.margin>
+                              <Insets bottom="32.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" text="Common Goal 2" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
             <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="100.0" prefWidth="200.0">
-               <fx:include fx:id="player1" source="bookshelf/Bookshelf.fxml"/>
-               <fx:include fx:id="player2" source="bookshelf/Bookshelf.fxml"/>
-               <fx:include fx:id="player3" source="bookshelf/Bookshelf.fxml"/>
-               <fx:include fx:id="player4" source="bookshelf/Bookshelf.fxml"/>
+               <fx:include fx:id="player1" source="bookshelf/Bookshelf.fxml" />
+               <fx:include fx:id="player2" source="bookshelf/Bookshelf.fxml" />
+               <fx:include fx:id="player3" source="bookshelf/Bookshelf.fxml" />
+               <fx:include fx:id="player4" source="bookshelf/Bookshelf.fxml" />
             </HBox>
          </children>
       </VBox>
