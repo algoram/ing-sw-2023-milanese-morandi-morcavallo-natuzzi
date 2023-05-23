@@ -35,7 +35,7 @@ public class EventDispatcher {
 
         new Thread(() -> {
             while (pingThreadRun) {
-                sendEvent(new Ping(Settings.getInstance().getUsername()));
+                sendEvent(new Ping(Settings.getInstance().getUsername(), false));
 
                 try {
                     Thread.sleep(1000);
@@ -49,6 +49,7 @@ public class EventDispatcher {
 
     public void stopPinging() {
         pingThreadRun = false;
+        sendEvent(new Ping(Settings.getInstance().getUsername(), true));
     }
 
     private void sendEvent(Event e) {

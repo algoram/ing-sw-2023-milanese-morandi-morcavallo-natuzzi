@@ -116,7 +116,7 @@ public class UpdateHandler {
 
         } else if (response instanceof GameFinished) {
             String winner = ((GameFinished) response).getWinner();
-            //todo
+            EventDispatcher.getInstance().stopPinging();
             View.getInstance().gameFinished(winner);
 
         } else if (response instanceof GameFinishedForYou){

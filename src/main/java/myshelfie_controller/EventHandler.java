@@ -19,6 +19,7 @@ public class EventHandler {
     private final Map<String,Long> lastPingTimes;
 
 
+
     private EventHandler() {
         eventQueue = new LinkedList<>();
         threadRun = true;
@@ -214,9 +215,7 @@ public class EventHandler {
                 GameManager.getInstance().removePlayer(player);
             }catch (Exception e){
                 //if everyone disconnected
-                if(e.getMessage().equals("All players lost connection")){
-                    GameManager.getInstance().closeGame(player);
-                }
+                System.out.println("EventHandler-> handle(): PlayerDisconnect: " + e.getMessage());
             }
 
             List<String> players = GameManager.getInstance().getPlayers(player);
@@ -229,10 +228,16 @@ public class EventHandler {
 
 
         } else if (event instanceof Ping){
-            //todo the ping arrive after setLostDisconnection
+
+            if (((Ping) event).getLastPing()) {//if it's the last ping
+                System.out.println("EventHandler-> handle(): LastPing");
+                GameManager.getInstance().lastPing(player);
+            }
+
             synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
-                    System.out.println("PingFailure player not found: " + player);
+                    System.out.println("EventHandler-> handle-> ping PLAYER NOT FOUND: " + player);
+                    //todo the ping arrive after setLostDisconnection
                 } else {
 
                     if (GameManager.getInstance().alreadySetLostConnection(player)) {//if the player was disconnected
@@ -290,7 +295,7 @@ public class EventHandler {
                                 GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
                                 UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
                             }
-                            GameManager.getInstance().closeGame(player);
+                            //here we don't close the game, we do when everyone stops pinging
                         }
                         else {
                             System.out.println("EventHandler-> handle(): Player " + player + " has not started last ");
@@ -319,7 +324,7 @@ public class EventHandler {
                                 GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
                                 UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
                             }
-                            GameManager.getInstance().closeGame(player);
+                            //here we don't close the game, we do when everyone stops pinging
                         }
                     }
 

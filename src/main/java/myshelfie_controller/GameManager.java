@@ -25,6 +25,8 @@ public class GameManager {
     private final ArrayList<Game> games = new ArrayList<>();
     private final HashMap<String, Integer> playerToGame = new HashMap<>();
 
+    private final HashMap<Integer, Integer> gameToLastPing = new HashMap<>(); //count the number of players that have pinged for the last time
+
     private ArrayList TakeStoppedReceived = new ArrayList();
     private static GameManager instance = null;
 
@@ -294,6 +296,20 @@ public class GameManager {
 
             games.remove(game);  //remove integer game from arraylist
 
+        }
+    }
+
+    public void lastPing(String player){
+        int game = playerToGame.get(player);
+
+        if (gameToLastPing.containsKey(game)){
+            gameToLastPing.replace(game,gameToLastPing.get(game)+1);
+        }
+        else{
+            gameToLastPing.put(game, 1);
+        }
+        if(gameToLastPing.get(game) == games.get(game).getPlayers().size()){
+            closeGame(player);
         }
     }
 }
