@@ -49,7 +49,6 @@ public class CliView extends View {
 
             String input = null;
             try{
-                //todo check
                 Thread.sleep(30);
             }catch (Exception e){
                 //do nothing
@@ -68,7 +67,7 @@ public class CliView extends View {
                     out.flush();
                     while (in.available() == 0 && (System.currentTimeMillis() - startTime) < 30) {
                         if(in.available() > 0) break;
-                    }//may be useful to sleep some ms here?
+                    }
 
                     if (in.available() > 0) {
                         input = scanner.nextLine();
