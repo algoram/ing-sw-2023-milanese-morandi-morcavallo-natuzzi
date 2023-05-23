@@ -514,7 +514,7 @@ public class Game {
         playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
-            new Thread(()-> timerOnePlayerConnected());
+            new Thread(()-> timerOnePlayerConnected()).start();
             unSetTurn();
         }
         else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
@@ -526,8 +526,9 @@ public class Game {
     }
 
     public void timerOnePlayerConnected(){
+        System.out.println("Game-> timerOnePlayer Started");
         try{
-            Thread.sleep(15000);
+            Thread.sleep(10000);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }

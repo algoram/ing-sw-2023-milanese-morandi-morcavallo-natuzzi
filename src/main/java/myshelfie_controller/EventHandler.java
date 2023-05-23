@@ -387,7 +387,7 @@ public class EventHandler {
 
                     String playerTurn = GameManager.getInstance().getTurn(player);
                     //should not notify the player on Turn to avoid event traffic after TakeTiles
-                    if (!p.equals(player) && !p.equals(playerTurn)) {
+                    if (!p.equals(player)) { //if (!p.equals(player) && !p.equals(playerTurn)) {
 
                         if (Settings.DEBUG)
                             System.out.println("EventHandler->lastPingChecker(): PlayerDisconnectSuccess of player " + player + " for "+ p);
