@@ -1,10 +1,13 @@
 package myshelfie_view.gui.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -16,25 +19,27 @@ import myshelfie_model.Position;
 import myshelfie_model.Tile;
 import myshelfie_model.Type;
 import myshelfie_model.goal.Token;
+import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
 import myshelfie_view.gui.controllers.board.BoardController;
 import myshelfie_view.gui.controllers.bookshelf.BookshelfController;
+import myshelfie_view.gui.controllers.chat.ChatController;
+import myshelfie_view.gui.controllers.common_goals.CommonGoalController;
 import myshelfie_view.gui.controllers.personal_goal.PersonalGoalController;
 import myshelfie_view.gui.controllers.tokens.ScoringTokenController;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class GameController implements Initializable {
 
     // attributes
     private GameState lastGameState;
     private List<Position> chosenIndexes;
+    private ArrayList<ChatMessage> messages = new ArrayList<>();
+    private Queue<ChatMessage> sentMessages = new LinkedList<>(); // waiting for confirmation
 
     // components
     @FXML private VBox chosenTiles;
@@ -51,6 +56,8 @@ public class GameController implements Initializable {
     @FXML private BookshelfController player3Controller;
     @FXML private BookshelfController player4Controller;
 
+    private ChatController chatController;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Initialized GameController");
@@ -63,29 +70,14 @@ public class GameController implements Initializable {
 
         lastGameState = gameState;
 
-        // set the number of players
-        // TODO: maybe avoid doing this every time there is an update
-        int numPlayers = gameState.getPlayers().size();
-
-        if (numPlayers >= 2) {
-            player2Controller.setVisible(true);
-        }
-
-        if (numPlayers >= 3) {
-            player3Controller.setVisible(true);
-        }
-
-        if (numPlayers >= 4) {
-            player4Controller.setVisible(true);
-        }
-
-        // set the board state
-        boardController.setBoard(gameState.getBoard());
-
+        // separate local and remote players
         Player localPlayer = null;
+        ArrayList<Player> remotePlayers = new ArrayList<>();
         for (Player p : gameState.getPlayers()) {
             if (p.getUsername().equals(Settings.getInstance().getUsername())) {
                 localPlayer = p;
+            } else {
+                remotePlayers.add(p);
             }
         }
 
@@ -93,6 +85,28 @@ public class GameController implements Initializable {
             if (Settings.DEBUG) System.err.println("GameController ERROR - localPlayer is null");
             return;
         }
+
+        // set the number of players
+        // TODO: maybe avoid doing this every time there is an update
+        int numPlayers = gameState.getPlayers().size();
+
+        if (numPlayers >= 2) {
+            player2Controller.setVisible(true);
+            player2Controller.setUsername(remotePlayers.get(0).getUsername());
+        }
+
+        if (numPlayers >= 3) {
+            player3Controller.setVisible(true);
+            player3Controller.setUsername(remotePlayers.get(1).getUsername());
+        }
+
+        if (numPlayers >= 4) {
+            player4Controller.setVisible(true);
+            player4Controller.setUsername(remotePlayers.get(2).getUsername());
+        }
+
+        // set the board state
+        boardController.setBoard(gameState.getBoard());
 
         // set the common goals state
         Token[] commonGoalsPoints = localPlayer.getCommonTokens();
@@ -104,9 +118,20 @@ public class GameController implements Initializable {
         personalGoalController.setGoal(localPlayer.getPersonalGoal().getPersonalGoalNumber());
 
         // set the bookshelves
-        // TODO: set bookshelf for other players
         Bookshelf bookshelf = localPlayer.getBookshelf();
         player1Controller.setBookshelf(bookshelf);
+
+        if (numPlayers >= 2) {
+            player2Controller.setBookshelf(remotePlayers.get(0).getBookshelf());
+        }
+
+        if (numPlayers >= 3) {
+            player3Controller.setBookshelf(remotePlayers.get(1).getBookshelf());
+        }
+
+        if (numPlayers >= 4) {
+            player4Controller.setBookshelf(remotePlayers.get(2).getBookshelf());
+        }
     }
 
     public void setLocalUsername(String username) {
@@ -146,6 +171,32 @@ public class GameController implements Initializable {
         }
     }
 
+    public void receivedMessage(String from, String message, boolean isPublic) {
+        messages.add(new ChatMessage(
+                from,
+                isPublic ? null : Settings.getInstance().getUsername(),
+                message,
+                new Date()
+        ));
+
+        chatController.setMessages(messages);
+    }
+
+    public void sendMessage(String to, String message) {
+        sentMessages.add(new ChatMessage(
+                Settings.getInstance().getUsername(),
+                to,
+                message,
+                new Date()
+        ));
+    }
+
+    public void confirmSend() {
+        messages.add(sentMessages.poll());
+
+        chatController.setMessages(messages);
+    }
+
     @FXML protected void displayChat() {
         Stage stage = new Stage();
 
@@ -155,11 +206,54 @@ public class GameController implements Initializable {
         try {
             chatScene = loader.load();
 
+            chatController = loader.getController();
+
+            ArrayList<String> usernames = new ArrayList<>();
+            for (Player p : lastGameState.getPlayers()) {
+                if (!p.getUsername().equals(Settings.getInstance().getUsername())) {
+                    usernames.add(p.getUsername());
+                }
+            }
+
+            chatController.setUsernames(usernames);
+            chatController.setMessages(messages);
+
             stage.setScene(new Scene(chatScene));
             stage.setResizable(false);
             stage.showAndWait();
         } catch (IOException e) {
             if (Settings.DEBUG) System.err.println("GameController ERROR - Couldn't load FXML file");
         }
+    }
+
+    @FXML protected void displayCommonGoal1() {
+        displayCommonGoal(lastGameState.getCommonGoals()[0]);
+    }
+
+    @FXML protected void displayCommonGoal2() {
+        displayCommonGoal(lastGameState.getCommonGoals()[1]);
+    }
+
+    private void displayCommonGoal(CommonGoal goal) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.CLOSE);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/common_goals/CommonGoal.fxml"));
+
+            try {
+                Parent root = loader.load();
+                ((CommonGoalController) loader.getController()).setCommonGoal(goal);
+
+                alert.getDialogPane().setContent(root);
+                alert.setTitle("MyShelfie");
+                alert.setHeaderText(null);
+                alert.setContentText(null);
+                alert.setGraphic(null);
+
+                alert.showAndWait();
+            } catch (IOException e) {
+                System.err.println("GameController ERROR - Couldn't load FXML file");
+            }
+        });
     }
 }

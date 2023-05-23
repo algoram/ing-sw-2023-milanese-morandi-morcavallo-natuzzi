@@ -108,12 +108,12 @@ public class GuiView extends View {
 
     @Override
     public void chatIn(String sender, String Message, boolean isPublic) {
-        // TODO: implement chat
+        gameController.receivedMessage(sender, Message, isPublic);
     }
 
     @Override
     public void messageSentSuccessfully() {
-        // TODO: implement
+        gameController.confirmSend();
     }
 
     @Override
