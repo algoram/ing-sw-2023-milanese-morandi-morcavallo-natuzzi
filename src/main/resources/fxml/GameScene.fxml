@@ -44,12 +44,12 @@
                               <Insets bottom="32.0" />
                            </VBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" text="Common Goal 1">
+                        <Button mnemonicParsing="false" onAction="#displayCommonGoal1" text="Common Goal 1">
                            <VBox.margin>
                               <Insets bottom="32.0" />
                            </VBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" text="Common Goal 2" />
+                        <Button mnemonicParsing="false" onAction="#displayCommonGoal2" text="Common Goal 2" />
                      </children>
                   </VBox>
                </children>

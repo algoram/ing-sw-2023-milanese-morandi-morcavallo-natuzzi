@@ -294,7 +294,10 @@ public class Game {
         // check if it's the playerNumber's turn
         if (playerNumber != turn) {
             if (Settings.DEBUG)System.out.println("GAME -> take TILES !=playerNUm turn IMPOSSIBLE");
+            throw new Exception("Take Tiles Failed: It's not your turn");
         }
+
+        System.out.println("Turn before: " + turn);
 
         // check that the player has enough space in the bookshelf
         if (players.get(playerNumber).getBookshelf().emptyCol()[column] < chosenTiles.size()) {
@@ -348,6 +351,8 @@ public class Game {
         else {
             turnMemory =(turnMemory + 1) % players.size(); //no problem if next player is disconnected, we will check it later in recalculateTurn
         }
+
+        System.out.println("Turn after: " + turn);
 
         return true;
     }
