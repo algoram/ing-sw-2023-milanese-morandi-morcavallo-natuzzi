@@ -220,7 +220,7 @@ public class EventHandler {
 
             List<String> players = GameManager.getInstance().getPlayers(player);
 
-            //todo here we have to recalculate turn and send update
+            GameManager.getInstance().setStopConnection(player);
 
             for (String p : players) {
                 if (!p.equals(player)) UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p, player, GameManager.getInstance().getTurn(player)));
@@ -384,13 +384,16 @@ public class EventHandler {
 
                 List<String> players = GameManager.getInstance().getPlayers(player);
                 for (String p : players) { //update the other players
-                    if (!p.equals(player)) {
+
+                    String playerTurn = GameManager.getInstance().getTurn(player);
+                    //should not notify the player on Turn to avoid event traffic after TakeTiles
+                    if (!p.equals(player) && !p.equals(playerTurn)) {
 
                         if (Settings.DEBUG)
                             System.out.println("EventHandler->lastPingChecker(): PlayerDisconnectSuccess of player " + player + " for "+ p);
 
                         UpdateDispatcher.getInstance().dispatchResponse(new PlayerDisconnectSuccess(p,
-                                player, GameManager.getInstance().getTurn(player)));
+                                player, playerTurn));
                     }
                 }
             }

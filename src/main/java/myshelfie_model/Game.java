@@ -519,6 +519,25 @@ public class Game {
         return true;
     }
 
+    public boolean setStopConnection(String player){
+        if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
+            System.out.println("GAme-> setStop connection:");
+            System.out.println("Player" + player + " had already lost connection or disconnected");
+            return false;
+        }
+        playerStates.set(findPlayer(player), StateConnection.DISCONNECTED);
+        if (justOnePlayerConnected()) {
+            System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
+            unSetTurn();
+        }
+        else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
+            System.out.println("GAME -> setLostConnection: The player who lost connection was on turn, recalculating turn");
+            recalculateTurn();
+        }
+        else checkSomeOneStillConnected(player); //if not it close the game
+        return true;
+    }
+
     private boolean justOnePlayerConnected(){
         int connectedPlayers = 0;
         for (StateConnection state: playerStates) {
@@ -529,9 +548,23 @@ public class Game {
     }
 
     private void checkSomeOneStillConnected(String player){
+
+        int playersConnected = 0;
         for (Player p: players) {
             if (playerStates.get(findPlayer(p.getUsername())) == StateConnection.CONNECTED){
-                return;
+                playersConnected++;
+            }
+        }
+
+        if (playersConnected >= 2) return;
+
+        //if just one player is connected let's check that there is at least one LostConnection
+        //if everyone Disconnected close the game
+        if(playersConnected == 1){
+            for (Player p: players) {
+                if (playerStates.get(findPlayer(p.getUsername())) == StateConnection.LOST_CONNECTION){
+                    return;
+                }
             }
         }
         System.out.println("GAME -> checkSomeOneStillConnected: All players have lost connection");

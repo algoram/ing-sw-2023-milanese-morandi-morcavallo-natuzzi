@@ -154,6 +154,11 @@ public class GameManager {
         games.get(game).setLostConnection(player);
     }
 
+    public void setStopConnection(String player){
+        Integer game = playerToGame.get(player);
+        games.get(game).setStopConnection(player);
+    }
+
     public boolean alreadySetLostConnection(String player) {
         Integer game = playerToGame.get(player);
         return games.get(game).alreadySetLostConnection(player);
