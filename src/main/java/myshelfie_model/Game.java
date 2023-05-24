@@ -544,7 +544,7 @@ public class Game {
             }
         }
         GameManager.getInstance().notifyWonForDisconnection(winner);
-
+        GameManager.getInstance().closeGame(winner);
 
     }
 
