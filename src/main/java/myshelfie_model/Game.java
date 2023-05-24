@@ -13,7 +13,6 @@ import myshelfie_model.player.Player;
 import java.util.*;
 
 public class Game {
-    private boolean flagGameStarted = false;
     public final int MAX_PLAYERS = 4;
 
     private int playerSeat;
@@ -78,7 +77,6 @@ public class Game {
      */
     public void startGame(int numPlayers) {
         Random random = new Random();
-        flagGameStarted = true;
 
         // clamp the number of players
         if (numPlayers < 2) numPlayers = 2;
@@ -150,9 +148,10 @@ public class Game {
 
             // check whether the common goal generated randomly is not already present
             boolean notTaken = true;
-            for (int i = 0; i < goalsCreated && notTaken; i++) {
+            for (int i = 0; i < goalsCreated; i++) {
                 if (commonGoals[i] == possibleCommonGoals[nextCommonGoal]) {
                     notTaken = false;
+                    break;
                 }
             }
 
@@ -172,18 +171,6 @@ public class Game {
 
         // no one has finished yet
         finishedFirst = -1;
-    }
-
-    public boolean isGameStarted() {
-        return flagGameStarted;
-    }
-
-    /**
-     * Returns all the tiles that could be picked by a player
-     * @return all the tiles that could be picked by a player
-     */
-    public ArrayList<Position> getAvailableTiles() {
-        return board.getAvailableTiles(players.size());
     }
 
     /**
@@ -259,7 +246,7 @@ public class Game {
 
     /**
      * Returns an array of usernames
-     * @return array of usernames
+     * @return List of usernames
      */
     public List<String> getPlayersUsernames() {
         return players.stream().map(Player::getUsername).toList();
@@ -305,7 +292,7 @@ public class Game {
         }
 
         // take the tiles from the board
-        List<Tile> tiles = null;
+        List<Tile> tiles;
 
         tiles = board.remove(chosenTiles);
 
@@ -457,10 +444,13 @@ public class Game {
 
     /**
      * Calculates the next turn.
+     * <p>
      * If there is a turn memory it means that one player was left alone in the game.
      * In this case the turn is set to memory, and it may be non connected anymore:
      * player A,B,C are playing. C is of turn. B and C disconnect simultaneously. C is set to memory turn.
-     * If B reconnects turnMemory will remember about C, but he is still disconnected, so we have to recalculate the turn.
+     * If B reconnects turnMemory will remember about C, but he is still disconnected, so we have to recalculate the turn again.
+     * <p>
+     *     If there is no turn memory, the turn is set to the next player.
      */
     public void recalculateTurn(){
 
@@ -486,6 +476,12 @@ public class Game {
         }while(!(playerStates.get(turn) == StateConnection.CONNECTED)); //check if new turn player is connected
     }
 
+    /**
+     * Unset the turn so that no one is playing.
+     * Saves the turn in turnMemory so that
+     * when someone reconnects the turn is set to the player that was playing before.
+     * this is used too when the game is finished to avoid that someone can play again.
+     */
     public void unSetTurn(){
         System.out.println("GAME -> UNSETTurn: Turn is now unset");
         if(turn == -1)
@@ -502,7 +498,12 @@ public class Game {
     }
 
 
-    public void timerOnePlayerConnected(){
+    /**
+     * Run a timer of 10 seconds.
+     * If after 10 seconds there is only one player connected, he wins.
+     * The game is closed.
+     */
+    private void timerOnePlayerConnected(){
         System.out.println("Game-> timerOnePlayer Started");
         try{
             Thread.sleep(10000);
@@ -534,18 +535,17 @@ public class Game {
      * checks if the game is empty, if so it closes the game: see-> checkSomeOneStillConnected()
      *
      * @param player yhe player who disconnected
-     * @return true if the player was connected, false otherwise
      */
-    public boolean setStopConnection(String player){
+    public void setStopConnection(String player){
         if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
             System.out.println("GAme-> setStop connection:");
             System.out.println("Player" + player + " had already lost connection or disconnected");
-            return false;
+            return;
         }
         playerStates.set(findPlayer(player), StateConnection.DISCONNECTED);
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setStopConnection: Just one player connected, he is going to wait for someone else to reconnect");
-            new Thread(()-> timerOnePlayerConnected()).start();
+            new Thread(this::timerOnePlayerConnected).start();
             unSetTurn();
         }
         else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
@@ -553,7 +553,6 @@ public class Game {
             recalculateTurn();
         }
         else checkSomeOneStillConnected(player); //if not it close the game
-        return true;
     }
 
     /**
@@ -564,17 +563,16 @@ public class Game {
      * checks if the game is empty, if so it closes the game: see-> checkSomeOneStillConnected()
      *
      * @param player yhe player who disconnected
-     * @return true if the player was connected, false otherwise
      */
-    public boolean setLostConnection(String player) {
+    public void setLostConnection(String player) {
         if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
             System.out.println("Player " + player + " had already lost connection or disconnected"); //Debug messages
-            return false;
+            return;
         }
         playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
-            new Thread(()-> timerOnePlayerConnected()).start();
+            new Thread(this::timerOnePlayerConnected).start();
             unSetTurn();
         }
         else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
@@ -582,7 +580,6 @@ public class Game {
             recalculateTurn();
         }
         else checkSomeOneStillConnected(player); //if not it close the game
-        return true;
     }
 
 
@@ -641,7 +638,7 @@ public class Game {
 
     /**
      * returns the index of the player in the players arraylist
-     * @param player
+     * @param player the player to find
      * @return the index of the player in the players arraylist
      */
     public int findPlayer(String player) {
