@@ -265,21 +265,16 @@ public class EventHandler {
 
             } else {
                 try{
-                    if(!GameManager.getInstance().takeTiles(player, column, tiles)){
+                    if(!GameManager.getInstance().takeTiles(player, column, tiles)){ //try to take the tiles
                         System.out.println("EventHAndler handle() takeTiles returned false IMPOSSIBLE CASE");
                     }
-                    List<String> players = GameManager.getInstance().getPlayers(player);
+
 
                     System.out.print("EventHandler-> handle(): TakeTilesSuccess from " + player +": ");
-                    for (Position p : tiles) {
-                        System.out.print(" "+ p.toString() + " ");
-                    }
-                    System.out.println();
+                    for (Position p : tiles) System.out.print(" "+ p.toString() + " \n");
 
 
-
-                    //if the player has finished the game
-                    if (GameManager.getInstance().hasFinishedFirst(player)) {
+                    if (GameManager.getInstance().hasFinishedFirst(player)) {  //if the player has finished the game
                         System.out.println("EventHandler-> handle()->End of the game: Player " + player + " has finished the game");
                         //the player who finished first will not be able anymore to do the takeTiles
                         //so this part of the code will not be entered anymore from anyone
@@ -355,6 +350,11 @@ public class EventHandler {
     }
 
 
+    /**
+     * this function is called when the game is finished for everyone
+     * it sends GameFinished to all the players
+     * @param player the player who played the last turn
+     */
     private void gameFinishedUpdate(String player){
         List<String> players = GameManager.getInstance().getPlayers(player);
         for (String p : players) {
@@ -409,9 +409,13 @@ public class EventHandler {
     }
 
 
-
-    public void closeGame(List<String> player){
-        for (String p : player){
+    /**
+     * this function is called when a game ends.
+     * It removes the players from the lastPingTimes
+     * @param players the players of the game
+     */
+    public void closeGame(List<String> players){
+        for (String p : players){
             synchronized (lastPingTimes) {
                 lastPingTimes.remove(p);
             }
