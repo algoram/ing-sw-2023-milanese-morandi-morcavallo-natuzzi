@@ -501,29 +501,6 @@ public class Game {
             return null;
     }
 
-    /**
-     * set the player state to zero -> disconnected
-     * @param player
-     * @return
-     */
-    public boolean setLostConnection(String player) {
-        if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
-            System.out.println("Player " + player + " had already lost connection or disconnected"); //Debug messages
-            return false;
-        }
-        playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
-        if (justOnePlayerConnected()) {
-            System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
-            new Thread(()-> timerOnePlayerConnected()).start();
-            unSetTurn();
-        }
-        else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
-            System.out.println("GAME -> setLostConnection: The player who lost connection was on turn, recalculating turn");
-            recalculateTurn();
-        }
-        else checkSomeOneStillConnected(player); //if not it close the game
-        return true;
-    }
 
     public void timerOnePlayerConnected(){
         System.out.println("Game-> timerOnePlayer Started");
@@ -548,6 +525,17 @@ public class Game {
 
     }
 
+
+    /**
+     * Set the player state to disconnected (voluntarily disconnected)
+     * <p>
+     * if just one player is connected, it Unsets the turn(the timer starts ->see timerOnePlayerConnected).
+     * If the player who disconnected was on turn, it recalculates the turn.
+     * checks if the game is empty, if so it closes the game: see-> checkSomeOneStillConnected()
+     *
+     * @param player yhe player who disconnected
+     * @return true if the player was connected, false otherwise
+     */
     public boolean setStopConnection(String player){
         if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
             System.out.println("GAme-> setStop connection:");
@@ -556,7 +544,8 @@ public class Game {
         }
         playerStates.set(findPlayer(player), StateConnection.DISCONNECTED);
         if (justOnePlayerConnected()) {
-            System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
+            System.out.println("GAME -> setStopConnection: Just one player connected, he is going to wait for someone else to reconnect");
+            new Thread(()-> timerOnePlayerConnected()).start();
             unSetTurn();
         }
         else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
@@ -567,6 +556,40 @@ public class Game {
         return true;
     }
 
+    /**
+     * Set the player state to disconnected (accidentally disconnected)
+     * <p>
+     * if just one player is connected, it Unsets the turn(the timer starts ->see timerOnePlayerConnected).
+     * If the player who disconnected was on turn, it recalculates the turn.
+     * checks if the game is empty, if so it closes the game: see-> checkSomeOneStillConnected()
+     *
+     * @param player yhe player who disconnected
+     * @return true if the player was connected, false otherwise
+     */
+    public boolean setLostConnection(String player) {
+        if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
+            System.out.println("Player " + player + " had already lost connection or disconnected"); //Debug messages
+            return false;
+        }
+        playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
+        if (justOnePlayerConnected()) {
+            System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
+            new Thread(()-> timerOnePlayerConnected()).start();
+            unSetTurn();
+        }
+        else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
+            System.out.println("GAME -> setLostConnection: The player who lost connection was on turn, recalculating turn");
+            recalculateTurn();
+        }
+        else checkSomeOneStillConnected(player); //if not it close the game
+        return true;
+    }
+
+
+    /**
+     * check if there is just one player connected
+     * @return true if there is just one player connected, false otherwise
+     */
     private boolean justOnePlayerConnected(){
         int connectedPlayers = 0;
         for (StateConnection state: playerStates) {
@@ -576,6 +599,12 @@ public class Game {
         return connectedPlayers == 1;
     }
 
+    /**
+     * check if the game can go on
+     * if players(connected).size() >=2 -> do nothing
+     * if players(connected).size() == 1 -> check if there is at least one player with state LOST_CONNECTION(he may reconnect)
+     * if players(connected).size() == 0 or 1 but everyone else is voluntarily disconnected -> close the game
+     */
     private void checkSomeOneStillConnected(String player){
 
         int playersConnected = 0;

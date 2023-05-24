@@ -290,11 +290,7 @@ public class EventHandler {
                         if (GameManager.getInstance().hasStartedLast(player)) {
                             System.out.println("EventHandler-> handle(): Player " + player + " has started last ");
                             System.out.println("So the Game finished for everyone");
-                            for (String p : players) {
-                                String winner = GameManager.getInstance().getWinner(player);
-                                GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
-                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
-                            }
+                            gameFinishedUpdate(player);
                             //here we don't close the game, we do when everyone stops pinging
                         }
                         else {
@@ -319,11 +315,7 @@ public class EventHandler {
                         }
                         else { //if everyone has finished
                             System.out.println("EventHandler-> handle()->And everyone has finished");
-                            for (String p : players) {
-                                String winner = GameManager.getInstance().getWinner(player);
-                                GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
-                                UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
-                            }
+                            gameFinishedUpdate(player);
                             //here we don't close the game, we do when everyone stops pinging
                         }
                     }
@@ -342,6 +334,12 @@ public class EventHandler {
         }
     }
 
+    /**
+     * this function is called when a player does the takeTiles
+     * it sends TakeTilesSuccess to the player who did the takeTiles
+     * and TakeTilesUpdate to all the other players except the ones that lost connection
+     * @param player the player who did the takeTiles
+     */
     private void updatePlayers(String player){
         GameState gameState = GameManager.getInstance().getGameState(player);
 
@@ -353,6 +351,16 @@ public class EventHandler {
             if (!p.equals(player) && !GameManager.getInstance().alreadySetLostConnection(p)) {
                 UpdateDispatcher.getInstance().dispatchResponse(new TakeTilesUpdate(p, gameState, player));
             }
+        }
+    }
+
+
+    private void gameFinishedUpdate(String player){
+        List<String> players = GameManager.getInstance().getPlayers(player);
+        for (String p : players) {
+            String winner = GameManager.getInstance().getWinner(player);
+            GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
+            UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
         }
     }
 

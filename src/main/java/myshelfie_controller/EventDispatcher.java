@@ -2,7 +2,6 @@ package myshelfie_controller;
 
 import myshelfie_controller.event.*;
 import myshelfie_model.Position;
-import myshelfie_network.Client;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
 
@@ -30,6 +29,9 @@ public class EventDispatcher {
         return uuid;
     }
 
+    /**
+     * Implement pinging every second
+     */
     public void startPinging() {
         pingThreadRun = true;
 
@@ -52,6 +54,10 @@ public class EventDispatcher {
         sendEvent(new Ping(Settings.getInstance().getUsername(), true));
     }
 
+    /**
+     * Send an event to the server
+     * @param e the event to send
+     */
     private void sendEvent(Event e) {
         e.setUuid(uuid);
 
@@ -62,6 +68,12 @@ public class EventDispatcher {
         }
     }
 
+    /**
+     * Send a Chat event to the server
+     * @param to the recipient of the message
+     *           (if null, the message will be sent to all the players)
+     * @param message the message to send
+     */
     public void chat(String to, String message) {
         sendEvent(new MessageSend(
                 Settings.getInstance().getUsername(),

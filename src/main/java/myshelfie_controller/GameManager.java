@@ -113,6 +113,13 @@ public class GameManager {
     }
 
 
+    /**
+     * This function is called when a take tiles comes from a player
+     * @param player the player that did the take tiles
+     * @return true if the take tiles was successful
+     * @throws Exception if the game is paused due to disconnection of all others players
+     *                  or if the take tiles is not valid for any other reason (see game.takeTiles())
+     */
     public boolean takeTiles(String player, int column, List<Position> tiles) throws Exception {
         int numGame = playerToGame.get(player);
         if (games.get(numGame).getTurn() == null) {
@@ -138,6 +145,12 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getTurnMemory();
     }
 
+
+    /**
+     * this function is calle dto know the state of the player
+     * @param player the player to check
+     * @return true if the player is connected, false otherwise
+     */
     public boolean isConnected(String player){
         int numGame = playerToGame.get(player);
         int numPlayer = games.get(numGame).findPlayer(player);
@@ -152,11 +165,20 @@ public class GameManager {
         games.get(game).setLostConnection(player);
     }
 
+    /**
+     * This function is called from event handler when a player voluntarily disconnects from a game.
+     * @param player the player that disconnected
+     */
     public void setStopConnection(String player){
         Integer game = playerToGame.get(player);
         games.get(game).setStopConnection(player);
     }
 
+    /**
+     * This function is called from event handler to check if a player has already lost connection
+     * this avoids to send the same message multiple times
+     * @param player the player that reconnected
+     */
     public boolean alreadySetLostConnection(String player) {
         Integer game = playerToGame.get(player);
         return games.get(game).alreadySetLostConnection(player);
