@@ -40,7 +40,6 @@ public class EventHandler {
                 }
 
                 if (event != null) {
-                    //todo change this it could cause problems. otherwise synchronize is required
                     new Thread(() -> handle(event)).start();
                 }
 
@@ -96,18 +95,10 @@ public class EventHandler {
                         return;
                     }
 
-                    if (to.equals(player)) {
-                        StringBuilder errormessage = new StringBuilder("Seems stupid to send a message to yourself... \n");
-
-                        if (GameManager.getInstance().getPlayers(player).size() == 2)
-                            errormessage.append("The only other player is: ");
-                        else errormessage.append("The other players are: ");
-
-                        for (String p : GameManager.getInstance().getPlayers(player)) {
-                            if (!p.equals(event.getSource())) errormessage.append(p).append(" ");
-                        }
-                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, errormessage.toString()));
-
+                    if (to.equals(player)) { //has sent a message to himself
+                        String errormessage = buildMirrorMessageReason(player,event);
+                        UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player, errormessage));
+                        return;
                     }
                     if(GameManager.getInstance().alreadySetLostConnection(to)){
                         UpdateDispatcher.getInstance().dispatchResponse(new MessageSendFailure(player,"The player " + to + " has lost the connection"));
@@ -237,7 +228,6 @@ public class EventHandler {
             synchronized (lastPingTimes) {
                 if (!lastPingTimes.containsKey(player)) {
                     System.out.println("EventHandler-> handle-> ping PLAYER NOT FOUND: " + player);
-                    //todo the ping arrive after setLostDisconnection
                 } else {
 
                     if (GameManager.getInstance().alreadySetLostConnection(player)) {//if the player was disconnected
@@ -362,6 +352,19 @@ public class EventHandler {
             GameManager.getInstance().unSetTurn(p);//noOne has the turn anymore
             UpdateDispatcher.getInstance().dispatchResponse(new GameFinished(p, winner));
         }
+    }
+
+    private String buildMirrorMessageReason(String player, Event event){
+        StringBuilder errormessage = new StringBuilder("Seems stupid to send a message to yourself... \n");
+
+        if (GameManager.getInstance().getPlayers(player).size() == 2)
+            errormessage.append("The only other player is: ");
+        else errormessage.append("The other players are: ");
+
+        for (String p : GameManager.getInstance().getPlayers(player)) {
+            if (!p.equals(event.getSource())) errormessage.append(p).append(" ");
+        }
+        return errormessage.toString();
     }
 
     /**

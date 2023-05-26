@@ -45,8 +45,6 @@ public class UpdateHandler {
     }
 
     public void handle(Response response) {
-        // TODO: verificare disconnessioni
-        // System.out.println("Received response " + response.getClass().getSimpleName());
 
         if (response instanceof PlayerConnectSuccess) {
             // start pinging server
@@ -99,7 +97,7 @@ public class UpdateHandler {
             View.getInstance().takeSuccess();
             GameState gameState = ((TakeTilesSuccess) response).getGameState();
             View.getInstance().displayNewSetup(gameState);
-            //todo here it should not ever be called due to the costraints of the game
+
             //if there is just one player left the game should stop
             if (gameState.getPlayerTurn() != null) playerTurn(gameState.getPlayerTurn());
 
@@ -120,7 +118,6 @@ public class UpdateHandler {
             View.getInstance().gameFinished(winner);
 
         } else if (response instanceof GameFinishedForYou){
-            //todo
             View.getInstance().gameFinishedForYou();
         } else {
             if(Settings.DEBUG)System.out.println("UpdateHandler-> handle(): response still not implemented in update handler");

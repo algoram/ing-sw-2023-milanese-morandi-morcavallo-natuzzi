@@ -1,8 +1,6 @@
 package myshelfie_view.cli;
 
-import myshelfie_controller.ConnectionType;
-import myshelfie_controller.EventDispatcher;
-import myshelfie_controller.Settings;
+import myshelfie_controller.*;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
 import myshelfie_network.rmi.RMIClient;
@@ -26,10 +24,10 @@ public class CliView extends View {
     private boolean chatIsRunning = false; //the moment in which the chat is available
     private boolean isMyTurn = false;
 
-    private Queue<Messages> messagesQueue = new LinkedList<Messages>();
+    private final Queue<Messages> messagesQueue = new LinkedList<>();
 
     private static CliView instance = null;
-    private Scanner scanner;
+    private final Scanner scanner;
     private GameState gameState; //is the actual state of the game
     private final PrintStream out;
 
@@ -74,7 +72,7 @@ public class CliView extends View {
                     }
 
                 }catch (IOException e) {
-                    if (Settings.DEBUG) System.err.println("CliView ERROR - IO exception occured");
+                    if (Settings.DEBUG) System.err.println("CliView ERROR - IO exception occurred");
                 }finally {
                     if (input != null) {
                         if (!commandAvailable(input)) {
@@ -142,7 +140,7 @@ public class CliView extends View {
         }
         Printer.getInstance().DisplayAllSetup(this.gameState);
 
-        ListenerThread = new Thread(()->{ commandListenerSync();});
+        ListenerThread = new Thread(this::commandListenerSync);
         //ListenerThread.setPriority(2);//could set in update dispatcher a 5 priority
         ListenerThread.start(); //start the listener that takes the lock
     }
@@ -227,7 +225,7 @@ public class CliView extends View {
         if (gameState.getPlayerTurn().equals(Settings.getInstance().getUsername())) {isMyTurn = true;}
         Printer.getInstance().DisplayAllSetup(this.gameState);
 
-        if (Settings.DEBUG)System.out.println("sono arrivati " + messagesQueue.size() + " messaggi");
+        if (Settings.DEBUG)System.out.println(messagesQueue.size() + " messages arrived");
 
 
     }
@@ -321,10 +319,10 @@ public class CliView extends View {
      *param startIsRunning flag to decide if the start phase is running or not
      * */
     private void askLogin(){
-        String input = null;
+        String input;
         //choose nickname
         while(gameIsRunning ) {
-            out.println("Digit your nicknmame:");
+            out.println("Digit your nickname:");
             input = readSafe();
 
             if (input.startsWith("/") && commandAvailable(input) ){
@@ -372,12 +370,12 @@ public class CliView extends View {
         //todo askTiles may be modified to permit the arrive of messages while inserting input
         String input;
         List<Position> modelPositions = new ArrayList<>();
-        int columnChoosen = 0;
+        int columnChosen;
         //choose positions
         while(gameIsRunning ) {
             out.println("Choose tiles positions (1 to 3) from the board: [ex: A1 B2 C3, ex: A1 B2, ex: A1]");
             input = readSafe();
-            String[] positions = input.trim().toUpperCase().split("\\s+"); //split the input in an array of strings withouth spaces ex:"    a3 A4 a6    " -> ["A3", "A4", "A6"]
+            String[] positions = input.trim().toUpperCase().split("\\s+"); //split the input in an array of strings without spaces ex:"    a3 A4 a6    " -> ["A3", "A4", "A6"]
             if (input.startsWith("/") && commandAvailable(input) ) {
                 out.println("Back to the game...");
             } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
@@ -410,9 +408,9 @@ public class CliView extends View {
             } else if (!input.equals("1") && !input.equals("2") && !input.equals("3") && !input.equals("4") && !input.equals("5") ) {
                     out.println("input not valid");
             } else {
-                columnChoosen = Integer.parseInt(input);
+                columnChosen = Integer.parseInt(input);
                 //Send the move to the server
-                takeTiles(modelPositions, columnChoosen);
+                takeTiles(modelPositions, columnChosen);
                 break;
             }
         }
@@ -439,7 +437,7 @@ public class CliView extends View {
             }else if (command.equals("/exit")) {
                 exit();
                 return true;
-                //if command starts with /chat, it will send the rest of the coomand to the other players as a message
+                //if command starts with /chat, it will send the rest of the command to the other players as a message
             }else if (command.startsWith("/chat")) {
                 chatOut(command);
                 return true;
@@ -541,8 +539,10 @@ public class CliView extends View {
         }
 
 
-        if (Settings.DEBUG) System.out.println("CliView-> chatout: Sending message to " + receiver + ": " + message);
-        messagesQueue.add(new Messages(message,receiver, receiver.equals("all") ? true : false, new Date() ,true));
+        if (Settings.DEBUG) System.out.println("CliView-> chatOut: Sending message to " + receiver + ": " + message);
+        if(!receiver.equals(Settings.getInstance().getUsername())){
+            messagesQueue.add(new Messages(message,receiver, receiver.equals("all"), new Date() ,true));
+        }
         EventDispatcher.getInstance().chat(receiver.equals("all") ? null : receiver, message);
 
     }
@@ -684,8 +684,8 @@ public class CliView extends View {
      */
     private void buildPositionList(String[] positions, List<Position> modelPositions){
 
-        // Map for the row CORDINATES of the board in the view
-            //into the CORDINATES of the board in the model
+        // Map for the row COORDINATES of the board in the view
+            //into the COORDINATES of the board in the model
          final HashMap<Character, Integer> boardCLI2Model;
         boardCLI2Model = new HashMap<>() {{
            put('1', 0);
@@ -714,12 +714,12 @@ public class CliView extends View {
     }
 
     public void showChat(){
-        if (messagesQueue.isEmpty()||messagesQueue.size()==0){
+        if (messagesQueue.isEmpty()){
             out.println("Yet no messages in the chat");
         }else{
             Queue<Messages> messagesQueueCopy = new LinkedList<>(messagesQueue);
             for (int i = 0; i < messagesQueue.size(); i++) {
-                out.println(messagesQueueCopy.poll().toShow());
+                out.println(Objects.requireNonNull(messagesQueueCopy.poll()).toShow());
             }
         }
     }
