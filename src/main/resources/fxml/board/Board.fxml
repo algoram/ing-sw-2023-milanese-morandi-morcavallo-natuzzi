@@ -44,7 +44,7 @@
                   <Insets />
                </StackPane.margin>
                <padding>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                  <Insets bottom="10.0" left="8.0" right="7.5" top="7.0" />
                </padding>
             </AnchorPane>
          </children>

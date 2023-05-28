@@ -12,6 +12,8 @@ import myshelfie_view.gui.controllers.GameController;
 import myshelfie_view.gui.controllers.SetupSceneController;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 
 public class FXApp extends Application {
     private static final String TITLE = "MyShelfie";
@@ -26,6 +28,8 @@ public class FXApp extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
 
+
+
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -35,6 +39,14 @@ public class FXApp extends Application {
         GuiView.getInstance().setGameController(loader.getController());
 
         Scene scene = new Scene(root);
+        URL cssUrl = getClass().getResource("Styles/Board.css");
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        } else {
+            System.err.println("CSS file 'Board.css' not found");
+        }
+
+
 
         showSetup();
 
