@@ -39,12 +39,14 @@ public class FXApp extends Application {
         GuiView.getInstance().setGameController(loader.getController());
 
         Scene scene = new Scene(root);
-        URL cssUrl = getClass().getResource("Styles/Board.css");
+
+
+        /**URL cssUrl = getClass().getResource("Styles/Board.css");
         if (cssUrl != null) {
             scene.getStylesheets().add(cssUrl.toExternalForm());
         } else {
             System.err.println("CSS file 'Board.css' not found");
-        }
+        }**/
 
 
 
