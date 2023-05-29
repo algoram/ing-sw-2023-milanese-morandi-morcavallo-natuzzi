@@ -23,7 +23,7 @@
                         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="11.5" prefWidth="100.0" />
                         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="10.2" prefWidth="100.0" />
                         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="11.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" percentWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" percentWidth="10.4" prefWidth="100.0" />
                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" percentWidth="12.0" prefWidth="100.0" />
                       <ColumnConstraints fillWidth="false" hgrow="ALWAYS" minWidth="10.0" percentWidth="11.899999999999999" prefWidth="100.0" />
                     </columnConstraints>
