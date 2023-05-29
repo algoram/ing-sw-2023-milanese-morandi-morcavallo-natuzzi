@@ -211,9 +211,6 @@ public class GameManager {
         topCommonGoals[0] = commonGoals[0].peekTokens();
         topCommonGoals[1] = commonGoals[1].peekTokens();
 
-        // TODO: backup the game
-        BackupManager.getInstance().backupGames(games);
-
         return new GameState(game, board, commonGoals, playerSeat, playerTurn, finishedFirst, players, topCommonGoals, bag);
     }
 

@@ -34,41 +34,6 @@ public class Game {
     private ArrayList<Integer> possiblePersonalGoals;
     private int numberOfPlayers;
 
-    public static Game fromGameState(GameState state) {
-        Game g = new Game();
-
-        g.board = state.getBoard();
-        g.players = state.getPlayers();
-
-        g.playerStates = new ArrayList<>();
-        for (int i = 0; i < g.players.size(); i++) {
-            g.playerStates.add(StateConnection.LOST_CONNECTION);
-        }
-
-        g.bag = state.getBag();
-        g.commonGoals = state.getCommonGoals();
-        g.numberOfPlayers = g.players.size();
-
-        g.finishedFirst = -1;
-        for (int i = 0; i < g.numberOfPlayers; i++) {
-            String username = g.players.get(i).getUsername();
-
-            if (username.equals(state.getPlayerSeat())) {
-                g.playerSeat = i;
-            }
-
-            if (username.equals(state.getPlayerTurn())) {
-                g.turn = i;
-            }
-
-            if (username.equals(state.getFinishedFirst())) {
-                g.finishedFirst = i;
-            }
-        }
-
-        return g;
-    }
-
     /**
      * Starts a new game with the given number of players (clamped between 2 and MAX_PLAYERS),
      * taking care to create the players, give them personal goals, create the board, create
