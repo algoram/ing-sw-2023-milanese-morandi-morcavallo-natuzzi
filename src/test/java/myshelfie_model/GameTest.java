@@ -10,6 +10,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class GameTest {
@@ -119,6 +122,12 @@ public class GameTest {
         try {
             assertTrue("Adding first player", game.addPlayer("1"));
             assertTrue("Adding second player", game.addPlayer("2"));
+            try {
+                game.addPlayer("2");
+            } catch (Exception e) {
+                assertEquals("There's already someone with the same username that did not lose connection, should not be possible to enter this if", e.getMessage());
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -132,6 +141,113 @@ public class GameTest {
 
         // check that all personal goals are different from each other
         assertNotEquals("Different personal goals", p1.getPersonalGoal(), p2.getPersonalGoal());
+    }
+
+    @Test
+    public void removePlayer_() {
+        game.startGame(3);
+
+        // check that all insertions go well
+        try {
+            assertTrue("Adding first player", game.addPlayer("1"));
+            assertTrue("Adding second player", game.addPlayer("2"));
+            assertTrue("Adding second player", game.addPlayer("3"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        assertFalse(game.alreadySetLostConnection("1"));
+        game.setLostConnection("2");
+        game.setLostConnection("2");
+        game.removePlayer("1");
+        try{
+            game.addPlayer("2");
+        }catch (Exception e){}
+        game.setLostConnection("2");
+        assertTrue(game.alreadySetLostConnection("2"));
+        try{
+            game.addPlayer("2");
+        }catch (Exception e){}
+        game.setStopConnection("2");
+        game.setStopConnection("2");
+
+    }
+
+    @Test
+    public void setStopConnection() {
+        game.startGame(4);
+        try {
+            assertTrue("Adding first player", game.addPlayer("1"));
+            assertTrue("Adding second player", game.addPlayer("2"));
+            assertTrue("Adding second player", game.addPlayer("3"));
+            assertTrue("Adding second player", game.addPlayer("4"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        game.setStopConnection("2");
+    }
+
+    @Test
+    public void takeTiles_notofturn() {
+        game.startGame(4);
+        try {
+            assertTrue("Adding first player", game.addPlayer("1"));
+            assertTrue("Adding second player", game.addPlayer("2"));
+            assertTrue("Adding second player", game.addPlayer("3"));
+            assertTrue("Adding second player", game.addPlayer("4"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        List<Position> chosenTiles = new ArrayList<>();
+        chosenTiles.add(new Position(4, 4));
+        chosenTiles.add(new Position(4, 5));
+        try{
+            if(!game.getTurn().equals("4")){
+                game.takeTiles("4", chosenTiles, 4);
+            }
+            else {
+                game.takeTiles("3", chosenTiles, 4);
+            }
+
+        }catch (Exception e){}
+    }
+
+    @Test
+    public void takeTiles_ofturn() {
+        game.startGame(4);
+        try {
+            assertTrue("Adding first player", game.addPlayer("1"));
+            assertTrue("Adding second player", game.addPlayer("2"));
+            assertTrue("Adding second player", game.addPlayer("3"));
+            assertTrue("Adding second player", game.addPlayer("4"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals(game.getPoints(1), 0);
+
+        List<Position> chosenTiles = new ArrayList<>();
+        chosenTiles.add(new Position(4, 4));
+        chosenTiles.add(new Position(4, 5));
+        try{
+            game.takeTiles(game.getTurn(), chosenTiles, 4);
+
+        }catch (Exception e){}
+
+    }
+
+    @Test
+    public void getTurnMemory() {
+        game.startGame(4);
+        try {
+            assertTrue("Adding first player", game.addPlayer("1"));
+            assertTrue("Adding second player", game.addPlayer("2"));
+            assertTrue("Adding second player", game.addPlayer("3"));
+            assertTrue("Adding second player", game.addPlayer("4"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        game.getTurnMemory();
     }
 
 }

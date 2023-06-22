@@ -203,7 +203,6 @@ public class Game {
                 if(players.get(turn).getUsername().equals(username)) //if the player is the active player
                     recalculateTurn();
 
-                return;
             }
         }
         checkSomeOneStillConnected(username);
@@ -567,7 +566,7 @@ public class Game {
      * if players(connected).size() == 1 -> check if there is at least one player with state LOST_CONNECTION(he may reconnect)
      * if players(connected).size() == 0 or 1 but everyone else is voluntarily disconnected -> close the game
      */
-    private void checkSomeOneStillConnected(String player){
+    private void  checkSomeOneStillConnected(String player){
 
         int playersConnected = 0;
         for (Player p: players) {
@@ -623,7 +622,7 @@ public class Game {
 
 
     //-------------------- DEBUGGING METHODS --------------------
-
+/*
     public void debugBoard() {
         Tile[][] tiles = board.getBoardTest();
 
@@ -647,6 +646,8 @@ public class Game {
             System.out.println();
         }
     }
+
+ */
 
     public enum StateConnection{
         CONNECTED,

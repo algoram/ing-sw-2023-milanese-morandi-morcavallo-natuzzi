@@ -141,8 +141,58 @@ public class BoardTest {
 // (out of bound) -> ""
 
 
+    @Test
+    public void remove_1Tile_shouldReturnList() throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
+        List<Position> positions = new ArrayList<>();
+        List<Tile> removed;
+
+        Tile tile1 = new Tile(Type.BOOKS);
 
 
+
+        randomboard.setTileTest(4,4, tile1);
+
+
+        positions.add(new Position(4,4));
+
+
+
+        removed = randomboard.remove(positions);
+        //the assertion calls the remove function  and checks if the list returned contains tile1 and tile2 and that the list is of size 2
+        assertTrue(removed.contains(tile1));
+        assertEquals(1, removed.size());
+
+        //this assertion check that the board is empty
+        assertTrue(Arrays.stream(randomboard.getBoardTest()).allMatch(row -> Arrays.stream(row).allMatch(Objects::isNull)));
+
+    }
+
+    @Test
+    public void remove_2AdjacentTilesInColumn_shouldReturnList() throws NullPointerException,IndexOutOfBoundsException,IllegalArgumentException {
+        List<Position> positions = new ArrayList<>();
+        List<Tile> removed;
+
+        Tile tile1 = new Tile(Type.BOOKS);
+        Tile tile2 = new Tile(Type.CATS);
+
+
+        randomboard.setTileTest(4,4, tile1);
+        randomboard.setTileTest(5,4, tile2);
+
+        positions.add(new Position(4,4));
+        positions.add(new Position(5,4));
+
+
+        removed = randomboard.remove(positions);
+        //the assertion calls the remove function  and checks if the list returned contains tile1 and tile2 and that the list is of size 2
+        assertTrue(removed.contains(tile1));
+        assertTrue(removed.contains(tile2));
+        assertEquals(2, removed.size());
+
+        //this assertion check that the board is empty
+        assertTrue(Arrays.stream(randomboard.getBoardTest()).allMatch(row -> Arrays.stream(row).allMatch(Objects::isNull)));
+
+    }
 
 
     // 1. Board with 2 tiles adjacent and list of 2 positions with each of them being the position of the tile to remove -> should return the List of Tiles removed
@@ -603,5 +653,20 @@ public class BoardTest {
             assertEquals("A Position is out of bounds!\n No tile has been moved...", e.getMessage());
             assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
+    }
+
+    @Test
+    public void  isLegalPosition_impossiblePosition(){
+        assertFalse(randomboard.isLegalPosition(2,-1,-1));
+    }
+
+    @Test
+    public void  isLegalPosition_PossiblePosition(){
+        assertTrue(randomboard.isLegalPosition(2,4,4));
+    }
+
+    @Test
+    public void  isLegalPosition_PossiblePositionWrongBoard(){
+        assertFalse(randomboard.isLegalPosition(2,2,1));
     }
 }

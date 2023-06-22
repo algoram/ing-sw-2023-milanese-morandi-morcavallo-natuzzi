@@ -94,6 +94,7 @@ public abstract class Board implements Serializable {
      * Returns all the tiles that could be picked by a player
      * @return all the tiles that could be picked by a player
      */
+   /*
     public ArrayList<Position> getAvailableTiles(int numberOfPlayers) {
         ArrayList<Position> positions = new ArrayList<>();
 
@@ -107,6 +108,8 @@ public abstract class Board implements Serializable {
 
         return positions;
     }
+    */
+
 
     private boolean sideFree(int row,int col){
         if(!isOccupied(row+1,col)) return true;//Up
