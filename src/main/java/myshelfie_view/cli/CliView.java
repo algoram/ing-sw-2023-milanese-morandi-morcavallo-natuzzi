@@ -613,7 +613,7 @@ public class CliView extends View {
             put("F7",2);
             put("F8",4);
             //G
-            put("G3",4);
+            put("G3",3);
             put("G4",2);
             put("G5",2);
             put("G6",2);
@@ -696,6 +696,7 @@ public class CliView extends View {
            put('6', 5);
            put('7', 6);
            put('8', 7);
+           put('9', 8);
            put('A', 8);
            put('B', 7);
            put('C', 6);
