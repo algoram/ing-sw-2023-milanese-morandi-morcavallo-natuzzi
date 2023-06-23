@@ -15,8 +15,8 @@ public class EventHandlerTest {
     UpdateHandler updateHandler = null;
 
     EventHandler eventHandler = null;
+    Boolean pingThreadRun = true;
 
-    Game game = null;
     @Before
     public void setUp() {
         updateHandler = UpdateHandler.getInstance();
@@ -25,23 +25,24 @@ public class EventHandlerTest {
 
     @After
     public void tearDown() {
-
+        pingThreadRun = false;
     }
 
     @Test
     public void handle() {
-        Event event = new PlayerConnect("1",2);
+        Event event = new PlayerConnect("1",3);
         eventHandler.handle(event);
+        startPinging("1");
 
-        event = new PlayerConnect("2",2);
+        event = new PlayerConnect("2",3);
         eventHandler.handle(event);
+        startPinging("2");
 
-        event = new PlayerConnect("3",2);
+
+        event = new PlayerConnect("3",3);
         eventHandler.handle(event);
+        startPinging("3");
 
-
-        event = new PlayerDisconnect("3");
-        eventHandler.handle(event);
 
         List<Position> chosen = new ArrayList<>();
         chosen.add(new Position(4,4));
@@ -55,22 +56,46 @@ public class EventHandlerTest {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-    }
-
-    @Test
-    public void handle_PlayerConnect() {
-
 
 
     }
 
     @Test
-    public void handle_PlayerDisconnect() {
-        // TODO
+    public void handle_PlayerDisConnect() {
+        Event event = new PlayerConnect("t1",3);
+        eventHandler.handle(event);
+        startPinging("1");
+
+        event = new PlayerConnect("t2",3);
+        eventHandler.handle(event);
+        startPinging("2");
+
+        event = new PlayerConnect("t3",3);
+        eventHandler.handle(event);
+        startPinging("3");
+
+        event = new PlayerDisconnect("t3");
+        eventHandler.handle(event);
+
+        event = new PlayerConnect("t3",3);
+        eventHandler.handle(event);
+
+
     }
 
-    @Test
-    public void handle_TakeTiles() {
-        // TODO
+
+    private void startPinging(String player) {
+
+        new Thread(() -> {
+            while (pingThreadRun) {
+                EventHandler.getInstance().addToEventQueue(new Ping(player, false));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    if (Settings.DEBUG) System.err.println("EventDispatcher ERROR - Thread interrupted while sleeping");
+                    pingThreadRun = false;
+                }
+            }
+        }).start();
     }
 }
