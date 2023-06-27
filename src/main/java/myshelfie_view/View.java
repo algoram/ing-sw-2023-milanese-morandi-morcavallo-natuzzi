@@ -21,6 +21,10 @@ public abstract class View {
 
     public abstract void start();
 
+    public abstract void gameStarted();
+    public abstract void updateQueuePosition(int newPosition);
+    public abstract void gameCreateFailure(String reason);
+
     public abstract void showLogMessage(String message);
     public abstract void connectionSuccessful();
     public abstract void connectionFailed(String reason);

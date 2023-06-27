@@ -2,6 +2,7 @@ package myshelfie_controller;
 
 import myshelfie_controller.event.*;
 import myshelfie_controller.response.*;
+import myshelfie_model.Game;
 import myshelfie_model.GameState;
 import myshelfie_model.Position;
 import myshelfie_network.rmi.RMIServer;
@@ -18,12 +19,13 @@ public class EventHandler {
 
     private final Map<String,Long> lastPingTimes;
 
-
+    private final LinkedList<String> waitingQueue;
 
     private EventHandler() {
         eventQueue = new LinkedList<>();
         threadRun = true;
         lastPingTimes = new HashMap<>();
+        waitingQueue = new LinkedList<>();
 
 
         // here I need a way to get from the player to the game
@@ -40,6 +42,7 @@ public class EventHandler {
                 }
 
                 if (event != null) {
+                    // TODO: cosi' creiamo un thread ogni volta che viene ricevuto un evento e non sappiamo se gli eventi vengono eseguiti in ordine
                     new Thread(() -> handle(event)).start();
                 }
 
@@ -122,7 +125,94 @@ public class EventHandler {
         } else if (event instanceof PlayerConnect) {
             System.out.println("EventHandler -> handle():PlayerConnect");
 
-            int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
+            // tell the network stack to memorize the player's network client
+            UUID uuid = event.getUuid();
+
+            if (RMIServer.getInstance().hasTempClient(uuid)) {
+                RMIServer.getInstance().addClient(uuid, player);
+            } else if (SocketServer.getInstance().hasTempClient(uuid)) {
+                SocketServer.getInstance().addClient(uuid, player);
+            }
+
+            boolean previouslyConnected = GameManager.getInstance().alreadyInGame(player);
+
+            // if the player is not reconnecting to a game
+            if (!previouslyConnected) {
+                System.out.println("Not previously connected");
+                // if there's a game available
+                if (GameManager.getInstance().gameAvailable()) {
+                    System.out.println("Game available");
+                    try {
+                        // TODO: the number of players is actually not needed here
+                        GameManager.getInstance().addPlayer(player, 4);
+                    } catch (Exception e) {
+                        // this catch should never happen, we checked for it with the 2 IFs before
+                        UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, e.getMessage(), event.getUuid()));
+                        return;
+                    }
+
+                    // if everyone is connected send the connection update to all players
+                    if (GameManager.getInstance().getPlayers(player).size() == GameManager.getInstance().getNumberOfPlayers(player)) {
+                        GameState gameState = GameManager.getInstance().getGameState(player);
+
+                        System.out.println("EventHandler-> handle(): Sending connect update to all:");
+
+                        List<String> players = GameManager.getInstance().getPlayers(player);
+                        for(String p : players){
+                            UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                        }
+                    }
+
+                    UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+                } else {
+                    System.out.println("Creating new game");
+                    // else ask the player to create a game if he's the first
+                    UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+
+                    // add the player to the waiting queue
+                    waitingQueue.add(player);
+
+                    UpdateDispatcher.getInstance().dispatchResponse(new GameCreateUpdate(player, waitingQueue.indexOf(player)));
+                }
+            } else {
+                System.out.println("Previously connected");
+                // the player was already in a game
+                if (GameManager.getInstance().getTurnMemory(player) != null) { // if the game was blocked due to a disconnection
+                    System.out.println("Previous disconnection");
+                    // I have to update both players of the start of the game
+
+                    System.out.println("EventHandler ->handle ->addPlayer(): Game stopped due to disconnection, restarting it");
+                    String turnMemoryOld = GameManager.getInstance().getTurnMemory(player);
+                    GameManager.getInstance().recalculateTurn(player);
+
+                    //we don't want to notify anything to the player who was of turn if he did not even know of disconnection
+                    boolean playerOfTurnWasNotified;
+                    playerOfTurnWasNotified = GameManager.getInstance().alreadyNotified(turnMemoryOld);
+
+                    //let's update the player of restart
+                    GameState gameState = GameManager.getInstance().getGameState(player);
+                    for (String p : GameManager.getInstance().getPlayers(player)) {
+                        if (!GameManager.getInstance().alreadySetLostConnection(p)) {
+                            if (p.equals(player) || !p.equals(turnMemoryOld) || playerOfTurnWasNotified) {
+                                System.out.println("EventHandler ->handle ->addPlayer(): Sending connect update to: " + p);
+                                UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+                            }
+                        }
+                    }
+                    GameManager.getInstance().resetNotified(turnMemoryOld);
+                } else {
+                    System.out.println("No previous disconnection");
+                    //the game was not blocked, so I have to update only the player who's doing to Connect
+                    GameState gameState = GameManager.getInstance().getGameState(player);
+                    UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(player, gameState));
+                }
+            }
+
+            synchronized (lastPingTimes) {
+                lastPingTimes.put(player, System.currentTimeMillis());
+            }
+
+            /*int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
 
             try {
                 boolean isPlayerNew = GameManager.getInstance().addPlayer(player, numberOfPlayers);
@@ -193,9 +283,50 @@ public class EventHandler {
 
             }catch (Exception e){
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, e.getMessage(), event.getUuid()));
+            }*/
+
+
+
+        } else if (event instanceof GameCreate) {
+            System.out.println("EventHandler-> handle(): GameCreate");
+
+            int numberOfPlayers = ((GameCreate) event).getNumberOfPlayers();
+
+            // if the player who sent the GameCreate event is not the actual first one in the queue
+            if (!player.equals(waitingQueue.peek())) {
+                UpdateDispatcher.getInstance().dispatchResponse(new GameCreateFailure(player, "You're not authorized to create a game"));
+                return;
             }
 
+            // try to fill the game with players in the waiting queue
+            for (int i = 0; i < numberOfPlayers; i++) {
+                String waitingPlayer = waitingQueue.poll();
 
+                if (waitingPlayer == null) {
+                    // not enough players, need to wait
+                    return;
+                }
+
+                try {
+                    // add the player to the newly created game
+                    GameManager.getInstance().addPlayer(waitingPlayer, numberOfPlayers);
+                    // notify the player that the game has been created
+                    UpdateDispatcher.getInstance().dispatchResponse(new GameCreateSuccess(waitingPlayer));
+                } catch (Exception e) {
+                    // this catch should never happen, if the player was in the queue he wasn't in any prior games
+                    UpdateDispatcher.getInstance().dispatchResponse(new GameCreateFailure(player, e.getMessage()));
+                }
+            }
+
+            GameState gameState = GameManager.getInstance().getGameState(player);
+            for (String p : GameManager.getInstance().getPlayers(player)) {
+                UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
+            }
+
+            // update all remaining players in the waiting queue on their new queue positions
+            for (int i = 0; i < waitingQueue.size(); i++) {
+                UpdateDispatcher.getInstance().dispatchResponse(new GameCreateUpdate(waitingQueue.get(i), i));
+            }
 
         } else if (event instanceof PlayerDisconnect) {
             System.out.println("EventHandler-> handle(): PlayerDisconnect");

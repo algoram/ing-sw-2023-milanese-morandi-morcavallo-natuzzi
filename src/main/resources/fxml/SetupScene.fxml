@@ -38,12 +38,6 @@
                   <Insets bottom="16.0" top="8.0" />
                </VBox.margin>
             </HBox>
-            <Label text="Players for new game" />
-            <ChoiceBox fx:id="players" prefWidth="150.0">
-               <VBox.margin>
-                  <Insets bottom="16.0" top="8.0" />
-               </VBox.margin>
-            </ChoiceBox>
             <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
             <HBox>
                <children>

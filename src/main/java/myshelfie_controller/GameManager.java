@@ -49,6 +49,29 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getPlayersUsernames();
     }
 
+    /**
+     * Returns whether the player is already connected to a game
+     * @param player to check
+     * @return whether the player is already connected to a game
+     */
+    public boolean alreadyInGame(String player) {
+        return playerToGame.containsKey(player);
+    }
+
+    /**
+     * Checks if there's a game not full still
+     * @return whether there's a game not full still
+     */
+    public boolean gameAvailable() {
+        for (Game g : games) {
+            if (g.getPlayers().size() < g.getNumberOfPlayers()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * This function is calls from event handler when a player connects to a game.
@@ -147,14 +170,19 @@ public class GameManager {
 
 
     /**
-     * this function is calle dto know the state of the player
+     * this function is called to know the state of the player
      * @param player the player to check
      * @return true if the player is connected, false otherwise
      */
     public boolean isConnected(String player){
-        int numGame = playerToGame.get(player);
-        int numPlayer = games.get(numGame).findPlayer(player);
-        return games.get(numGame).getPlayerStates().get(numPlayer).equals(Game.StateConnection.CONNECTED);
+        if (playerToGame.containsKey(player)) {
+            int numGame = playerToGame.get(player);
+            int numPlayer = games.get(numGame).findPlayer(player);
+            return games.get(numGame).getPlayerStates().get(numPlayer).equals(Game.StateConnection.CONNECTED);
+        }
+
+        // if the player is not found then he should be in the waiting queue, assume he's connected
+        return true;
     }
     /**
      * This function is called from event handler when a player disconnects from a game.
@@ -181,8 +209,12 @@ public class GameManager {
      */
     public boolean alreadySetLostConnection(String player) {
         Integer game = playerToGame.get(player);
-        return games.get(game).alreadySetLostConnection(player);
 
+        if (game != null) {
+            return games.get(game).alreadySetLostConnection(player);
+        }
+
+        return false;
     }
 
 

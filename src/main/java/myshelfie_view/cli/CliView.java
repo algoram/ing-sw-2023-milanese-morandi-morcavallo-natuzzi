@@ -100,6 +100,26 @@ public class CliView extends View {
         askLogin();
     }
 
+    @Override
+    public void gameStarted() {
+        System.out.println("Game started!");
+    }
+
+    @Override
+    public void updateQueuePosition(int newPosition) {
+        if (newPosition != 0) {
+            System.out.println("Waiting in the queue: " + newPosition + " players are in front of you");
+            return;
+        }
+
+        askNumberOfPlayers();
+    }
+
+    @Override
+    public void gameCreateFailure(String reason) {
+
+    }
+
     //******************************************************************************************************************
     //*********************************************** PUBLIC METHODS **************************************************
 
@@ -341,24 +361,31 @@ public class CliView extends View {
                 break;
             }
         }
-        //choose number of players
+
+        EventDispatcher.getInstance().connect();
+    }
+
+    private void askNumberOfPlayers() {
+        int numberOfPlayers = -1;
+
+        // choose number of players
         while(gameIsRunning) {
             out.println("Digit the number of players [2/3/4]");
-            input = readSafe();
+            String input = readSafe();
 
             if (input.startsWith("/") && commandAvailable(input) ){
                 out.println("Back to the game...");
-            } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
+            } else if (!input.matches("[a-zA-Z0-9 ]+")) {
                 out.println("input not valid: only letters and numbers are allowed");
-            }
-            else if (!input.equals("2") && !input.equals("3") && !input.equals("4")) {
+            } else if (!input.equals("2") && !input.equals("3") && !input.equals("4")) {
                 out.println("input not valid");
-            }
-            else {
-                EventDispatcher.getInstance().connect(Integer.parseInt(input));
+            } else {
+                numberOfPlayers = Integer.parseInt(input);
                 break;
             }
         }
+
+        EventDispatcher.getInstance().createGame(numberOfPlayers);
     }
 
     private boolean notAvailableUsername(String input) {

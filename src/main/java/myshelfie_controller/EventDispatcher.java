@@ -82,8 +82,12 @@ public class EventDispatcher {
         ));
     }
 
-    public void connect(int backupNumPlayers) {
-        sendEvent(new PlayerConnect(Settings.getInstance().getUsername(), backupNumPlayers));
+    public void connect() {
+        sendEvent(new PlayerConnect(Settings.getInstance().getUsername()));
+    }
+
+    public void createGame(int numberOfPlayers) {
+        sendEvent(new GameCreate(Settings.getInstance().getUsername(), numberOfPlayers));
     }
 
     public void playerDisconnect(){
