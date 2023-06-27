@@ -86,6 +86,10 @@ public class Bookshelf implements Serializable {
         }
     }
 
+    /***
+     *
+     * @return the number of points earned by the player
+     */
     public int getPoints() {
         boolean[][] visited = new boolean[tiles.length][tiles[0].length];
         int[] count = new int[1];

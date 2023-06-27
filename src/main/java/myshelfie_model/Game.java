@@ -131,7 +131,6 @@ public class Game {
         playerSeat = random.nextInt(numPlayers);
 
         // also set the turn to the first player
-        // todo what if the first player disconnects before the game starts?
         turn = playerSeat;
 
         // no one has finished yet

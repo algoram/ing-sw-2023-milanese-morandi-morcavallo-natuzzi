@@ -78,6 +78,13 @@ public enum Color {
         return builder.toString();
     }
 
+    /***
+     * This method colors a special char into a strings with a given color
+     * @param string the string to analyze
+     * @param specials the list of special chars
+     * @param color the color to use
+     * @return the colored string
+     */
     public static String colorChar(String string, List <Character> specials, Color color){
 
         StringBuilder output = new StringBuilder(); // stringa di output

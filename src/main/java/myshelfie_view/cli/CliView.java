@@ -275,6 +275,10 @@ public class CliView extends View {
 
     //******************************************************************************************************************
     //**************************************************PRIVATE METHODS*************************************************
+
+    /***
+     * This method is used to as the type of connection
+     */
     private void askConnection(){
         String input;
         while(gameIsRunning) {
@@ -300,6 +304,9 @@ public class CliView extends View {
         }
     }
 
+    /***
+     * This method is used to ask the username
+     */
     private void askHostname() throws Exception {
         String input = null;
 
@@ -313,7 +320,6 @@ public class CliView extends View {
                 break;
             }
         }
-        //todo implementare versione con indirizzi ip
         if (Settings.getInstance().getConnectionType() == ConnectionType.RMI) {
             try {
                 RMIClient.getInstance().connect(input);
@@ -365,6 +371,9 @@ public class CliView extends View {
         EventDispatcher.getInstance().connect();
     }
 
+    /***
+     * This method is used to ask the number of players that will play the game
+     */
     private void askNumberOfPlayers() {
         int numberOfPlayers = -1;
 
@@ -392,6 +401,9 @@ public class CliView extends View {
         return input.equals("") || input.trim().equals(" ") || input.trim().equalsIgnoreCase("ALL") || input.startsWith("/");
     }
 
+    /***
+     * This method is used to verify and send a player's move during the game
+     */
     private void askTiles(){
 
         //todo askTiles may be modified to permit the arrive of messages while inserting input

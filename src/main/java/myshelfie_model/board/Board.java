@@ -27,14 +27,12 @@ import java.util.List;
  *    7  null | null | null | IV   | II  | II   | null | null | null
  *    8  null | null | null | null | IV  | III  | null | null | null
  * */
-//TODO: MODIFICARE UML CON ABSTRACT
+
 public abstract class Board implements Serializable {
-    //TODO: Modificare uml protected
     protected Tile[][] board;
     //private final Tile emptyTile= new Tile(Type.EMPTY);
     protected int BOARD_LENGTH = 9;
 
-    //TODO:inserire in UML attributo
     //indicates the position coordinates for the tile refill
     // 0: null, 2: two player, 3:three player, 4: four player
     protected int[][] BOARD_PRE_SET = {
@@ -90,27 +88,13 @@ public abstract class Board implements Serializable {
         return true;
     }
 
-    /**
-     * Returns all the tiles that could be picked by a player
-     * @return all the tiles that could be picked by a player
+
+    /***
+     * Check if the tile has a free side
+     * @param row
+     * @param col
+     * @return
      */
-   /*
-    public ArrayList<Position> getAvailableTiles(int numberOfPlayers) {
-        ArrayList<Position> positions = new ArrayList<>();
-
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (isLegalPosition(numberOfPlayers, i, j) && sideFree(i, j)) {
-                    positions.add(new Position(i, j));
-                }
-            }
-        }
-
-        return positions;
-    }
-    */
-
-
     private boolean sideFree(int row,int col){
         if(!isOccupied(row+1,col)) return true;//Up
         else if(!isOccupied(row-1,col)) return true;//Down
@@ -119,6 +103,7 @@ public abstract class Board implements Serializable {
     }
 
     /**
+     * Check if the board contains only isolated tiles
     * @return: true if the board contains only isolated tiles, false otherwise
     * */
     public boolean refillNeeded(){
@@ -140,7 +125,6 @@ public abstract class Board implements Serializable {
     }
 
 
-    //TODO: aggiungere uml
 
     /**
     * @param a: first number corresponds to row/column of the first tile
@@ -162,10 +146,8 @@ public abstract class Board implements Serializable {
      * */
     protected abstract boolean CheckBoardPosition(Position pos);
 
-    // TODO: Establish requirements for the position of the tiles to be removed: what about positions outside the board?
 
     //NEW VERSION
-    //  TODO public List<Tile> remove(List<Position> chosen)
     /**
      * @param chosen: list of positions of the tiles to be removed
      * @return: list of tiles removed, if no tiles are removed, the list is empty

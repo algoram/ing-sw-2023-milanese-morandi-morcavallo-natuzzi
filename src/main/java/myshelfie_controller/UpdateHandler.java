@@ -44,6 +44,10 @@ public class UpdateHandler {
         }
     }
 
+    /***
+     * This method is used to handle the response received from the server
+     * @param response
+     */
     public void handle(Response response) {
 
         if (response instanceof PlayerConnectSuccess) {
