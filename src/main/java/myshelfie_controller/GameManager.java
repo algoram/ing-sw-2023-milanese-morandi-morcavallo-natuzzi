@@ -49,6 +49,29 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getPlayersUsernames();
     }
 
+    /**
+     * Returns whether the player is already connected to a game
+     * @param player to check
+     * @return whether the player is already connected to a game
+     */
+    public boolean alreadyInGame(String player) {
+        return playerToGame.containsKey(player);
+    }
+
+    /**
+     * Checks if there's a game not full still
+     * @return whether there's a game not full still
+     */
+    public boolean gameAvailable() {
+        for (Game g : games) {
+            if (g.getPlayers().size() < g.getNumberOfPlayers()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * This function is calls from event handler when a player connects to a game.
@@ -147,14 +170,19 @@ public class GameManager {
 
 
     /**
-     * this function is calle dto know the state of the player
+     * this function is called to know the state of the player
      * @param player the player to check
      * @return true if the player is connected, false otherwise
      */
     public boolean isConnected(String player){
-        int numGame = playerToGame.get(player);
-        int numPlayer = games.get(numGame).findPlayer(player);
-        return games.get(numGame).getPlayerStates().get(numPlayer).equals(Game.StateConnection.CONNECTED);
+        if (playerToGame.containsKey(player)) {
+            int numGame = playerToGame.get(player);
+            int numPlayer = games.get(numGame).findPlayer(player);
+            return games.get(numGame).getPlayerStates().get(numPlayer).equals(Game.StateConnection.CONNECTED);
+        }
+
+        // if the player is not found then he should be in the waiting queue, assume he's connected
+        return true;
     }
     /**
      * This function is called from event handler when a player disconnects from a game.
@@ -181,8 +209,12 @@ public class GameManager {
      */
     public boolean alreadySetLostConnection(String player) {
         Integer game = playerToGame.get(player);
-        return games.get(game).alreadySetLostConnection(player);
 
+        if (game != null) {
+            return games.get(game).alreadySetLostConnection(player);
+        }
+
+        return false;
     }
 
 
@@ -240,6 +272,12 @@ public class GameManager {
         return games.get(playerToGame.get(player)).getTurn();
     }
 
+    /***
+     *
+     * this function is used to know if the player has finished first
+     * @param player
+     * @return true if the player has finished first
+     */
     public boolean hasFinishedFirst(String player){
         String finishedFirst = games.get(playerToGame.get(player)).getFinishedFirst();
         if (player == null || finishedFirst == null) {
@@ -248,6 +286,11 @@ public class GameManager {
         else return (games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
     }
 
+    /***
+     * this function is used to know if the player has started last
+     * @param player
+     * @return true if the player has started last
+     */
     public boolean hasStartedLast(String player){
         if (player == null){
             System.out.println("GameManager-> hasStartedLast(): player is null IMPOSSIBLE in started last function");
@@ -261,15 +304,29 @@ public class GameManager {
         return playerIndex == (startedFirst + (players.size() - 1) % players.size());
     }
 
+    /***
+     * This function ic called to lock the game due to the disconnect of all the players except one
+     * @param player
+     */
     public void unSetTurn(String player){
         games.get(playerToGame.get(player)).unSetTurn();
     }
 
+    /***
+     *
+     * @param player
+     * @return true if someone else has finished
+     */
     public boolean someoneElseFinished(String player){
         return (games.get(playerToGame.get(player)).getFinishedFirst() != null &&
                 !games.get(playerToGame.get(player)).getFinishedFirst().equals(player));
     }
 
+    /***
+     *
+     * @param player
+     * @return true if someone else has to play
+     */
     public boolean someoneStillHasToPlay(String player){
         //check no error like calling this function but none of the players have finished
         if (games.get(playerToGame.get(player)).getFinishedFirst() == null) {
@@ -279,6 +336,11 @@ public class GameManager {
         return !hasStartedLast(player);
     }
 
+    /***
+     * this function is used to know who is the winner
+     * @param player
+     * @return the username of the winner
+     */
     public String getWinner(String player) {
         if (games.get(playerToGame.get(player)).getFinishedFirst() == null) {
             System.out.println("GameManager-> getWinner(): No one has finished yet: ERROR IN LOGIC");
@@ -298,6 +360,11 @@ public class GameManager {
         return winner;
     }
 
+    /***
+     * this function is used to know if the game is over
+     * @param player
+     *
+     */
     public void closeGame(String player) {
         int game = playerToGame.get(player);
 
@@ -321,6 +388,10 @@ public class GameManager {
         }
     }
 
+    /***
+     * this function updates the number of players that has finished the game
+     * @param player
+     */
     public void lastPing(String player){
         int game = playerToGame.get(player);
 

@@ -44,6 +44,10 @@ public class UpdateHandler {
         }
     }
 
+    /***
+     * This method is used to handle the response received from the server
+     * @param response
+     */
     public void handle(Response response) {
 
         if (response instanceof PlayerConnectSuccess) {
@@ -119,6 +123,12 @@ public class UpdateHandler {
 
         } else if (response instanceof GameFinishedForYou){
             View.getInstance().gameFinishedForYou();
+        } else if (response instanceof GameCreateSuccess) {
+            View.getInstance().gameStarted();
+        } else if (response instanceof GameCreateUpdate) {
+            View.getInstance().updateQueuePosition(((GameCreateUpdate) response).getQueuePosition());
+        } else if (response instanceof GameCreateFailure) {
+            View.getInstance().gameCreateFailure(((GameCreateFailure) response).getReason());
         } else {
             if(Settings.DEBUG)System.out.println("UpdateHandler-> handle(): response still not implemented in update handler");
         }

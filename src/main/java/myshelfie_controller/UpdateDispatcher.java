@@ -23,6 +23,10 @@ public class UpdateDispatcher {
         return instance;
     }
 
+    /***
+     * Dispatches a response to the correct client
+     * @param response the response to dispatch
+     */
     public void dispatchResponse(Response response) {
 
         String player = response.getTarget();

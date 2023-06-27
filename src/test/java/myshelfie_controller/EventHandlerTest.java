@@ -30,16 +30,17 @@ public class EventHandlerTest {
 
     @Test
     public void handle() {
-        Event event = new PlayerConnect("1",3);
+        // TODO: rewrite test, number of players now decided with GameCreate event
+        Event event = new PlayerConnect("1");
         eventHandler.handle(event);
         startPinging("1");
 
-        event = new PlayerConnect("2",3);
+        event = new PlayerConnect("2");
         eventHandler.handle(event);
         startPinging("2");
 
 
-        event = new PlayerConnect("3",3);
+        event = new PlayerConnect("3");
         eventHandler.handle(event);
         startPinging("3");
 
@@ -62,22 +63,23 @@ public class EventHandlerTest {
 
     @Test
     public void handle_PlayerDisConnect() {
-        Event event = new PlayerConnect("t1",3);
+        // TODO: rewrite test, number of players now decided with GameCreate event
+        Event event = new PlayerConnect("t1");
         eventHandler.handle(event);
         startPinging("1");
 
-        event = new PlayerConnect("t2",3);
+        event = new PlayerConnect("t2");
         eventHandler.handle(event);
         startPinging("2");
 
-        event = new PlayerConnect("t3",3);
+        event = new PlayerConnect("t3");
         eventHandler.handle(event);
         startPinging("3");
 
         event = new PlayerDisconnect("t3");
         eventHandler.handle(event);
 
-        event = new PlayerConnect("t3",3);
+        event = new PlayerConnect("t3");
         eventHandler.handle(event);
 
 

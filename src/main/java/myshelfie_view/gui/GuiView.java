@@ -254,7 +254,7 @@ public class GuiView extends View {
             }
             Settings.getInstance().setUsername(nickname);
 
-            if (twoPlayersCheckBox.isSelected()) {
+            /*if (twoPlayersCheckBox.isSelected()) {
                 EventDispatcher.getInstance().connect(2);
             } else if (threePlayersCheckBox.isSelected()) {
                 EventDispatcher.getInstance().connect(3);
@@ -263,7 +263,9 @@ public class GuiView extends View {
             } else {
                 // handle no checkbox selected
                 return;
-            }
+            }*/
+
+            EventDispatcher.getInstance().connect();
 
             // continue with game logic
             loginStage.close();
@@ -401,7 +403,7 @@ public class GuiView extends View {
                 return;
             }
             int numPlayers = Integer.parseInt(selectedPlayerRadioButton.getText().split(" ")[0]);
-            EventDispatcher.getInstance().connect(numPlayers);
+            EventDispatcher.getInstance().connect();
 
             RadioButton selectedConnectionCheckBox = (RadioButton) connectionToggleGroup.getSelectedToggle();
             if (selectedConnectionCheckBox == null) {
@@ -456,6 +458,21 @@ public class GuiView extends View {
 
     @Override
     public void start() {
+
+    }
+
+    @Override
+    public void gameStarted() {
+
+    }
+
+    @Override
+    public void updateQueuePosition(int newPosition) {
+
+    }
+
+    @Override
+    public void gameCreateFailure(String reason) {
 
     }
 

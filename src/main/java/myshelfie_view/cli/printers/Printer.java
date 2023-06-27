@@ -21,14 +21,6 @@ public class Printer {
     private final PrintStream out = System.out;
 
 
-
-
-
-
-
-
-
-
     /***
      * ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
      * ░░X                                       Y░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -217,6 +209,11 @@ public class Printer {
     }
 
     /************************ Build Functions **************************************************+**********/
+    /***
+     *
+     * Build the matrix setup from gameState
+     * @param gameState
+     */
     private void BuildSetup(GameState gameState){
         Player thisPlayer = getThisPlayer(gameState.getPlayers());
         List<Player> otherPlayers = otherPlayer(gameState.getPlayers(), thisPlayer);
@@ -259,7 +256,12 @@ public class Printer {
         buildBackground(background, gameState.getPlayers().size());
 
     }
-    //todo add function to allineate the last column of background
+
+    /***
+     * Fill the background with background colored char
+     * @param background
+     * @param numPlayers
+     */
     private void buildBackground(String[][] background,int numPlayers) {
         //build the background
         switch (numPlayers){
@@ -282,30 +284,7 @@ public class Printer {
         }
 
     }
-    public static String changeBack(String string, char special,char nuovo, Color color){
 
-        StringBuilder output = new StringBuilder(); // stringa di output
-
-        // ciclo sulla stringa di input
-        for (int i = 0; i < string.length(); i++) {
-            char c = string.charAt(i);
-
-            if (special==(c)) {
-                // se il carattere è quello da colorare, aggiungi il codice colore
-                output.append(color.getCode()); // aggiungi il codice colore
-                while (i < string.length()-1 && special==string.charAt(i+1)){
-                    output.append(nuovo); // aggiungi il carattere
-                    i++;
-                };
-                output.append(string.charAt(nuovo)).append(Color.RESET.getCode()) ;
-            } else {
-                // altrimenti aggiungi il carattere normale
-                output.append(c);
-            }
-        }
-        return output.toString();
-
-    };
     /**
      * Build the string for the other players username
      * @param background the matrix of the background

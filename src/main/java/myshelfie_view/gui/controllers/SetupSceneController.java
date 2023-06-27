@@ -20,15 +20,13 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 
-public class SetupSceneController implements Initializable {
+public class SetupSceneController {
 
     @FXML private TextField username;
     @FXML private TextField hostname;
 
     @FXML private RadioButton socket;
     @FXML private RadioButton rmi;
-
-    @FXML private ChoiceBox<Integer> players;
 
     @FXML protected void handleStart(ActionEvent event) {
         String user = username.getText();
@@ -83,22 +81,12 @@ public class SetupSceneController implements Initializable {
             alert.showAndWait();
         }
 
-        int backupPlayers = players.getSelectionModel().getSelectedItem();
-        EventDispatcher.getInstance().connect(backupPlayers);
+        EventDispatcher.getInstance().connect();
 
         GuiView.getInstance().getGameController().setLocalUsername(user);
 
-        Stage stage = (Stage) players.getScene().getWindow();
+        Stage stage = (Stage) username.getScene().getWindow();
         stage.close();
-    }
-
-    @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        players.setValue(4);
-
-        for (int i = 2; i <= 4; i++) {
-            players.getItems().add(i);
-        }
     }
 
     private boolean notAvailableUsername(String nickname) {

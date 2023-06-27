@@ -221,7 +221,8 @@ public class PersonalGoal extends Goal{
     }
 
 
-    /**
+    /***
+     * This method calculates the points of the personal Goal
      * @param b the player's bookshelf
      * @return an integer: the points of the personal Goal
      */
@@ -254,6 +255,7 @@ public class PersonalGoal extends Goal{
             return 12;
         }
     }
+
 
     public Bookshelf map_PGoalToBookshelf(){
         Bookshelf b = new Bookshelf();
