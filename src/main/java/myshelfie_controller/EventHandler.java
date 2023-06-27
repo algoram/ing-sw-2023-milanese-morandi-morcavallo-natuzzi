@@ -285,7 +285,6 @@ public class EventHandler {
                             //turn must receive the game finished update
                             UpdateDispatcher.getInstance().dispatchResponse(new GameFinishedForYou(player));
 
-                            //todo we could implement a way to send game finished for you to the ones that did the last turn
                         }
                     }
                     //here is the case where the player has finished the game, but he is not the first

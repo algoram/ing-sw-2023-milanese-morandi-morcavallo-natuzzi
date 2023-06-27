@@ -367,7 +367,6 @@ public class CliView extends View {
 
     private void askTiles(){
 
-        //todo askTiles may be modified to permit the arrive of messages while inserting input
         String input;
         List<Position> modelPositions = new ArrayList<>();
         int columnChosen;
@@ -561,7 +560,6 @@ public class CliView extends View {
         out.println("Bye Bye");
         gameIsRunning = false;
         EventDispatcher.getInstance().playerDisconnect();
-        //todo notify to server client the disconnection
     }
     /***
      * This function check if the input is a valid coordinate for all the possible implemented Board sizes.
