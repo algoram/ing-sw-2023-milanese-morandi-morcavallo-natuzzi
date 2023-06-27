@@ -150,6 +150,8 @@ public class EventHandler {
                         return;
                     }
 
+                    UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+
                     // if everyone is connected send the connection update to all players
                     if (GameManager.getInstance().getPlayers(player).size() == GameManager.getInstance().getNumberOfPlayers(player)) {
                         GameState gameState = GameManager.getInstance().getGameState(player);
@@ -161,8 +163,6 @@ public class EventHandler {
                             UpdateDispatcher.getInstance().dispatchResponse(new ConnectUpdate(p, gameState));
                         }
                     }
-
-                    UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
                 } else {
                     System.out.println("Creating new game");
                     // else ask the player to create a game if he's the first

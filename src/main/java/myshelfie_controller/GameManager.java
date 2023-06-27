@@ -382,10 +382,9 @@ public class GameManager {
             else System.out.println("impossible error in close game");
 
             playerToGame.remove(p); //remove string player from player to game
-
-            games.remove(game);  //remove integer game from arraylist
-
         }
+
+        games.remove(game);  //remove integer game from arraylist
     }
 
     /***

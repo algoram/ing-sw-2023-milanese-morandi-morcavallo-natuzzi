@@ -505,17 +505,19 @@ public class Game {
             System.out.println("Player" + player + " had already lost connection or disconnected");
             return;
         }
+
         playerStates.set(findPlayer(player), StateConnection.DISCONNECTED);
+
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setStopConnection: Just one player connected, he is going to wait for someone else to reconnect");
             new Thread(this::timerOnePlayerConnected).start();
             unSetTurn();
-        }
-        else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
+        } else if (players.get(turn).getUsername().equals(player)) { // if the one who lost connection was on turn
             System.out.println("GAME -> setLostConnection: The player who lost connection was on turn, recalculating turn");
             recalculateTurn();
+        } else {
+            checkSomeOneStillConnected(player); // if not it closes the game
         }
-        else checkSomeOneStillConnected(player); //if not it close the game
     }
 
     /**
@@ -529,20 +531,22 @@ public class Game {
      */
     public void setLostConnection(String player) {
         if (playerStates.get(findPlayer(player)) != StateConnection.CONNECTED) {
-            System.out.println("Player " + player + " had already lost connection or disconnected"); //Debug messages
+            System.out.println("Player " + player + " had already lost connection or disconnected"); // Debug messages
             return;
         }
+
         playerStates.set(findPlayer(player), StateConnection.LOST_CONNECTION);
+
         if (justOnePlayerConnected()) {
             System.out.println("GAME -> setLostConnection: Just one player connected, he is going to wait for someone else to reconnect");
             new Thread(this::timerOnePlayerConnected).start();
             unSetTurn();
-        }
-        else if(players.get(turn).getUsername().equals(player)){ //if the one who lost connection was on turn
+        } else if (players.get(turn).getUsername().equals(player)) { // if the one who lost connection was on turn
             System.out.println("GAME -> setLostConnection: The player who lost connection was on turn, recalculating turn");
             recalculateTurn();
+        } else {
+            checkSomeOneStillConnected(player); // if not it closes the game
         }
-        else checkSomeOneStillConnected(player); //if not it close the game
     }
 
 
