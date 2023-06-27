@@ -42,8 +42,7 @@ public class EventHandler {
                 }
 
                 if (event != null) {
-                    // TODO: cosi' creiamo un thread ogni volta che viene ricevuto un evento e non sappiamo se gli eventi vengono eseguiti in ordine
-                    new Thread(() -> handle(event)).start();
+                    handle(event);
                 }
 
             }
