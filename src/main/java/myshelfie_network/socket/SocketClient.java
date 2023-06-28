@@ -65,6 +65,7 @@ public class SocketClient implements Client {
                     UpdateHandler.getInstance().handle(response);
                 } catch (IOException | ClassNotFoundException e) {
                     if (Settings.DEBUG) System.err.println("SocketClient ERROR - Couldn't handle response");
+                    // e.printStackTrace();
                 }
             }
         }).start();

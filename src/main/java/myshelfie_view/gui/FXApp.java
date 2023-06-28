@@ -1,19 +1,20 @@
 package myshelfie_view.gui;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import myshelfie_controller.ConnectionType;
 import myshelfie_controller.Settings;
-import myshelfie_view.gui.controllers.GameController;
-import myshelfie_view.gui.controllers.SetupSceneController;
+import myshelfie_network.rmi.RMIClient;
+import myshelfie_network.socket.SocketClient;
+import myshelfie_view.View;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
+import java.rmi.RemoteException;
 
 public class FXApp extends Application {
     private static final String TITLE = "MyShelfie";
@@ -28,8 +29,6 @@ public class FXApp extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
 
-
-
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -40,22 +39,17 @@ public class FXApp extends Application {
 
         Scene scene = new Scene(root);
 
-
-        URL cssUrl = getClass().getResource("Styles/Board.css");
-        if (cssUrl != null) {
-            scene.getStylesheets().add(cssUrl.toExternalForm());
-        } else {
-            System.err.println("CSS file 'Board.css' not found");
-        }
-
-
-
         showSetup();
 
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0); // TODO: vedere se c'e' qualche opzione migliore di questa
+        });
     }
 
     public void showSetup() {
