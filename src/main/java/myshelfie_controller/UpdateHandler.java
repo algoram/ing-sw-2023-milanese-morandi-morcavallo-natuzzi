@@ -2,6 +2,8 @@ package myshelfie_controller;
 
 import myshelfie_controller.response.*;
 import myshelfie_model.GameState;
+import myshelfie_network.rmi.RMIClient;
+import myshelfie_network.socket.SocketClient;
 import myshelfie_view.View;
 
 import java.util.LinkedList;
@@ -120,6 +122,22 @@ public class UpdateHandler {
             String winner = ((GameFinished) response).getWinner();
             EventDispatcher.getInstance().stopPinging();
             View.getInstance().gameFinished(winner);
+
+            if(Settings.getInstance().getConnectionType().equals(ConnectionType.RMI)) {
+                try{
+                    RMIClient.getInstance().closeConnection();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }else if (Settings.getInstance().getConnectionType().equals(ConnectionType.SOCKET)) {
+                try{
+                    SocketClient.getInstance().stop();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            System.exit(0);
 
         } else if (response instanceof GameFinishedForYou){
             View.getInstance().gameFinishedForYou();
