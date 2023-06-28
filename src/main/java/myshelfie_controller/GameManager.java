@@ -86,6 +86,9 @@ public class GameManager {
      * @param newPlayer the player to add
      * @param players   the number of players in the game
      * @return true if the player was new, false if he was already in a game
+     * @throws Exception if the player was connected or Disconnected Voluntarily
+     * (if he disconnected voluntarily he should not be able to reconnect becouse
+     * the client app shoud terminate)
      */
     public boolean addPlayer(String newPlayer, int players) throws Exception {
 

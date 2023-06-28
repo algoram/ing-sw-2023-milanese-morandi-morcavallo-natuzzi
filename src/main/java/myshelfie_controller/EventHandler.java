@@ -173,7 +173,21 @@ public class EventHandler {
 
                     UpdateDispatcher.getInstance().dispatchResponse(new GameCreateUpdate(player, waitingQueue.indexOf(player)));
                 }
-            } else {
+            } else { // if the player is reconnecting to a game
+
+                // the number of players may be removed
+                try {
+                    GameManager.getInstance().addPlayer(player, 4);
+                } catch (Exception e) {
+                    if(Settings.DEBUG) {
+                        System.out.println("EventHandler-> handle(): PlayerConnectFailure IMPOSSIBLE");
+                    }
+                        e.printStackTrace();
+                }
+
+                //notify the success of reconnection is needed to have the player start pinging
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+
                 System.out.println("Previously connected");
                 // the player was already in a game
                 if (GameManager.getInstance().getTurnMemory(player) != null) { // if the game was blocked due to a disconnection
