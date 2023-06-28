@@ -42,7 +42,7 @@ public class EventHandler {
                 }
 
                 if (event != null) {
-                    handle(event);
+                    new Thread(() -> handle(event)).start();
                 }
 
             }
