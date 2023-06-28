@@ -15,7 +15,7 @@
             </ImageView>
             <AnchorPane prefHeight="350.0" prefWidth="350.0">
                <children>
-                  <GridPane fx:id="grid" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="343.0" stylesheets="@../../styles/board/Board.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane fx:id="grid" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="343.0" stylesheets="@../../styles/board/Board.css" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="7.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="11.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="11.0" prefWidth="100.0" />
@@ -28,15 +28,15 @@
                       <ColumnConstraints fillWidth="false" hgrow="ALWAYS" minWidth="10.0" percentWidth="11.899999999999999" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="45.0" minHeight="30.0" prefHeight="41.0" vgrow="ALWAYS" />
-                      <RowConstraints maxHeight="44.0" minHeight="30.0" prefHeight="35.0" vgrow="ALWAYS" />
-                      <RowConstraints maxHeight="48.0" minHeight="30.0" prefHeight="35.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="53.0" minHeight="30.0" prefHeight="36.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="48.0" minHeight="28.0" prefHeight="35.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="40.0" minHeight="26.0" prefHeight="36.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="45.0" minHeight="30.0" prefHeight="35.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="44.0" minHeight="30.0" prefHeight="36.0" vgrow="ALWAYS" />
+                      <RowConstraints maxHeight="48.0" minHeight="24.0" prefHeight="35.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="53.0" minHeight="29.0" prefHeight="35.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="48.0" minHeight="28.0" prefHeight="36.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="44.0" minHeight="26.0" prefHeight="36.0" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="44.0" minHeight="30.0" prefHeight="35.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="46.0" minHeight="30.0" prefHeight="36.0" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="42.0" minHeight="30.0" prefHeight="41.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="47.0" minHeight="30.0" prefHeight="37.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="42.0" minHeight="30.0" prefHeight="33.0" vgrow="ALWAYS" />
                     </rowConstraints>
                   </GridPane>
                </children>
