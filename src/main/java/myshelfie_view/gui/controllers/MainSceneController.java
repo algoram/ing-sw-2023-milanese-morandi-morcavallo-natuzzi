@@ -31,16 +31,6 @@ public class MainSceneController implements Initializable {
     }
 
     public void changeState(GuiState state) {
-        // show only the requested state
-        switch (state) {
-            case LOADING -> loadingController.setVisible(true);
-            case LOGIN -> loginController.setVisible(true);
-            case QUEUE -> queueController.setVisible(true);
-            case CREATE_GAME -> createController.setVisible(true);
-            case WAITING -> waitingController.setVisible(true);
-            case GAME -> gameController.setVisible(true);
-        }
-
         // hide the old state
         switch (this.guiState) {
             case LOADING -> loadingController.setVisible(false);
@@ -49,6 +39,16 @@ public class MainSceneController implements Initializable {
             case CREATE_GAME -> createController.setVisible(false);
             case WAITING -> waitingController.setVisible(false);
             case GAME -> gameController.setVisible(false);
+        }
+
+        // show only the requested state
+        switch (state) {
+            case LOADING -> loadingController.setVisible(true);
+            case LOGIN -> loginController.setVisible(true);
+            case QUEUE -> queueController.setVisible(true);
+            case CREATE_GAME -> createController.setVisible(true);
+            case WAITING -> waitingController.setVisible(true);
+            case GAME -> gameController.setVisible(true);
         }
 
         // change internal state

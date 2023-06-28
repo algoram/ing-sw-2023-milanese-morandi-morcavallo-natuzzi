@@ -18,7 +18,7 @@ public class LoadingSceneController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 if (Settings.DEBUG) System.err.println("Interrupted while sleeping");
             }
