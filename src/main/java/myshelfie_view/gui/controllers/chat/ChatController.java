@@ -29,7 +29,7 @@ public class ChatController implements Initializable {
             to = to.equals("ALL") ? null : to;
 
             EventDispatcher.getInstance().chat(null, message);
-            GuiView.getInstance().getGameController().sendMessage(to, message);
+            GuiView.getInstance().getMainController().getGameController().sendMessage(to, message);
         }
 
         input.clear();

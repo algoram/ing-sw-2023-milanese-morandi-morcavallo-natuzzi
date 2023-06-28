@@ -64,7 +64,7 @@ public class BoardController implements Initializable {
                         System.out.println("Inserted " + finalI + " " + finalJ);
                     }
 
-                    GuiView.getInstance().getGameController().setChosenTiles(chosenTiles);
+                    GuiView.getInstance().getMainController().getGameController().setChosenTiles(chosenTiles);
                 });
             }
         }
@@ -72,7 +72,7 @@ public class BoardController implements Initializable {
 
     public void clearChosen() {
         chosenTiles.clear();
-        GuiView.getInstance().getGameController().setChosenTiles(chosenTiles);
+        GuiView.getInstance().getMainController().getGameController().setChosenTiles(chosenTiles);
     }
 
     public void setBoard(Board board) {

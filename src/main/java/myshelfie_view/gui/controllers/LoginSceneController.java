@@ -2,11 +2,11 @@ package myshelfie_view.gui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.text.Text;
+import javafx.scene.control.Alert;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import jdk.jshell.spi.ExecutionControl;
 import myshelfie_controller.ConnectionType;
 import myshelfie_controller.EventDispatcher;
 import myshelfie_controller.Settings;
@@ -15,12 +15,12 @@ import myshelfie_network.socket.SocketClient;
 import myshelfie_view.gui.GuiView;
 
 import java.io.IOException;
-import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ResourceBundle;
 
-public class SetupSceneController {
+public class LoginSceneController {
+
+    @FXML private AnchorPane main;
 
     @FXML private TextField username;
     @FXML private TextField hostname;
@@ -43,12 +43,8 @@ public class SetupSceneController {
             // handle not available username
             return;
         }
-        Settings.getInstance().setUsername(user);
-
-
 
         // TODO: check  and hostname are valid
-
         Settings.getInstance().setUsername(user);
 
         if (socket.isSelected()) {
@@ -83,13 +79,15 @@ public class SetupSceneController {
 
         EventDispatcher.getInstance().connect();
 
-        GuiView.getInstance().getGameController().setLocalUsername(user);
+        GuiView.getInstance().getMainController().getGameController().setLocalUsername(user);
+    }
 
-        Stage stage = (Stage) username.getScene().getWindow();
-        stage.close();
+    public void setVisible(boolean visible) {
+        main.setVisible(visible);
     }
 
     private boolean notAvailableUsername(String nickname) {
         return nickname.isEmpty() || nickname.trim().isEmpty() || nickname.trim().equalsIgnoreCase("ALL") || nickname.startsWith("/");
     }
+
 }

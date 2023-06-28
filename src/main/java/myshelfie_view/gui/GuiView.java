@@ -11,54 +11,29 @@ import myshelfie_model.Position;
 import myshelfie_network.rmi.RMIClient;
 import myshelfie_network.socket.SocketClient;
 import myshelfie_view.View;
-import myshelfie_view.cli.CliView;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import myshelfie_view.gui.controllers.GameController;
-import myshelfie_view.gui.controllers.SetupSceneController;
+import myshelfie_view.gui.controllers.MainSceneController;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 public class GuiView extends View {
-    Thread ListenerThread;
-    private final Object lockInOut = new Object();
-    private boolean gameIsRunning; //the loop
-    private boolean chatIsRunning = false; //the moment in which the chat is available
-
-    private Scanner scanner;
-    private GameState gameState; //is the actual state of the game
-
-    private GameController gameController;
-    private SetupSceneController setupSceneController;
+    private MainSceneController mainSceneController;
     private static GuiView instance = null;
-
-    private boolean isMyTurn = false;//todo implement use of this variable
 
     private GuiView() {}
 
-    public GameController getGameController() {
-        return gameController;
+    public void setMainController(MainSceneController controller) {
+        this.mainSceneController = controller;
     }
 
-    public SetupSceneController getSetupSceneController() {
-        return setupSceneController;
-    }
-
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
-
-    public void setSetupSceneController(SetupSceneController setupSceneController) {
-        this.setupSceneController = setupSceneController;
+    public MainSceneController getMainController() {
+        return mainSceneController;
     }
 
     @Override
@@ -72,20 +47,13 @@ public class GuiView extends View {
                 alert.showAndWait();
             });
         }
-
     }
 
     @Override
     public void connectionSuccessful() {
-        this.chatIsRunning = true;
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Myshelfie");
-            alert.setHeaderText(null);
-            alert.setContentText("Waiting for other players");
-            alert.showAndWait();
+            mainSceneController.changeState(GuiState.QUEUE);
         });
-
     }
 
     @Override
@@ -96,24 +64,27 @@ public class GuiView extends View {
             alert.setHeaderText("ERROR");
             alert.setContentText("Connection failed - " + reason);
             alert.showAndWait();
+
+            mainSceneController.changeState(GuiState.LOGIN);
         });
     }
 
     @Override
     public void initGameState(GameState gameState) {
         Platform.runLater(() -> {
-            gameController.setGameState(gameState);
+            mainSceneController.getGameController().setGameState(gameState);
+            mainSceneController.changeState(GuiState.GAME);
         });
     }
 
     @Override
-    public void chatIn(String sender, String Message, boolean isPublic) {
-        gameController.receivedMessage(sender, Message, isPublic);
+    public void chatIn(String sender, String message, boolean isPublic) {
+        Platform.runLater(() -> mainSceneController.getGameController().receivedMessage(sender, message, isPublic));
     }
 
     @Override
     public void messageSentSuccessfully() {
-        gameController.confirmSend();
+        Platform.runLater(() -> mainSceneController.getGameController().confirmSend());
     }
 
     @Override
@@ -152,20 +123,18 @@ public class GuiView extends View {
             yourTurnLabel.setText("It's your turn!");
         });
 
-        synchronized (lockInOut) {
-            // Creare un bottone "Ask tiles" che richiama il metodo askTiles()
-            // e successivamente invoca lockInOut.notifyAll()
-            Platform.runLater(() -> {
-                Button askTilesButton = new Button("Ask tiles");
-                askTilesButton.setOnAction(e -> {
-                    //askTiles();
-                    lockInOut.notifyAll();
-                });
-                // Aggiungere il bottone alla finestra
-                VBox vbox = new VBox(yourTurnLabel, askTilesButton);
-                yourTurnScene.setRoot(vbox);
+        // Creare un bottone "Ask tiles" che richiama il metodo askTiles()
+        // e successivamente invoca lockInOut.notifyAll()
+        Platform.runLater(() -> {
+            Button askTilesButton = new Button("Ask tiles");
+            askTilesButton.setOnAction(e -> {
+                //askTiles();
+                //lockInOut.notifyAll();
             });
-        }
+            // Aggiungere il bottone alla finestra
+            VBox vbox = new VBox(yourTurnLabel, askTilesButton);
+            yourTurnScene.setRoot(vbox);
+        });
     }
 
     @Override
@@ -201,7 +170,7 @@ public class GuiView extends View {
 
     @Override
     public void displayNewSetup(GameState gameState) {
-        gameController.setGameState(gameState);
+        Platform.runLater(() -> mainSceneController.getGameController().setGameState(gameState));
     }
 
     @Override
@@ -463,12 +432,20 @@ public class GuiView extends View {
 
     @Override
     public void gameStarted() {
-
+        Platform.runLater(() -> mainSceneController.changeState(GuiState.WAITING));
     }
 
     @Override
     public void updateQueuePosition(int newPosition) {
-
+        System.out.println("Updating queue position: " + newPosition);
+        Platform.runLater(() -> {
+            if (newPosition == 0) {
+                mainSceneController.changeState(GuiState.CREATE_GAME);
+            } else {
+                mainSceneController.changeState(GuiState.QUEUE);
+                mainSceneController.getQueueController().setQueuePosition(newPosition);
+            }
+        });
     }
 
     @Override
@@ -478,6 +455,7 @@ public class GuiView extends View {
 
     @Override
     public boolean getIsMyTurn() {
-        return isMyTurn;
+        // TODO: molti di questi metodi servono solo alla CLI, bisogna toglierli dall'interface View perche' non servono alla GUI
+        return false;
     }
 }

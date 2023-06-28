@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import myshelfie_controller.EventDispatcher;
@@ -42,6 +43,7 @@ public class GameController implements Initializable {
     private Queue<ChatMessage> sentMessages = new LinkedList<>(); // waiting for confirmation
 
     // components
+    @FXML private AnchorPane main;
     @FXML private VBox chosenTiles;
 
     // controllers
@@ -63,6 +65,10 @@ public class GameController implements Initializable {
         System.out.println("Initialized GameController");
         player1Controller.setVisible(true); // show the local player
         chosenIndexes = new ArrayList<>();
+    }
+
+    public void setVisible(boolean visible) {
+        main.setVisible(visible);
     }
 
     public void setGameState(GameState gameState) {

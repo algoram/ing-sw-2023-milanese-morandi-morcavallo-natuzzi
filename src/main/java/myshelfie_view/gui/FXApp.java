@@ -27,7 +27,7 @@ public class FXApp extends Application {
     public void start(Stage primaryStage) {
         Parent root = null;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/MainScene.fxml"));
 
         try {
             root = loader.load();
@@ -35,11 +35,9 @@ public class FXApp extends Application {
             if (Settings.DEBUG) System.err.println("FXApp ERROR - Couldn't load fxml file");
         }
 
-        GuiView.getInstance().setGameController(loader.getController());
+        GuiView.getInstance().setMainController(loader.getController());
 
         Scene scene = new Scene(root);
-
-        showSetup();
 
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
@@ -50,22 +48,5 @@ public class FXApp extends Application {
             Platform.exit();
             System.exit(0); // TODO: vedere se c'e' qualche opzione migliore di questa
         });
-    }
-
-    public void showSetup() {
-        Stage stage = new Stage();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/SetupScene.fxml"));
-
-        try {
-            Parent setupScene = loader.load();
-            GuiView.getInstance().setSetupSceneController(loader.getController());
-
-            stage.setScene(new Scene(setupScene));
-            stage.setResizable(false);
-            stage.showAndWait();
-        } catch (IOException e) {
-            if (Settings.DEBUG) System.err.println("FXApp ERROR - Couldn't load fxml file");
-        }
     }
 }

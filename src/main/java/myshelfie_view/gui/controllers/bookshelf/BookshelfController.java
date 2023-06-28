@@ -72,7 +72,7 @@ public class BookshelfController implements Initializable {
                 int column = j;
                 tile.setOnMouseClicked(event -> {
                     // try to insert the tiles into the column
-                    GuiView.getInstance().getGameController().takeTiles(column);
+                    GuiView.getInstance().getMainController().getGameController().takeTiles(column);
                 });
 
                 tileControllers[i][j] = loader.getController();

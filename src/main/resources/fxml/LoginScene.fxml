@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="main" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.LoginSceneController">
+   <children>
+      <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+               <viewport>
+                  <Rectangle2D height="720.0" width="1280.0" />
+               </viewport>
+               <image>
+                  <Image url="@../images/misc/sfondo%20parquet.jpg" />
+               </image>
+            </ImageView>
+            <VBox maxHeight="180.0" maxWidth="360.0" spacing="16.0">
+               <children>
+                  <TextField fx:id="username" promptText="Username" />
+                  <TextField fx:id="hostname" promptText="Server Address" />
+                  <HBox spacing="120.0">
+                     <children>
+                        <RadioButton fx:id="socket" mnemonicParsing="false" selected="true" text="Sockets">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="connection" />
+                           </toggleGroup></RadioButton>
+                        <RadioButton fx:id="rmi" mnemonicParsing="false" text="RMI" toggleGroup="$connection" />
+                     </children>
+                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#handleStart" text="Connect" />
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>
