@@ -151,6 +151,8 @@ public class EventHandler {
                     }
 
                     UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+                    if (Settings.DEBUG) System.out.println("EventHandler -> handle(): Adding "+ player +" to lastPingTimes");
+                    lastPingTimes.put(player, System.currentTimeMillis());
 
                     // if everyone is connected send the connection update to all players
                     if (GameManager.getInstance().getPlayers(player).size() == GameManager.getInstance().getNumberOfPlayers(player)) {
@@ -167,6 +169,8 @@ public class EventHandler {
                     System.out.println("Creating new game");
                     // else ask the player to create a game if he's the first
                     UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+                    if (Settings.DEBUG) System.out.println("EventHandler -> handle(): Adding "+ player +" to lastPingTimes");
+                    lastPingTimes.put(player, System.currentTimeMillis());
 
                     // add the player to the waiting queue
                     waitingQueue.add(player);
@@ -187,6 +191,8 @@ public class EventHandler {
 
                 //notify the success of reconnection is needed to have the player start pinging
                 UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectSuccess(player));
+                if (Settings.DEBUG) System.out.println("EventHandler -> handle(): Adding "+ player +" to lastPingTimes");
+                lastPingTimes.put(player, System.currentTimeMillis());
 
                 System.out.println("Previously connected");
                 // the player was already in a game
@@ -221,9 +227,6 @@ public class EventHandler {
                 }
             }
 
-            synchronized (lastPingTimes) {
-                lastPingTimes.put(player, System.currentTimeMillis());
-            }
 
             /*int numberOfPlayers = ((PlayerConnect) event).getNumberOfPlayers();
 
