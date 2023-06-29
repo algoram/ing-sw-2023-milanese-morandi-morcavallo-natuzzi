@@ -252,7 +252,7 @@ public class BoardTest {
             assertTrue(Arrays.deepEquals(oldBoard, randomboard.getBoardTest()));
         }
 
-        //todo in test 4 e 5 controlla la board non modificata
+
     }
 
 
@@ -544,7 +544,7 @@ public class BoardTest {
         }
     }
 
-    // TODO: test after refill testing TO COMPLETE
+
     // 10. Board4 full of tiles and a list of positions pointing to 2 adjacent TILES at the boarder of the matrix -> should return the list of tiles removed
     @Test
     public void remove_2AdjacentTilesAtBorder_RefilledBoard_shouldReturnList(){
@@ -578,13 +578,6 @@ public class BoardTest {
         oldBoard[0][5] = null;
         assertTrue(Arrays.deepEquals(oldBoard, board4.getBoardTest()));
     }
-
-    // TODO : test after refill testing TO COMPLETE
-    // 11. Board full of tiles and a list of positions pointing to 2 adjacent TILES in the middle of the matrix -> should return NULL
-
-    // TODO : test after refill testing TO COMPLETE
-    // 12. Board full of tiles and a list of positions pointing to 2 not adjacent (diagonally positioned near the boundary of the matrix) TILES at the boarder of the matrix -> should return NULL
-
 
     // 13. chosen is null -> should throw NullPointerException
     @Test
@@ -629,8 +622,6 @@ public class BoardTest {
         }
     }
 
-    //15 INDEX OUT OF BOUND
-    // TODO TO FIX
     @Test
     public void remove_indexOutOfBound_shouldThrowIndexOutOfBoundsException() throws NullPointerException, IllegalArgumentException {
         List<Position> positions = new ArrayList<>();

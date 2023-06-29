@@ -30,7 +30,7 @@ public class FourGroups4Tiles extends CommonGoal {
             for (int j = 0; j < tiles[0].length ; j++) {
                 if (tiles[i][j] != null && !visited[i][j]) {
 
-                    List<Tile> group = new ArrayList<>(); //TODO: vorrei liberare memoria in caso di gruppo non valido, come faccio?
+                    List<Tile> group = new ArrayList<>();
                     findGroup(tiles, visited, i, j, tiles[i][j].getType(), group);
                     if (group.size() >= 4) {
                         groups.add(group);

@@ -29,7 +29,6 @@ public class GameManager {
     private static GameManager instance = null;
 
     private GameManager() {
-        // TODO: check for backups
         //games.addAll(BackupManager.getInstance().getBackup());
     }
 

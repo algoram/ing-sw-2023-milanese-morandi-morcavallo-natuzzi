@@ -199,7 +199,7 @@ public class Printer {
             System.out.println();
         }
     }
-    //todo: add the commongoal to allSetup
+
     public void DisplayCommonGoal(CommonGoal modelCommonGoal){
         PlotCommonGoals commonGoal = new PlotCommonGoals(modelCommonGoal);
         char [][] commonGoalMatrix = commonGoal.getCommongoalCharMatrix();

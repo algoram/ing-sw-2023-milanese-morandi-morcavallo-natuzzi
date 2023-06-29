@@ -337,7 +337,7 @@ public class CliView extends View {
         } else {
             throw new Exception("Unknown connection type");
         }
-        //todo: add a timer that wait for the connection to be established and then ask the login again (in case server is not running)
+
     }
 
     /***
