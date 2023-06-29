@@ -124,6 +124,11 @@ public class EventHandler {
         } else if (event instanceof PlayerConnect) {
             System.out.println("EventHandler -> handle():PlayerConnect");
 
+            if (GameManager.getInstance().alreadyInGame(player) && !GameManager.getInstance().alreadySetLostConnection(player) ){
+                UpdateDispatcher.getInstance().dispatchResponse(new PlayerConnectFailure(player, "You are already in a game", event.getUuid()));
+                return;
+            }
+
             // tell the network stack to memorize the player's network client
             UUID uuid = event.getUuid();
 
@@ -142,7 +147,6 @@ public class EventHandler {
                 if (GameManager.getInstance().gameAvailable()) {
                     System.out.println("Game available");
                     try {
-                        // TODO: the number of players is actually not needed here
                         GameManager.getInstance().addPlayer(player, 4);
                     } catch (Exception e) {
                         // this catch should never happen, we checked for it with the 2 IFs before
