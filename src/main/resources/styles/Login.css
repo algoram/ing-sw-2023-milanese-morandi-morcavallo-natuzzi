@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+*{
+    font-family: 'Montserrat', sans-serif;
+}
+
+#login_box{
+    -fx-border-radius: 10px;
+    -fx-border-color: black;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.2);
+    -fx-border-width: 2px;
+
+}
+#login_button {
+    -fx-display: flex;
+    -fx-alignment: center;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-justify-content: center;
+
+}
+#Username_field .prompt-text {
+    -fx-text-fill: black;
+}
+

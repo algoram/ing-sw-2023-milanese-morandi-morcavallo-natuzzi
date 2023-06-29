@@ -4,10 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="main" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.LoginSceneController">
+<AnchorPane id="AnchorPaneLogin" fx:id="main" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Login.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.LoginSceneController">
    <children>
-      <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <StackPane id="Stackpane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <ImageView fitHeight="720.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
                <viewport>
@@ -17,21 +18,51 @@
                   <Image url="@../images/misc/sfondo%20parquet.jpg" />
                </image>
             </ImageView>
-            <VBox maxHeight="180.0" maxWidth="360.0" spacing="16.0">
+            <VBox id="login_box" maxHeight="190.0" maxWidth="360.0" spacing="16.0" style="-fx-background-color: trasparent;" stylesheets="@../styles/Login.css" StackPane.alignment="CENTER">
                <children>
-                  <TextField fx:id="username" promptText="Username" />
-                  <TextField fx:id="hostname" promptText="Server Address" />
-                  <HBox spacing="120.0">
+                  <TextField id="Username_field" fx:id="username" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Username" style="-fx-border-radius: 20;" stylesheets="@../styles/Login.css">
+                     <VBox.margin>
+                        <Insets left="45.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Arial" size="13.0" />
+                     </font></TextField>
+                  <TextField id="Server_Address" fx:id="hostname" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Server Address" stylesheets="@../styles/Login.css">
+                     <VBox.margin>
+                        <Insets left="45.0" />
+                     </VBox.margin></TextField>
+                  <HBox spacing="90.0">
                      <children>
                         <RadioButton fx:id="socket" mnemonicParsing="false" selected="true" text="Sockets">
                            <toggleGroup>
                               <ToggleGroup fx:id="connection" />
-                           </toggleGroup></RadioButton>
+                           </toggleGroup>
+                           <HBox.margin>
+                              <Insets left="4.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="15.0" />
+                           </padding></RadioButton>
                         <RadioButton fx:id="rmi" mnemonicParsing="false" text="RMI" toggleGroup="$connection" />
                      </children>
+                     <VBox.margin>
+                        <Insets left="43.0" />
+                     </VBox.margin>
                   </HBox>
-                  <Button mnemonicParsing="false" onAction="#handleStart" text="Connect" />
+                  <Button id="login_button" mnemonicParsing="false" onAction="#handleStart" stylesheets="@../styles/Login.css" text="Connect">
+                     <VBox.margin>
+                        <Insets left="143.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
                </children>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
+               <padding>
+                  <Insets top="30.0" />
+               </padding>
             </VBox>
          </children>
       </StackPane>
