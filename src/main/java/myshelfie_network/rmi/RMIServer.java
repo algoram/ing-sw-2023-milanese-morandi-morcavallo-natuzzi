@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class RMIServer implements Server, RMIServerInterface {
     private HashMap<UUID, RMIClientInterface> tempClients = new HashMap<>();
 
     private static RMIServer instance = null;
+    private static Registry registry = null;
 
     private RMIServer() {}
 
@@ -35,14 +37,12 @@ public class RMIServer implements Server, RMIServerInterface {
 
     public void start(int port) {
         try {
-            LocateRegistry.createRegistry(port);
+            registry = LocateRegistry.createRegistry(port);
             RMIServerInterface stub = (RMIServerInterface) UnicastRemoteObject.exportObject(this, 0);
-            Naming.rebind("MyShelfieRMI", stub);
+            registry.rebind("MyShelfieRMI", stub);
         } catch (RemoteException e) {
             System.err.println("Couldn't create the registry.");
-            System.err.println(e);
-        } catch (MalformedURLException e) {
-            System.err.println("Bad url for the stub.");
+            e.printStackTrace();
         }
     }
 
