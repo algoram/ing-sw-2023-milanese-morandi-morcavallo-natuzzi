@@ -46,7 +46,10 @@ public class GameManager {
     }
 
     public List<String> getPlayers(String player) {
-        return games.get(playerToGame.get(player)).getPlayersUsernames();
+        if (playerToGame.containsKey(player)){
+            return games.get(playerToGame.get(player)).getPlayersUsernames();
+        }
+        return null;
     }
 
     /**
