@@ -1,8 +1,12 @@
 package myshelfie_controller;
 
+import com.sun.glass.ui.Window;
 import myshelfie_controller.event.*;
 import myshelfie_model.Game;
 import myshelfie_model.Position;
+import myshelfie_network.Client;
+import myshelfie_network.socket.SocketClient;
+import myshelfie_network.socket.SocketServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,61 +34,55 @@ public class EventHandlerTest {
 
     @Test
     public void handle() {
-        // TODO: rewrite test, number of players now decided with GameCreate event
-        Event event = new PlayerConnect("1");
-        eventHandler.handle(event);
-        startPinging("1");
 
-        event = new PlayerConnect("2");
-        eventHandler.handle(event);
-        startPinging("2");
+        new Thread(() -> {
+            startServerConnection();
+        }).start();
 
+        startClient("t1");
+        EventHandler.getInstance().handle(new PlayerConnect("t1"));
+        EventDispatcher.getInstance().createGame(2);
 
-        event = new PlayerConnect("3");
-        eventHandler.handle(event);
-        startPinging("3");
+        startClient("t2");
+        EventHandler.getInstance().handle(new PlayerConnect("t2"));
 
 
         List<Position> chosen = new ArrayList<>();
-        chosen.add(new Position(4,4));
-        chosen.add(new Position(4,5));
-        chosen.add(new Position(4,6));
+        chosen.add(new Position(4, 4));
+        chosen.add(new Position(4, 5));
+        EventHandler.getInstance().handle(new TakeTiles("t1", chosen, 3));
 
-        System.out.println("Turn: " + GameManager.getInstance().getTurn("1"));
-        event = new TakeTiles(GameManager.getInstance().getTurn("1"), chosen,2);
-        try{
-            eventHandler.handle(event);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+    }
+
+
+    private void startClient(String player) {
+
+        new Thread(() -> {
+            startClientConnection();
+        }).start();
+
+        Settings.getInstance().setUsername("player");
+        Settings.getInstance().setConnectionType(ConnectionType.SOCKET);
+        EventDispatcher.getInstance().connect();
+        startPinging(player);
+    }
+
+
+    private void startServerConnection() {
+        try {
+            SocketServer.getInstance().start(19736);
+        } catch (Exception e) {
+            System.out.println("SocketServer error");
         }
-
-
     }
 
-    @Test
-    public void handle_PlayerDisConnect() {
-        // TODO: rewrite test, number of players now decided with GameCreate event
-        Event event = new PlayerConnect("t1");
-        eventHandler.handle(event);
-        startPinging("1");
-
-        event = new PlayerConnect("t2");
-        eventHandler.handle(event);
-        startPinging("2");
-
-        event = new PlayerConnect("t3");
-        eventHandler.handle(event);
-        startPinging("3");
-
-        event = new PlayerDisconnect("t3");
-        eventHandler.handle(event);
-
-        event = new PlayerConnect("t3");
-        eventHandler.handle(event);
-
-
+    private void startClientConnection(){
+        try{
+            SocketClient.getInstance().start("localhost", 19736);
+        }catch (Exception e){
+            System.out.println("SocketClient error");
+        }
     }
-
 
     private void startPinging(String player) {
 
