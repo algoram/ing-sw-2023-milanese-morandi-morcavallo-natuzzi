@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane fx:id="main" prefHeight="60.0" prefWidth="60.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="myshelfie_view.gui.controllers.tokens.PersonalGoalTokenController">
+   <children>
+      <ImageView fx:id="image" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../images/scoring_tokens/scoring.jpg" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

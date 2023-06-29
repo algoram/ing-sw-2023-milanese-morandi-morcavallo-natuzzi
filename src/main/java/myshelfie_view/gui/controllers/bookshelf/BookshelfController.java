@@ -20,14 +20,9 @@ import java.util.ResourceBundle;
 public class BookshelfController implements Initializable {
 
     @FXML private VBox main;
-    @FXML private Label usernameLabel;
     @FXML private GridPane grid;
 
     private TileController[][] tileControllers;
-
-    public void setUsername(String username) {
-        usernameLabel.setText(username);
-    }
 
     public void setVisible(boolean visible) {
         main.setVisible(visible);
@@ -69,11 +64,6 @@ public class BookshelfController implements Initializable {
                 grid.add(tile, j, i);
 
                 assert tile != null;
-                int column = j;
-                tile.setOnMouseClicked(event -> {
-                    // try to insert the tiles into the column
-                    GuiView.getInstance().getMainController().getGameController().takeTiles(column);
-                });
 
                 tileControllers[i][j] = loader.getController();
             }

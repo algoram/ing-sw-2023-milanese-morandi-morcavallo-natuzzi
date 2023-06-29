@@ -111,30 +111,8 @@ public class GuiView extends View {
 
     @Override
     public void yourTurn() {
-        // TODO: check implementation
-
-        Label yourTurnLabel = new Label();
-        Scene yourTurnScene = new Scene(new VBox());
-
-        if (Settings.getInstance().DEBUG) System.out.println("lock try");
-
-        // Aggiornare il label con il messaggio "It's your turn!"
-        Platform.runLater(() -> {
-            yourTurnLabel.setText("It's your turn!");
-        });
-
-        // Creare un bottone "Ask tiles" che richiama il metodo askTiles()
-        // e successivamente invoca lockInOut.notifyAll()
-        Platform.runLater(() -> {
-            Button askTilesButton = new Button("Ask tiles");
-            askTilesButton.setOnAction(e -> {
-                //askTiles();
-                //lockInOut.notifyAll();
-            });
-            // Aggiungere il bottone alla finestra
-            VBox vbox = new VBox(yourTurnLabel, askTilesButton);
-            yourTurnScene.setRoot(vbox);
-        });
+        // show all column choices arrows
+        mainSceneController.getGameController().setArrowsVisible(true);
     }
 
     @Override
@@ -155,7 +133,8 @@ public class GuiView extends View {
 
     @Override
     public void turnOf(String playerTurn) {
-        // TODO: implement, don't know what this does
+        // hide all column choices arrows
+        mainSceneController.getGameController().setArrowsVisible(false);
     }
 
     @Override

@@ -79,7 +79,7 @@ public class LoginSceneController {
 
         EventDispatcher.getInstance().connect();
 
-        GuiView.getInstance().getMainController().getGameController().setLocalUsername(user);
+        GuiView.getInstance().getMainController().getGameController().setUsername(user);
     }
 
     public void setVisible(boolean visible) {
