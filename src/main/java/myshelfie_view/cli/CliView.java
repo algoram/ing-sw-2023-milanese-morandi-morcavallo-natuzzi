@@ -414,14 +414,13 @@ public class CliView extends View {
             out.println("Choose tiles positions (1 to 3) from the board: [ex: A1 B2 C3, ex: A1 B2, ex: A1]");
             input = readSafe();
             String[] positions = input.trim().toUpperCase().split("\\s+"); //split the input in an array of strings without spaces ex:"    a3 A4 a6    " -> ["A3", "A4", "A6"]
-            if (input.startsWith("/") && commandAvailable(input) ) {
+            if (input.startsWith("/") && commandAvailableDuringTiles(input) ) {
                 out.println("Back to the game...");
             } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
                 out.println("input not valid: only letters and numbers are allowed");
             }
             else if(input.length() > 12){
                 out.println("Too long input for a move");
-
             }
             else if (checkCoordinates(positions,gameState.getPlayers().size())) {
                 out.println("Try another tiles!");
@@ -439,7 +438,7 @@ public class CliView extends View {
             out.println("Choose column number (1 to 5) from the board: [1/2/3/4/5]");
             input = readSafe();
 
-            if (input.startsWith("/") && commandAvailable(input) ) {
+            if (input.startsWith("/") && commandAvailableDuringTiles(input) ) {
                 out.println("command not valid");
             } else if ( !input.matches("[a-zA-Z0-9 ]+" )) {
                 out.println("input not valid: only letters and numbers are allowed");
@@ -494,6 +493,48 @@ public class CliView extends View {
                 }
                 case "/exit" -> {
                     exit();
+                    return true;
+                }
+                default -> {
+                    return false;
+                }
+            }
+        }
+    }
+
+    /***
+     * Check if the command is available, if it is, it will execute it
+     * If the commando corresponds to exit, it will set the gameIsRunning flag to false
+     *
+     * @param command the command to check
+     * @return true if the command is available, false otherwise
+     */
+    private boolean commandAvailableDuringTiles(String command){
+        if(chatIsRunning){
+            if (command.equals("/showcommon1")){
+                showCommonGoal(1);
+                return true;
+            }else if (command.equals("/showcommon2")) {
+                showCommonGoal(2);
+                return true;
+            }else if (command.equals("/help")) {
+                help();
+                return true;
+                //if command starts with /chat, it will send the rest of the command to the other players as a message
+            }else if (command.startsWith("/chat")) {
+                chatOut(command);
+                return true;
+            }else if (command.equals("/showchat")) {
+                showChat();
+                return true;
+            }else {
+                return false;
+            }
+        }
+        else{
+            switch (command) {
+                case "/help" -> {
+                    help();
                     return true;
                 }
                 default -> {
@@ -598,7 +639,9 @@ public class CliView extends View {
     private void exit(){
         out.println("Bye Bye");
         gameIsRunning = false;
-        EventDispatcher.getInstance().playerDisconnect();
+        //EventDispatcher.getInstance().playerDisconnect();
+        EventDispatcher.getInstance().stopPinging();
+        System.exit(0);
     }
     /***
      * This function check if the input is a valid coordinate for all the possible implemented Board sizes.

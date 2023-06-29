@@ -133,7 +133,7 @@ public class UpdateHandler {
                 try{
                     SocketClient.getInstance().stop();
                 }catch (Exception e){
-                    e.printStackTrace();
+                    if (Settings.DEBUG)e.printStackTrace();
                 }
             }
 
