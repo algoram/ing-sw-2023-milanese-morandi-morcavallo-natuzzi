@@ -128,7 +128,7 @@ public class Game {
         }
 
         // choose a random player to start the game
-        playerSeat = random.nextInt(numPlayers);
+        playerSeat = 0;
 
         // also set the turn to the first player
         turn = playerSeat;
@@ -275,6 +275,7 @@ public class Game {
         // check if the player has filled the bookshelf first
         if (players.get(playerNumber).getBookshelf().isFull() && finishedFirst == -1) {
             players.get(playerNumber).setFinishedFirst(true);
+            System.out.println("Player " + playerNumber + " has filled the bookshelf first");
             finishedFirst = playerNumber;
         }
         checkGoals(playerNumber);

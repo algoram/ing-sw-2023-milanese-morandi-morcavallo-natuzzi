@@ -301,12 +301,9 @@ public class GameManager {
             System.out.println("GameManager-> hasStartedLast(): player is null IMPOSSIBLE in started last function");
             return false;
         }
-        int startedFirst = games.get(playerToGame.get(player)).getPlayerSeatIndex();
-        ArrayList<Player> players = games.get(playerToGame.get(player)).getPlayers();
+        if(Settings.DEBUG) System.out.println(games.get(playerToGame.get(player)).findPlayer(player));
 
-        int playerIndex = games.get(playerToGame.get(player)).findPlayer(player);
-
-        return playerIndex == (startedFirst + (players.size() - 1) % players.size());
+        return (games.get(playerToGame.get(player)).getNumberOfPlayers()-1) == games.get(playerToGame.get(player)).findPlayer(player);
     }
 
     /***
