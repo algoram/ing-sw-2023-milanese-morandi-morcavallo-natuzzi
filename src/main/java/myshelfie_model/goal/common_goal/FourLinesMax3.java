@@ -13,6 +13,17 @@ public class FourLinesMax3 extends CommonGoal{
         super(numberOfPlayers);
     }
 
+    /**
+     * Checks whether the player has four rows on the bookshelf,
+     * where each row is formed by 5 tiles of one, two, or three different types.
+     *
+     *
+     * @param b the player's bookshelf
+     * @return true if the goal is achieved, false otherwise
+     */
+
+
+
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
 

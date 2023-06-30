@@ -10,6 +10,17 @@ public class Diagonal5Tiles extends CommonGoal {
     }
 
     //Diagonals
+
+    /**
+     * Checks whether the player has at least 5 tiles of the same type that form
+     * a diagonal pattern on the bookshelf.
+     *
+     * @param b the player's bookshelf
+     * @return true if the goal is achieved, false otherwise
+     */
+
+
+    @Override
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         int rows = tiles.length;

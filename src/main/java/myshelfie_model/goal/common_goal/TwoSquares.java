@@ -8,6 +8,15 @@ public class TwoSquares extends CommonGoal {
         super(numberOfPlayers);
     }
 
+    /**
+     * Checks whether the player has two separate groups of 4 tiles of the same type,
+     * forming a 2x2 square.
+     * The tiles in each group must be of the same type.
+     *
+     * @param b the player's bookshelf
+     * @return true if the goal is achieved, false otherwise
+     */
+
     @Override
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles(); // tiles we'll be checking

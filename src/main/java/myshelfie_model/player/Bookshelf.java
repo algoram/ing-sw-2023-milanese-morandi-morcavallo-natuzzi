@@ -61,6 +61,15 @@ public class Bookshelf implements Serializable {
         return empty;
     }
 
+    /**
+     * Recursively visits adjacent tiles to a given position and counts the number of tiles.
+     *
+     * @param visited a boolean matrix that keeps track of visited tiles
+     * @param r the row of the current position
+     * @param c the column of the current position
+     * @param count an array of integers to keep track of the number of visited tiles
+     */
+
     public void visit(boolean[][] visited, int r, int c, int[] count) {
         if (r < 0 || r >= tiles.length || c < 0 || c >= tiles[0].length || visited[r][c] || tiles[r][c] == null) {
             return;
@@ -118,6 +127,8 @@ public class Bookshelf implements Serializable {
         return punteggio;
     }
 
+
+    
 
     public boolean isFull(){
         for (int i = 0;i< tiles.length;i++){
