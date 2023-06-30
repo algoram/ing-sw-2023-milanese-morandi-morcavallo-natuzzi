@@ -13,6 +13,7 @@
              <fx:include fx:id="create" source="CreateGameScene.fxml" />
              <fx:include fx:id="waiting" source="WaitingScene.fxml" />
              <fx:include fx:id="game" source="GameScene.fxml" />
+             <fx:include fx:id="players" source="PlayerScene.fxml" />
          </children></StackPane>
    </children>
 </AnchorPane>

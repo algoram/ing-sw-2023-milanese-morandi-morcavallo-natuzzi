@@ -10,6 +10,7 @@ public class CommonGoalController {
 
     @FXML private ImageView image;
     @FXML private Label description;
+    @FXML private ImageView token;
 
     public void setCommonGoal(CommonGoal goal) {
         String filePath = "images/common_goal_cards/";
@@ -56,6 +57,15 @@ public class CommonGoalController {
 
         System.err.println(filePath);
         image.setImage(new Image(filePath));
+
+        if (goal.peekTokens() != null) {
+            int points = goal.peekTokens().getPoints();
+
+            token.setImage(new Image("images/scoring_tokens/scoring_" + points + ".jpg"));
+            token.setVisible(true);
+        } else {
+            token.setVisible(false);
+        }
     }
 
 }

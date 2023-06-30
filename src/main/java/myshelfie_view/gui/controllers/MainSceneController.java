@@ -16,6 +16,7 @@ public class MainSceneController implements Initializable {
     @FXML private CreateGameSceneController createController;
     @FXML private WaitingSceneController waitingController;
     @FXML private GameController gameController;
+    @FXML private PlayerSceneController playersController;
 
     private GuiState guiState;
 
@@ -28,6 +29,7 @@ public class MainSceneController implements Initializable {
         createController.setVisible(false);
         waitingController.setVisible(false);
         gameController.setVisible(false);
+        playersController.setVisible(false);
     }
 
     public void changeState(GuiState state) {
@@ -39,6 +41,7 @@ public class MainSceneController implements Initializable {
             case CREATE_GAME -> createController.setVisible(false);
             case WAITING -> waitingController.setVisible(false);
             case GAME -> gameController.setVisible(false);
+            case PLAYERS -> playersController.setVisible(false);
         }
 
         // show only the requested state
@@ -49,6 +52,7 @@ public class MainSceneController implements Initializable {
             case CREATE_GAME -> createController.setVisible(true);
             case WAITING -> waitingController.setVisible(true);
             case GAME -> gameController.setVisible(true);
+            case PLAYERS -> playersController.setVisible(true);
         }
 
         // change internal state
@@ -61,5 +65,9 @@ public class MainSceneController implements Initializable {
 
     public QueueSceneController getQueueController() {
         return queueController;
+    }
+
+    public PlayerSceneController getPlayersController() {
+        return playersController;
     }
 }

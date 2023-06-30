@@ -18,7 +18,7 @@
                   <Image url="@../images/misc/sfondo%20parquet.jpg" />
                </image>
             </ImageView>
-            <VBox id="login_box" maxHeight="190.0" maxWidth="360.0" spacing="16.0" style="-fx-background-color: trasparent;" stylesheets="@../styles/Login.css" StackPane.alignment="CENTER">
+            <VBox id="login_box" maxHeight="190.0" maxWidth="360.0" spacing="16.0" stylesheets="@../styles/Login.css" StackPane.alignment="CENTER">
                <children>
                   <TextField id="Username_field" fx:id="username" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="250.0" promptText="Username" style="-fx-border-radius: 20;" stylesheets="@../styles/Login.css">
                      <VBox.margin>

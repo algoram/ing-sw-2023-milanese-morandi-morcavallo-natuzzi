@@ -22,6 +22,7 @@ public class BoardController implements Initializable {
 
     @FXML private ImageView background;
     @FXML private GridPane grid;
+    @FXML private ImageView endToken;
 
     private TileController[][] tileControllers;
 
@@ -56,12 +57,16 @@ public class BoardController implements Initializable {
                     if (chosenTiles.stream().anyMatch(t -> t[0] == finalI && t[1] == finalJ)) {
                         chosenTiles.removeIf(t -> t[0] == finalI && t[1] == finalJ);
                         System.out.println("Removed " + finalI + " " + finalJ);
+
+                        tileControllers[finalI][finalJ].setSelected(false);
                     }
                     // TODO: check if tile is empty, avoid taking tiles in illegal positions
                     else if (chosenTiles.size() < 3) {
                         // not selected, insert it
                         chosenTiles.add(new int[] { finalI, finalJ, tileControllers[finalI][finalJ].getImageIndex() });
                         System.out.println("Inserted " + finalI + " " + finalJ);
+
+                        tileControllers[finalI][finalJ].setSelected(true);
                     }
 
                     GuiView.getInstance().getMainController().getGameController().setChosenTiles(chosenTiles);
@@ -73,6 +78,12 @@ public class BoardController implements Initializable {
     public void clearChosen() {
         chosenTiles.clear();
         GuiView.getInstance().getMainController().getGameController().setChosenTiles(chosenTiles);
+
+        for (int i = 0; i < tileControllers.length; i++) {
+            for (int j = 0; j < tileControllers[i].length; j++) {
+                tileControllers[i][j].setSelected(false);
+            }
+        }
     }
 
     public void setBoard(Board board) {
@@ -96,4 +107,9 @@ public class BoardController implements Initializable {
             System.out.println();
         }
     }
+
+    public void setEndTokenVisible(boolean visible) {
+        endToken.setVisible(visible);
+    }
+
 }

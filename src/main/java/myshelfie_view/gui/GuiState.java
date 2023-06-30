@@ -6,5 +6,6 @@ public enum GuiState {
     QUEUE,
     CREATE_GAME,
     WAITING,
-    GAME
+    GAME,
+    PLAYERS
 }

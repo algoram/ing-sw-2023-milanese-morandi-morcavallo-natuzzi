@@ -26,6 +26,12 @@ public class TileController implements Initializable {
 
         tile.setImage(new Image(filePath));
         tile.setVisible(true);
+
+        setSelected(false);
+    }
+
+    public void setSelected(boolean selected) {
+        tile.setOpacity(selected ? 0.5 : 1);
     }
 
     @Override

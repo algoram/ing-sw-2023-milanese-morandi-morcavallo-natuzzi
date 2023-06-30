@@ -24,6 +24,8 @@ import myshelfie_model.goal.Token;
 import myshelfie_model.goal.common_goal.CommonGoal;
 import myshelfie_model.player.Bookshelf;
 import myshelfie_model.player.Player;
+import myshelfie_view.gui.GuiState;
+import myshelfie_view.gui.GuiView;
 import myshelfie_view.gui.controllers.board.BoardController;
 import myshelfie_view.gui.controllers.bookshelf.BookshelfController;
 import myshelfie_view.gui.controllers.chat.ChatController;
@@ -69,6 +71,8 @@ public class GameController implements Initializable {
     @FXML private StackPane common1Container;
     @FXML private StackPane common2Container;
     @FXML private StackPane finishContainer;
+
+    @FXML private ImageView endToken;
 
     @FXML private AnchorPane chair;
 
@@ -183,6 +187,8 @@ public class GameController implements Initializable {
 
         // set the board state
         boardController.setBoard(gameState.getBoard());
+        boardController.setEndTokenVisible(gameState.getFinishedFirst() == null);
+        endToken.setVisible(Settings.getInstance().getUsername().equals(gameState.getFinishedFirst()));
 
         // set the common goals state
         Token[] commonGoalsPoints = localPlayer.getCommonTokens();
@@ -308,6 +314,27 @@ public class GameController implements Initializable {
         chatController.setMessages(messages);
     }
 
+    public void nextPlayer(int currentIndex) {
+        int newIndex = (currentIndex + 1) % lastGameState.getPlayers().size();
+
+        while (lastGameState.getPlayers().get(newIndex).getUsername().equals(Settings.getInstance().getUsername())) {
+            newIndex = (newIndex + 1) % lastGameState.getPlayers().size();
+        }
+
+        GuiView.getInstance().getMainController().getPlayersController().display(lastGameState, newIndex);
+    }
+
+    public void previousPlayer(int currentIndex) {
+        int size = lastGameState.getPlayers().size();
+        int newIndex = (currentIndex + size - 1) % size;
+
+        while (lastGameState.getPlayers().get(newIndex).getUsername().equals(Settings.getInstance().getUsername())) {
+            newIndex = (newIndex + size - 1) % size;
+        }
+
+        GuiView.getInstance().getMainController().getPlayersController().display(lastGameState, newIndex);
+    }
+
     @FXML protected void displayChat() {
         Stage stage = new Stage();
 
@@ -415,5 +442,10 @@ public class GameController implements Initializable {
                 }
             });
         });
+    }
+
+    @FXML protected void showPlayers() {
+        nextPlayer(-1); // this way it will show the first player
+        GuiView.getInstance().getMainController().changeState(GuiState.PLAYERS);
     }
 }

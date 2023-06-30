@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -34,26 +35,41 @@
                                              <image>
                                                 <Image url="@../images/misc/arrow.png" />
                                              </image>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </ImageView>
                                           <ImageView fx:id="col2" fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/misc/arrow.png" />
                                              </image>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </ImageView>
                                           <ImageView fx:id="col3" fitHeight="60.0" fitWidth="60.0" layoutX="70.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/misc/arrow.png" />
                                              </image>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </ImageView>
                                           <ImageView fx:id="col4" fitHeight="60.0" fitWidth="60.0" layoutX="130.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/misc/arrow.png" />
                                              </image>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </ImageView>
                                           <ImageView fx:id="col5" fitHeight="60.0" fitWidth="60.0" layoutX="190.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/misc/arrow.png" />
                                              </image>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </ImageView>
                                        </children>
                                        <padding>
@@ -67,9 +83,44 @@
                               <Pane prefHeight="200.0" prefWidth="200.0" />
                               <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                                  <children>
-                                    <Circle fill="DODGERBLUE" onMouseClicked="#disconnect" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
-                                    <Circle fill="DODGERBLUE" onMouseClicked="#displayChat" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
-                                    <Circle fill="DODGERBLUE" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+                                    <StackPane onMouseClicked="#disconnect">
+                                       <children>
+                                          <Circle fill="#1f93ff00" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                                          <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/misc/disconnect.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </StackPane>
+                                    <StackPane onMouseClicked="#displayChat">
+                                       <children>
+                                          <Circle fill="#1f93ff00" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                                          <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/misc/chat.png" />
+                                             </image></ImageView>
+                                       </children>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </StackPane>
+                                    <StackPane onMouseClicked="#showPlayers">
+                                       <children>
+                                          <Circle fill="#1f93ff00" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                                          <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/misc/players.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </StackPane>
                                     <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                                     <fx:include fx:id="chair" source="tokens/FirstPlayerToken.fxml" />
                                  </children>
@@ -88,6 +139,9 @@
                                     </Label>
                                     <ImageView fx:id="tileTaken1" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
                               </StackPane>
                               <StackPane fx:id="tileTakenContainer2" maxHeight="60.0">
                                  <children>
@@ -99,6 +153,9 @@
                                     </Label>
                                     <ImageView fx:id="tileTaken2" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
                               </StackPane>
                               <StackPane fx:id="tileTakenContainer3" maxHeight="60.0">
                                  <children>
@@ -110,6 +167,9 @@
                                     </Label>
                                     <ImageView fx:id="tileTaken3" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
                               </StackPane>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="60.0" layoutX="170.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
                               <Pane maxHeight="60.0" prefHeight="60.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
@@ -125,6 +185,9 @@
                                     <Label text="Personal Goal" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" wrapText="true" />
                                     <fx:include fx:id="personal" source="tokens/PersonalGoalToken.fxml" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </StackPane>
                               <StackPane fx:id="common1Container" maxHeight="60.0" maxWidth="60.0" onMouseClicked="#displayCommonGoal1">
                                  <children>
@@ -132,6 +195,9 @@
                                     <Label text="Common Goal 1" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" wrapText="true" />
                                     <fx:include fx:id="token1" source="tokens/ScoringToken.fxml" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </StackPane>
                               <StackPane fx:id="common2Container" maxWidth="60.0" onMouseClicked="#displayCommonGoal2">
                                  <children>
@@ -139,12 +205,23 @@
                                     <Label text="Common Goal 2" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" wrapText="true" />
                                     <fx:include fx:id="token2" source="tokens/ScoringToken.fxml" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </StackPane>
                               <StackPane fx:id="finishContainer">
                                  <children>
                                     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="60.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="60.0" />
                                     <Label maxWidth="60.0" text="Finished First" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" wrapText="true" />
+                                    <ImageView fx:id="endToken" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/scoring_tokens/end%20game.jpg" />
+                                       </image>
+                                    </ImageView>
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
                               </StackPane>
                            </children></HBox>
                      </children>
