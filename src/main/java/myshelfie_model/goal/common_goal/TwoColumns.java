@@ -14,6 +14,15 @@ public class TwoColumns extends CommonGoal {
         super(numberOfPlayers);
     }
 
+    /**
+     * Checks whether the player has two columns on the bookshelf, where each column is formed by six different types of tiles.
+     *
+     * @param b the player's bookshelf
+     * @return true if the goal is achieved, false otherwise
+     */
+
+
+    @Override
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles();
         int numColsSameSixTiles = 0;

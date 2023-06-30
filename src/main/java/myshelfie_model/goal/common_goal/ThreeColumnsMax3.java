@@ -11,6 +11,14 @@ public class ThreeColumnsMax3 extends CommonGoal {
         super(numberOfPlayers);
     }
 
+    /**
+     * Checks whether the player has three columns on the bookshelf,
+     * where each column is formed by six tiles of one, two, or three different types.
+     *
+     * @param b the player's bookshelf
+     * @return true if the goal is achieved, false otherwise
+     */
+
     @Override
     public boolean check(Bookshelf b) {
         Tile[][] tiles = b.getTiles(); // tiles we'll be checking
