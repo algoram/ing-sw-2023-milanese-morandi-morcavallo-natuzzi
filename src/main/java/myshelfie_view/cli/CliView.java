@@ -414,7 +414,7 @@ public class CliView extends View {
             out.println("Choose tiles positions (1 to 3) from the board: [ex: A1 B2 C3, ex: A1 B2, ex: A1]");
             input = readSafe();
             String[] positions = input.trim().toUpperCase().split("\\s+"); //split the input in an array of strings without spaces ex:"    a3 A4 a6    " -> ["A3", "A4", "A6"]
-            if (input.startsWith("/") && commandAvailableDuringTiles(input) ) {
+            if (input.startsWith("/") && commandAvailable(input) ) {
                 out.println("Back to the game...");
             } else if ( !input.matches("[a-zA-Z0-9 ]+")) {
                 out.println("input not valid: only letters and numbers are allowed");
@@ -438,7 +438,7 @@ public class CliView extends View {
             out.println("Choose column number (1 to 5) from the board: [1/2/3/4/5]");
             input = readSafe();
 
-            if (input.startsWith("/") && commandAvailableDuringTiles(input) ) {
+            if (input.startsWith("/") && commandAvailable(input) ) {
                 out.println("command not valid");
             } else if ( !input.matches("[a-zA-Z0-9 ]+" )) {
                 out.println("input not valid: only letters and numbers are allowed");
