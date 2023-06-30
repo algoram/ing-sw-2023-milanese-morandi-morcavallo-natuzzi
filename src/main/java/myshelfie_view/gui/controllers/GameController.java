@@ -53,6 +53,7 @@ public class GameController implements Initializable {
 //    @FXML private VBox chosenTiles;
 
     @FXML private Label username;
+    @FXML private Label points;
 
     @FXML private ImageView tileTaken1;
     @FXML private ImageView tileTaken2;
@@ -161,6 +162,13 @@ public class GameController implements Initializable {
             if (Settings.DEBUG) System.err.println("GameController ERROR - localPlayer is null");
             return;
         }
+
+        int totalPoints = localPlayer.getPersonalGoalPoints()
+                + localPlayer.getCommonGoalPoints()
+                + localPlayer.getAdjacentPoints()
+                + (localPlayer.getFinishedFirst() ? 1 : 0);
+
+        points.setText("Total Points: " + totalPoints);
 
         if (gameState.getPlayerSeat().equals(localPlayer.getUsername())) {
             chairController.setVisible(true);

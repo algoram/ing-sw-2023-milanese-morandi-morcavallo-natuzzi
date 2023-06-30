@@ -113,6 +113,12 @@ public class GuiView extends View {
     public void yourTurn() {
         // show all column choices arrows
         mainSceneController.getGameController().setArrowsVisible(true);
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "It's you turn! Pick some tiles and choose a column to put them into.");
+            alert.setTitle("MyShelfie");
+            alert.showAndWait();
+        });
     }
 
     @Override

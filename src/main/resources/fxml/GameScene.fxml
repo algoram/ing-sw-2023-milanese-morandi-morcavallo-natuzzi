@@ -173,11 +173,24 @@
                               </StackPane>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="60.0" layoutX="170.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
                               <Pane maxHeight="60.0" prefHeight="60.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                              <Label fx:id="username" prefHeight="60.0">
-                                 <font>
-                                    <Font name="System Bold" size="24.0" />
-                                 </font>
-                              </Label>
+                              <VBox>
+                                 <children>
+                                    <AnchorPane VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <Label fx:id="username" alignment="CENTER" text="Username" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label fx:id="points" alignment="CENTER" text="Total Points: 0" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </VBox>
                               <Pane maxHeight="60.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                               <StackPane fx:id="personalContainer" maxHeight="60.0" maxWidth="60.0" onMouseClicked="#displayPersonalGoal">
                                  <children>

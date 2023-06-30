@@ -28,7 +28,7 @@ public class ChatController implements Initializable {
         if (!message.equals("")) {
             to = to.equals("ALL") ? null : to;
 
-            EventDispatcher.getInstance().chat(null, message);
+            EventDispatcher.getInstance().chat(to, message);
             GuiView.getInstance().getMainController().getGameController().sendMessage(to, message);
         }
 

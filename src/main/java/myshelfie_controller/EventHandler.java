@@ -69,7 +69,7 @@ public class EventHandler {
      */
     public void handle(Event event) {
         if (!(event instanceof Ping)) {
-            System.out.printf("EventHandler-> handle(): Event from %s: \n", event.getSource());
+            System.out.printf("EventHandler-> handle(): Event from %s: %s\n", event.getSource(), event.getClass().getSimpleName());
         }
         String player = event.getSource();
 
