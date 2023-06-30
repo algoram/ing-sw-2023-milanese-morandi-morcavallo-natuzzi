@@ -172,6 +172,9 @@ public class GuiView extends View {
             }
 
             alert.showAndWait();
+
+            Platform.exit();
+            System.exit(0);
         });
     }
 

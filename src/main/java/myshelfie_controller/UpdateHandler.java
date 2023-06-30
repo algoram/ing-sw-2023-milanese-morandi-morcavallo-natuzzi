@@ -121,7 +121,7 @@ public class UpdateHandler {
         } else if (response instanceof GameFinished) {
             String winner = ((GameFinished) response).getWinner();
             EventDispatcher.getInstance().stopPinging();
-            View.getInstance().gameFinished(winner);
+
 
             if(Settings.getInstance().getConnectionType().equals(ConnectionType.RMI)) {
                 try{
@@ -137,7 +137,7 @@ public class UpdateHandler {
                 }
             }
 
-            System.exit(0);
+            View.getInstance().gameFinished(winner);
 
         } else if (response instanceof GameFinishedForYou){
             View.getInstance().gameFinishedForYou();

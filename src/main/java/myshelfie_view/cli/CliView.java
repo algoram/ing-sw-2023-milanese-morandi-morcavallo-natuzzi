@@ -256,6 +256,7 @@ public class CliView extends View {
         else out.println(winner + " won!");
         out.println("Game is finished!");
         closeCliView();
+        System.exit(0);
     }
 
     @Override

@@ -174,25 +174,6 @@ public class GameController implements Initializable {
             chairController.setVisible(true);
         }
 
-        // set the number of players
-        // TODO: maybe avoid doing this every time there is an update
-        int numPlayers = gameState.getPlayers().size();
-
-//        if (numPlayers >= 2) {
-//            player2Controller.setVisible(true);
-//            player2Controller.setUsername(remotePlayers.get(0).getUsername());
-//        }
-//
-//        if (numPlayers >= 3) {
-//            player3Controller.setVisible(true);
-//            player3Controller.setUsername(remotePlayers.get(1).getUsername());
-//        }
-//
-//        if (numPlayers >= 4) {
-//            player4Controller.setVisible(true);
-//            player4Controller.setUsername(remotePlayers.get(2).getUsername());
-//        }
-
         // set the board state
         boardController.setBoard(gameState.getBoard());
         boardController.setEndTokenVisible(gameState.getFinishedFirst() == null);
@@ -215,9 +196,6 @@ public class GameController implements Initializable {
             token2Controller.setVisible(false);
         }
 
-        // set the personal goal state
-//        personalGoalController.setGoal(localPlayer.getPersonalGoal().getPersonalGoalNumber());
-
         // set personal goal points
         if (localPlayer.getPersonalGoalPoints() != 0) {
             personalController.setTokenPoints(localPlayer.getPersonalGoalPoints());
@@ -229,18 +207,6 @@ public class GameController implements Initializable {
         // set the bookshelves
         Bookshelf bookshelf = localPlayer.getBookshelf();
         player1Controller.setBookshelf(bookshelf);
-
-//        if (numPlayers >= 2) {
-//            player2Controller.setBookshelf(remotePlayers.get(0).getBookshelf());
-//        }
-//
-//        if (numPlayers >= 3) {
-//            player3Controller.setBookshelf(remotePlayers.get(1).getBookshelf());
-//        }
-//
-//        if (numPlayers >= 4) {
-//            player4Controller.setBookshelf(remotePlayers.get(2).getBookshelf());
-//        }
     }
 
     public void setChosenTiles(ArrayList<int[]> tileIndexes) {
