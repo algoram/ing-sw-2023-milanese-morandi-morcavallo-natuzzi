@@ -712,6 +712,16 @@ public class CliView extends View {
             out.println("Too many tiles selected");
             return false;
         }
+
+        for (int i=0; i<positions.length; i++) {
+            if (!(positions[i].length()==2 && positions[i].charAt(0)>='A' && positions[i].charAt(0)<='I' && positions[i].charAt(1)>='1' && positions[i].charAt(1)<='9')) {
+                out.println("Wrong input: coordinate is null or has a wrong length...");
+                return true;
+            }
+            if (Settings.DEBUG) out.println("CliView checkCoordinates: positions: " + positions[i]);
+
+        }
+
         for (String coordinate : positions) {
             //check  if the input has a valid length for a coordinate
             if(coordinate == null || coordinate.length() != 2){
